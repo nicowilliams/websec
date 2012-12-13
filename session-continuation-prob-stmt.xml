@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?rfc tocindent="no"?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+<?rfc toc="yes"?>
+<?rfc symrefs="yes"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!ENTITY rfc2616 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2616.xml">
+<!ENTITY rfc2617 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2617.xml">
+<!ENTITY rfc5246 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5246.xml">
+<!ENTITY rfc5056 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5056.xml">
+<!ENTITY rfc5929 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5929.xml">
+<!ENTITY rfc5849 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5849.xml">
+<!ENTITY I-D.ietf-oauth-v2 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-v2.xml">
+<!ENTITY rfc4422 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4422.xml">
+<!ENTITY rfc5802 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5802.xml">
+<!ENTITY rfc4252 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4252.xml">
+<!ENTITY rfc4559 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4559.xml">
+<!ENTITY rfc6631 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6631.xml">
+<!ENTITY rfc2743 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2743.xml">
+<!ENTITY rfc5801 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5801.xml">
+<!ENTITY rfc4121 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4121.xml">
+]>
+<rfc docName="draft-williams-websec-session-continue-prob-00" ipr="trust200902" category="info">
+  <front>
+    <title abbrev="HTTP Session Problem">Hypertext Transport Protocol (HTTP) Session Continuation: Problem Statement</title>
+    <author initials="N." surname="Williams" fullname="Nicolas Williams">
+      <organization abbrev="Cryptonector">Cryptonector, LLC</organization>
+      <address>
+        <email>nico@cryptonector.com</email>
+      </address>
+    </author>
+    <date month="December" year="2012"/>
+    <area>
+Security Area
+</area>
+    <keyword>Internet-Draft</keyword>
+    <abstract>
+      <t>
+One of the most often talked about problems in web security is “cookies”. Web cookies are a method of associating requests with “sessions” that may have been authenticated somehow. Cookies are a form of bearer token that leave much to be desired. This document describes the session “continuation” problem for the HyperText Transport Protocol (HTTP).</t>
+    </abstract>
+  </front>
+  <middle>
+    <section title="Introduction" anchor="sec_Introduction">
+      <t>
+Today most web applications use “cookies” to associate HTTP requests with “sessions”. A “session” is a set of related HTTP requests (and responses), where the relation is to some request(s) that created the session. Some sessions are created by the act of authenticating a user. Other times a session is created when a request is received that is not associated with any session. We call the mechanisms by which requests are strung into sessions “session continuation”.</t>
+      <t>
+“Cookies” are server-assigned bearer tokens – nothing more, nothing less. As such they are susceptible to theft in attacks such as BEAST and CRIME [XXX need refs], as well as to leakage in various ways [XXX expand].</t>
+      <t>
+We would like a session continuation mechanism to replace cookies that has better security semantics. In particular we would like a system that uses cryptographic algorithms and cryptographic session keys, and is amenable to being keyed by HTTP and web authentication mechanisms, is suitable for use in web and non-web HTTP applications, and can be keyed even for unauthenticated sessions.</t>
+    </section>
+    <section title="Requirements" anchor="d1e161">
+      <t>
+Any session continuation scheme to replace (or augment) cookies must provide the following functionality:</t>
+      <t>
+        <list style="numbers">
+          <t>
+Support for authenticated and unauthenticated sessions alike;</t>
+          <t>
+Support for http: and https: both;</t>
+          <t>
+Session continuation must be possible to implement without keeping state on the server side (see below);</t>
+          <t>
+Session continuation must use proof-of-possession of secret session key(s);</t>
+          <t>
+Session continuation must be expressed via HTTP headers;</t>
+          <t>
+Session continuation header values must include a cryptographically-secure value (indistinguishable from random) that can be validated by the server and is hard for attackers to guess;</t>
+          <t>
+Session continuation header values used with TLS must be cryptographically distinct from those used without TLS such that no such values taken from HTTP requests sent without TLS can be used in HTTP requests with TLS;</t>
+          <t>
+Session continuation must provide protection against man-in-the-middle (MITM) attacks when using TLS.</t>
+        </list>
+      </t>
+      <section title="Statelessness" anchor="sub_Statelessness">
+        <t>
+Session continuation protocols for HTTP must allow for stateless implementation on the server side, at least when TLS is used. This means that any state must be encrypted and encoded into a session state cookie that is resent by the client to the server on every request. The server, of course, must be the one to assign such state, and it must use an encryption key known only by the server.</t>
+        <t>
+Note that statelessness implies that there is no way to implement replay protection. In the case of session continuation with TLS this is not a concern because TLS itself protects against replays. But when session continuation is used without TLS then statelessness really does mean that there can be no replay protection (of course, this is also thus with web cookies).</t>
+      </section>
+    </section>
+    <section title="IANA Considerations" anchor="sec_IANA_Considerations">
+      <t>
+This document has no IANA considerations.</t>
+    </section>
+    <section title="Security Considerations" anchor="sec_Security_Considerations">
+      <t>
+This document does not specify a protocol and is Informational. There are few security considerations to document here.</t>
+      <t>
+We seek to improve security on the web (as well as for non-web HTTP applications) by:</t>
+      <t>
+        <list style="numbers">
+          <t>
+reducing the need for expensive HTTP authentication exchanges (e.g., HTTP/Negotiate), thereby removing an obstacle to their use;</t>
+          <t>
+reduce exposure to credentials theft via attacks on TLS such as BEAST and CRIME;</t>
+          <t>
+introducing a replacement for cookies that will give browsers a chance to pursue better security policies.</t>
+        </list>
+      </t>
+      <t>
+As discussed in  <xref target="sub_Statelessness"/>, there is a security consideration regarding session continuation without TLS and with statelessness: there can be no replay protection in this case. However, this is not a loss of security relative to web cookies. Applications must use TLS if they require integrity protection.</t>
+    </section>
+  </middle>
+  <back>
+    <references title="Informative References" anchor="sec_Normative_References">&rfc2616;
+&rfc2617;
+&rfc5246;
+&rfc5056;
+&rfc5929;
+&rfc5849;
+&I-D.ietf-oauth-v2;
+&rfc4422;
+&rfc5802;
+&rfc4252;
+&rfc4559;
+&rfc6631;
+&rfc2743;
+&rfc5801;
+&rfc4121;
+</references>
+  </back>
+</rfc>

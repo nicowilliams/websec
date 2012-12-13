@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "file:///home/nico/I-Ds/test/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="GENERATOR" content="LyX 2.0.0" />
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+<title>Hypertext Transport Protocol (HTTP) Session Continuation: Problem Statement</title>
+
+<!-- Text Class Preamble -->
+<style type="text/css">
+div.toc {
+margin: 2em 0em;
+border-style: solid;
+border-width: 2px 0px;
+padding: 1em 0em;
+}
+div.tochead { font-size: x-large; font-weight: bold; }
+div.lyxtoc-0 {
+margin: 2em 0em 0em 0em;
+font-size: xx-large;
+font-weight: bold;
+}
+div.lyxtoc-1 {
+margin: 1em 0em 0em 0em;
+font-size: x-large;
+font-weight: bold;
+}
+div.lyxtoc-2 {
+margin: 0em 0em 0em 1em;
+font-size: large;
+font-weight: normal;
+}
+div.lyxtoc-3 { margin: 0em 0em 0em 0.5em; font-size: medium; }
+div.lyxtoc-4 { margin: 0em 0em 0em 0.5em; }
+div.lyxtoc-5 { margin: 0em 0em 0em 0.5em; }
+div.lyxtoc-6 { margin: 0em 0em 0em 0.5em; }
+a.tocentry {
+text-decoration: none;
+color: black;
+}
+a.tocentry:visited { color: black; }
+a.tocarrow {
+font-weight: bold;
+text-decoration: none;
+color: #909090;
+}
+a.tocarrow:visited { color: #C0C0C0; }
+</style>
+
+<!-- Preamble Snippets -->
+
+<!-- Layout-provided Styles -->
+<style type='text/css'>
+h1.title {
+font-size: x-large;
+margin-bottom: 1ex;
+text-align: center;
+
+}
+div.standard {
+text-align: left;
+
+}
+div.plain_layout {
+text-align: left;
+
+}
+div.author {
+font-size: large;
+margin-top: 1.3ex;
+margin-bottom: 0.7ex;
+text-align: center;
+
+}
+div.abstract {
+font-size: small;
+margin-top: 0.7ex;
+margin-bottom: 0.7ex;
+margin-left: 3ex;
+margin-right: 3ex;
+text-align: left;
+
+}
+div.abstract_label {
+font-weight: bold;
+font-size: large;
+text-align: center;
+
+}
+
+div.abstract {
+margin: 4ex;
+}
+div.abstract_item {
+font-size: small;
+padding-top: 1ex;
+}
+div.abstract_label {
+font-weight: bold;
+}
+h2.section {
+font-weight: bold;
+font-size: x-large;
+margin-top: 1.3ex;
+margin-bottom: 0.7ex;
+text-align: left;
+
+}
+ol.enumerate {
+margin-top: 0.7ex;
+margin-bottom: 0.7ex;
+margin-left: 3ex;
+text-align: left;
+
+}
+h3.subsection {
+font-weight: bold;
+font-size: large;
+margin-top: 0.9ex;
+margin-bottom: 0.5ex;
+text-align: left;
+
+}
+div.flex_docname {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_ipr {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_intendedstatus {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_titleabbrev {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_ietfarea {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_xml_rfckeyword {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_pi {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_authororg {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_authororgabbrev {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_authoremailaddr {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_bibxml {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+</style>
+</head>
+<body>
+<h1 class="title"><a id='magicparlabel-1' />
+Hypertext Transport Protocol (HTTP) Session Continuation: Problem Statement</h1>
+<div class="standard"><a id='magicparlabel-2' />
+<div class="flex_docname"><div class="plain_layout"><a id='magicparlabel-6' />
+draft-williams-websec-session-continue-prob-00</div>
+</div><div class="flex_ipr"><div class="plain_layout"><a id='magicparlabel-10' />
+trust200902</div>
+</div><div class="flex_intendedstatus"><div class="plain_layout"><a id='magicparlabel-14' />
+info</div>
+</div><div class="flex_titleabbrev"><div class="plain_layout"><a id='magicparlabel-18' />
+HTTP Session Problem</div>
+</div><div class="flex_ietfarea"><div class="plain_layout"><a id='magicparlabel-22' />
+Security Area</div>
+</div><div class="flex_xml_rfckeyword"><div class="plain_layout"><a id='magicparlabel-26' />
+Internet-Draft</div>
+</div><div class="flex_pi"><div class="plain_layout"><a id='magicparlabel-30' />
+tocindent="no"</div>
+</div><div class="flex_pi"><div class="plain_layout"><a id='magicparlabel-34' />
+comments="yes"</div>
+</div><div class="flex_pi"><div class="plain_layout"><a id='magicparlabel-38' />
+inline="yes"</div>
+</div></div>
+
+<div class="author"><div class="author_item"><a id='magicparlabel-39' />
+Nicolas Williams<div class="flex_authororg"><div class="plain_layout"><a id='magicparlabel-43' />
+Cryptonector, LLC</div>
+</div><div class="flex_authororgabbrev"><div class="plain_layout"><a id='magicparlabel-47' />
+Cryptonector</div>
+</div><div class="flex_authoremailaddr"><div class="plain_layout"><a id='magicparlabel-51' />
+nico@cryptonector.com</div>
+</div></div>
+</div>
+
+<div class="abstract"><div class="abstract_label">Abstract</div>
+<div class="abstract_item"><a id='magicparlabel-52' />
+One of the most often talked about problems in web security is &ldquo;cookies&rdquo;. Web cookies are a method of associating requests with &ldquo;sessions&rdquo; that may have been authenticated somehow. Cookies are a form of bearer token that leave much to be desired. This document describes the session &ldquo;continuation&rdquo; problem for the HyperText Transport Protocol (HTTP).</div>
+</div>
+<div class="standard"><a id='magicparlabel-53' />
+</div>
+<div class='toc'><div class='tochead part_'>Table of Contents</div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-54' class='tocentry'>1 Introduction</a> <a href='#magicparlabel-54' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-58' class='tocentry'>2 Requirements</a> <a href='#magicparlabel-58' class='tocarrow'>&gt;</a>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-68' class='tocentry'>2.1 Statelessness</a> <a href='#magicparlabel-68' class='tocarrow'>&gt;</a></div>
+</div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-71' class='tocentry'>3 IANA Considerations</a> <a href='#magicparlabel-71' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-73' class='tocentry'>4 Security Considerations</a> <a href='#magicparlabel-73' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-80' class='tocentry'>5 Informative References</a> <a href='#magicparlabel-80' class='tocarrow'>&gt;</a></div>
+</div>
+
+<h2 class="section"><span class="section_label">1</span> <a id='magicparlabel-54' />
+<a id="sec_Introduction" />
+Introduction</h2>
+<div class="standard"><a id='magicparlabel-55' />
+Today most web applications use &ldquo;cookies&rdquo; to associate HTTP requests with &ldquo;sessions&rdquo;. A &ldquo;session&rdquo; is a set of related HTTP requests (and responses), where the relation is to some request(s) that created the session. Some sessions are created by the act of authenticating a user. Other times a session is created when a request is received that is not associated with any session. We call the mechanisms by which requests are strung into sessions &ldquo;session continuation&rdquo;.</div>
+
+<div class="standard"><a id='magicparlabel-56' />
+&ldquo;Cookies&rdquo; are server-assigned bearer tokens &ndash; nothing more, nothing less. As such they are susceptible to theft in attacks such as BEAST and CRIME [XXX need refs], as well as to leakage in various ways [XXX expand].</div>
+
+<div class="standard"><a id='magicparlabel-57' />
+We would like a session continuation mechanism to replace cookies that has better security semantics. In particular we would like a system that uses cryptographic algorithms and cryptographic session keys, and is amenable to being keyed by HTTP and web authentication mechanisms, is suitable for use in web and non-web HTTP applications, and can be keyed even for unauthenticated sessions.</div>
+<h2 class="section"><span class="section_label">2</span> <a id='magicparlabel-58' />
+Requirements</h2>
+<div class="standard"><a id='magicparlabel-59' />
+Any session continuation scheme to replace (or augment) cookies must provide the following functionality:</div>
+
+<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-60' />
+Support for authenticated and unauthenticated sessions alike;</li>
+<li class="enumerate_item"><a id='magicparlabel-61' />
+Support for http: and https: both;</li>
+<li class="enumerate_item"><a id='magicparlabel-62' />
+Session continuation must be possible to implement without keeping state on the server side (see below);</li>
+<li class="enumerate_item"><a id='magicparlabel-63' />
+Session continuation must use proof-of-possession of secret session key(s);</li>
+<li class="enumerate_item"><a id='magicparlabel-64' />
+Session continuation must be expressed via HTTP headers;</li>
+<li class="enumerate_item"><a id='magicparlabel-65' />
+Session continuation header values must include a cryptographically-secure value (indistinguishable from random) that can be validated by the server and is hard for attackers to guess;</li>
+<li class="enumerate_item"><a id='magicparlabel-66' />
+Session continuation header values used with TLS must be cryptographically distinct from those used without TLS such that no such values taken from HTTP requests sent without TLS can be used in HTTP requests with TLS;</li>
+<li class="enumerate_item"><a id='magicparlabel-67' />
+Session continuation must provide protection against man-in-the-middle (MITM) attacks when using TLS.</li>
+</ol>
+<h3 class="subsection"><span class="subsection_label">2.1</span> <a id='magicparlabel-68' />
+<a id="sub_Statelessness" />
+Statelessness</h3>
+<div class="standard"><a id='magicparlabel-69' />
+Session continuation protocols for HTTP must allow for stateless implementation on the server side, at least when TLS is used. This means that any state must be encrypted and encoded into a session state cookie that is resent by the client to the server on every request. The server, of course, must be the one to assign such state, and it must use an encryption key known only by the server.</div>
+
+<div class="standard"><a id='magicparlabel-70' />
+Note that statelessness implies that there is no way to implement replay protection. In the case of session continuation with TLS this is not a concern because TLS itself protects against replays. But when session continuation is used without TLS then statelessness really does mean that there can be no replay protection (of course, this is also thus with web cookies).</div>
+<h2 class="section"><span class="section_label">3</span> <a id='magicparlabel-71' />
+<a id="sec_IANA_Considerations" />
+IANA Considerations</h2>
+<div class="standard"><a id='magicparlabel-72' />
+This document has no IANA considerations.</div>
+<h2 class="section"><span class="section_label">4</span> <a id='magicparlabel-73' />
+<a id="sec_Security_Considerations" />
+Security Considerations</h2>
+<div class="standard"><a id='magicparlabel-74' />
+This document does not specify a protocol and is Informational. There are few security considerations to document here.</div>
+
+<div class="standard"><a id='magicparlabel-75' />
+We seek to improve security on the web (as well as for non-web HTTP applications) by:</div>
+
+<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-76' />
+reducing the need for expensive HTTP authentication exchanges (e.g., HTTP/Negotiate), thereby removing an obstacle to their use;</li>
+<li class="enumerate_item"><a id='magicparlabel-77' />
+reduce exposure to credentials theft via attacks on TLS such as BEAST and CRIME;</li>
+<li class="enumerate_item"><a id='magicparlabel-78' />
+introducing a replacement for cookies that will give browsers a chance to pursue better security policies.</li>
+</ol>
+<div class="standard"><a id='magicparlabel-79' />
+As discussed in <a href="#sub_Statelessness">2.1</a>, there is a security consideration regarding session continuation without TLS and with statelessness: there can be no replay protection in this case. However, this is not a loss of security relative to web cookies. Applications must use TLS if they require integrity protection.</div>
+<h2 class="section"><span class="section_label">5</span> <a id='magicparlabel-80' />
+<a id="sec_Normative_References" />
+Informative References</h2>
+<div class="standard"><a id='magicparlabel-81' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-85' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2616.xml">rfc2616</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-86' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-90' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2617.xml">rfc2617</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-91' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-95' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5246.xml">rfc5246</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-96' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-100' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5056.xml">rfc5056</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-101' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-105' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5929.xml">rfc5929</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-106' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-110' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5849.xml">rfc5849</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-111' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-115' />
+<a href="http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-v2.xml">I-D.ietf-oauth-v2</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-116' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-120' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.4422.xml">rfc4422</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-121' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-125' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5802.xml">rfc5802</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-126' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-130' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.4252.xml">rfc4252</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-131' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-135' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.4559.xml">rfc4559</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-136' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-140' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.6631.xml">rfc6631</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-141' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-145' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2743.xml">rfc2743</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-146' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-150' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5801.xml">rfc5801</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-151' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-155' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.4121.xml">rfc4121</a></div>
+</div></div>
+</body>
+</html>

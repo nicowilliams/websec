@@ -1,0 +1,560 @@
+
+
+
+Network Working Group                                        N. Williams
+Internet-Draft                                              Cryptonector
+Intended status: Standards Track                       December 13, 2012
+Expires: June 16, 2013
+
+
+   Hypertext Transport Protocol (HTTP) Session Continuation Protocol
+            draft-williams-websec-session-continue-proto-00
+
+Abstract
+
+   One of the most often talked about problems in web security is
+   "cookies".  Web cookies are a method of associating requests with
+   "sessions" that may have been authenticated somehow.  Cookies are a
+   form of bearer token that leave much to be desired.  This document
+   proposes a session "continuation" protocol for HyperText Transport
+   Protocol (HTTP).
+
+Status of this Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on June 16, 2013.
+
+Copyright Notice
+
+   Copyright (c) 2012 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+
+
+
+Williams                  Expires June 16, 2013                 [Page 1]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+   described in the Simplified BSD License.
+
+
+Table of Contents
+
+   1.    Introduction . . . . . . . . . . . . . . . . . . . . . . . .  3
+   2.    Session Initiation . . . . . . . . . . . . . . . . . . . . .  4
+   2.1.  Unauthenticated Session Initiation . . . . . . . . . . . . .  4
+   2.2.  HTTP Authentication Framework  . . . . . . . . . . . . . . .  4
+   2.3.  Unauthenticated to Authenticated Session Upgrade . . . . . .  4
+   3.    Session Continuation . . . . . . . . . . . . . . . . . . . .  5
+   4.    IANA Considerations  . . . . . . . . . . . . . . . . . . . .  6
+   5.    Security Considerations  . . . . . . . . . . . . . . . . . .  7
+   6.    Informative References . . . . . . . . . . . . . . . . . . .  8
+         Author's Address . . . . . . . . . . . . . . . . . . . . . . 10
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires June 16, 2013                 [Page 2]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+1.  Introduction
+
+   [XXX Reference the problem statement.]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires June 16, 2013                 [Page 3]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+2.  Session Initiation
+
+   Sessions are initiated either as an outcome of HTTP authentication,
+   or by a client.  Session identifiers, however, are assigned by the
+   server.
+
+2.1.  Unauthenticated Session Initiation
+
+   For unauthenticated session initiation the client includes a
+   "Session-Init" header in its request.  This header's value will
+   consist of a base64-encoding of a randomly-generated octet string of
+   at least 64 bits and up to 256 bits, and a boolean indicating whether
+   the session will also operate without TLS.  The server's response, if
+   it agrees to session initiation, will contain a "Session-Init" header
+   with a session identifier.
+
+   If the server accepts then the client and server will generate a
+   session key as described in [...].
+
+   If the request is sent over HTTPS (TLS) then the client may allow the
+   use of the session without TLS, in which case a second session key
+   will be generated for use without TLS as described in [...].
+
+   [XXX Add a channel binding type negotiation, or perhaps say: tls-
+   server-end-point if a server cert is used, else tls-unique.]
+
+   [XXX Add MAC and KDF algorithm negotiation.]
+
+2.2.  HTTP Authentication Framework
+
+2.3.  Unauthenticated to Authenticated Session Upgrade
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires June 16, 2013                 [Page 4]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+3.  Session Continuation
+
+   Once a session is established the client binds requests to sessions
+   as described here.
+
+   There are two cases: HTTPS and HTTP.
+
+   For the HTTPS case the client adds a "Session" header to its requests
+   with the following content: the session identifier assigned by the
+   server, a nonce generated by the client, and a MAC of the nonce and
+   the TLS channel bindings.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires June 16, 2013                 [Page 5]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+4.  IANA Considerations
+
+   This document has no IANA considerations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires June 16, 2013                 [Page 6]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+5.  Security Considerations
+
+   [...]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires June 16, 2013                 [Page 7]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+6.  Informative References
+
+   [RFC2616]  Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
+              Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext
+              Transfer Protocol -- HTTP/1.1", RFC 2616, June 1999.
+
+   [RFC2617]  Franks, J., Hallam-Baker, P., Hostetler, J., Lawrence, S.,
+              Leach, P., Luotonen, A., and L. Stewart, "HTTP
+              Authentication: Basic and Digest Access Authentication",
+              RFC 2617, June 1999.
+
+   [RFC5246]  Dierks, T. and E. Rescorla, "The Transport Layer Security
+              (TLS) Protocol Version 1.2", RFC 5246, August 2008.
+
+   [RFC5056]  Williams, N., "On the Use of Channel Bindings to Secure
+              Channels", RFC 5056, November 2007.
+
+   [RFC5929]  Altman, J., Williams, N., and L. Zhu, "Channel Bindings
+              for TLS", RFC 5929, July 2010.
+
+   [RFC5849]  Hammer-Lahav, E., "The OAuth 1.0 Protocol", RFC 5849,
+              April 2010.
+
+   [I-D.ietf-oauth-v2]
+              Hardt, D., "The OAuth 2.0 Authorization Framework",
+              draft-ietf-oauth-v2-31 (work in progress), August 2012.
+
+   [RFC4422]  Melnikov, A. and K. Zeilenga, "Simple Authentication and
+              Security Layer (SASL)", RFC 4422, June 2006.
+
+   [RFC5802]  Newman, C., Menon-Sen, A., Melnikov, A., and N. Williams,
+              "Salted Challenge Response Authentication Mechanism
+              (SCRAM) SASL and GSS-API Mechanisms", RFC 5802, July 2010.
+
+   [RFC4252]  Ylonen, T. and C. Lonvick, "The Secure Shell (SSH)
+              Authentication Protocol", RFC 4252, January 2006.
+
+   [RFC4559]  Jaganathan, K., Zhu, L., and J. Brezak, "SPNEGO-based
+              Kerberos and NTLM HTTP Authentication in Microsoft
+              Windows", RFC 4559, June 2006.
+
+   [RFC6631]  Kuegler, D. and Y. Sheffer, "Password Authenticated
+              Connection Establishment with the Internet Key Exchange
+              Protocol version 2 (IKEv2)", RFC 6631, June 2012.
+
+   [RFC2743]  Linn, J., "Generic Security Service Application Program
+              Interface Version 2, Update 1", RFC 2743, January 2000.
+
+
+
+
+Williams                  Expires June 16, 2013                 [Page 8]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+   [RFC5801]  Josefsson, S. and N. Williams, "Using Generic Security
+              Service Application Program Interface (GSS-API) Mechanisms
+              in Simple Authentication and Security Layer (SASL): The
+              GS2 Mechanism Family", RFC 5801, July 2010.
+
+   [RFC4121]  Zhu, L., Jaganathan, K., and S. Hartman, "The Kerberos
+              Version 5 Generic Security Service Application Program
+              Interface (GSS-API) Mechanism: Version 2", RFC 4121,
+              July 2005.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires June 16, 2013                 [Page 9]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+Author's Address
+
+   Nicolas Williams
+   Cryptonector, LLC
+
+   Email: nico@cryptonector.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires June 16, 2013                [Page 10]
+

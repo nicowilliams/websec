@@ -1,0 +1,504 @@
+
+
+
+Network Working Group                                        N. Williams
+Internet-Draft                                              Cryptonector
+Intended status: Informational                         December 13, 2012
+Expires: June 16, 2013
+
+
+   Hypertext Transport Protocol (HTTP) Session Continuation: Problem
+                               Statement
+             draft-williams-websec-session-continue-prob-00
+
+Abstract
+
+   One of the most often talked about problems in web security is
+   "cookies".  Web cookies are a method of associating requests with
+   "sessions" that may have been authenticated somehow.  Cookies are a
+   form of bearer token that leave much to be desired.  This document
+   describes the session "continuation" problem for the HyperText
+   Transport Protocol (HTTP).
+
+Status of this Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on June 16, 2013.
+
+Copyright Notice
+
+   Copyright (c) 2012 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+
+
+
+Williams                  Expires June 16, 2013                 [Page 1]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+
+Table of Contents
+
+   1.    Introduction  . . . . . . . . . . . . . . . . . . . . . . . . 3
+   2.    Requirements  . . . . . . . . . . . . . . . . . . . . . . . . 4
+   2.1.  Statelessness . . . . . . . . . . . . . . . . . . . . . . . . 4
+   3.    IANA Considerations . . . . . . . . . . . . . . . . . . . . . 5
+   4.    Security Considerations . . . . . . . . . . . . . . . . . . . 6
+   5.    Informative References  . . . . . . . . . . . . . . . . . . . 7
+         Author's Address  . . . . . . . . . . . . . . . . . . . . . . 9
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires June 16, 2013                 [Page 2]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+1.  Introduction
+
+   Today most web applications use "cookies" to associate HTTP requests
+   with "sessions".  A "session" is a set of related HTTP requests (and
+   responses), where the relation is to some request(s) that created the
+   session.  Some sessions are created by the act of authenticating a
+   user.  Other times a session is created when a request is received
+   that is not associated with any session.  We call the mechanisms by
+   which requests are strung into sessions "session continuation".
+
+   "Cookies" are server-assigned bearer tokens - nothing more, nothing
+   less.  As such they are susceptible to theft in attacks such as BEAST
+   and CRIME [XXX need refs], as well as to leakage in various ways [XXX
+   expand].
+
+   We would like a session continuation mechanism to replace cookies
+   that has better security semantics.  In particular we would like a
+   system that uses cryptographic algorithms and cryptographic session
+   keys, and is amenable to being keyed by HTTP and web authentication
+   mechanisms, is suitable for use in web and non-web HTTP applications,
+   and can be keyed even for unauthenticated sessions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires June 16, 2013                 [Page 3]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+2.  Requirements
+
+   Any session continuation scheme to replace (or augment) cookies must
+   provide the following functionality:
+
+   1.  Support for authenticated and unauthenticated sessions alike;
+
+   2.  Support for http: and https: both;
+
+   3.  Session continuation must be possible to implement without
+       keeping state on the server side (see below);
+
+   4.  Session continuation must use proof-of-possession of secret
+       session key(s);
+
+   5.  Session continuation must be expressed via HTTP headers;
+
+   6.  Session continuation header values must include a
+       cryptographically-secure value (indistinguishable from random)
+       that can be validated by the server and is hard for attackers to
+       guess;
+
+   7.  Session continuation header values used with TLS must be
+       cryptographically distinct from those used without TLS such that
+       no such values taken from HTTP requests sent without TLS can be
+       used in HTTP requests with TLS;
+
+   8.  Session continuation must provide protection against man-in-the-
+       middle (MITM) attacks when using TLS.
+
+2.1.  Statelessness
+
+   Session continuation protocols for HTTP must allow for stateless
+   implementation on the server side, at least when TLS is used.  This
+   means that any state must be encrypted and encoded into a session
+   state cookie that is resent by the client to the server on every
+   request.  The server, of course, must be the one to assign such
+   state, and it must use an encryption key known only by the server.
+
+   Note that statelessness implies that there is no way to implement
+   replay protection.  In the case of session continuation with TLS this
+   is not a concern because TLS itself protects against replays.  But
+   when session continuation is used without TLS then statelessness
+   really does mean that there can be no replay protection (of course,
+   this is also thus with web cookies).
+
+
+
+
+
+
+Williams                  Expires June 16, 2013                 [Page 4]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+3.  IANA Considerations
+
+   This document has no IANA considerations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires June 16, 2013                 [Page 5]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+4.  Security Considerations
+
+   This document does not specify a protocol and is Informational.
+   There are few security considerations to document here.
+
+   We seek to improve security on the web (as well as for non-web HTTP
+   applications) by:
+
+   1.  reducing the need for expensive HTTP authentication exchanges
+       (e.g., HTTP/Negotiate), thereby removing an obstacle to their
+       use;
+
+   2.  reduce exposure to credentials theft via attacks on TLS such as
+       BEAST and CRIME;
+
+   3.  introducing a replacement for cookies that will give browsers a
+       chance to pursue better security policies.
+
+   As discussed in Section 2.1, there is a security consideration
+   regarding session continuation without TLS and with statelessness:
+   there can be no replay protection in this case.  However, this is not
+   a loss of security relative to web cookies.  Applications must use
+   TLS if they require integrity protection.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires June 16, 2013                 [Page 6]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+5.  Informative References
+
+   [RFC2616]  Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
+              Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext
+              Transfer Protocol -- HTTP/1.1", RFC 2616, June 1999.
+
+   [RFC2617]  Franks, J., Hallam-Baker, P., Hostetler, J., Lawrence, S.,
+              Leach, P., Luotonen, A., and L. Stewart, "HTTP
+              Authentication: Basic and Digest Access Authentication",
+              RFC 2617, June 1999.
+
+   [RFC5246]  Dierks, T. and E. Rescorla, "The Transport Layer Security
+              (TLS) Protocol Version 1.2", RFC 5246, August 2008.
+
+   [RFC5056]  Williams, N., "On the Use of Channel Bindings to Secure
+              Channels", RFC 5056, November 2007.
+
+   [RFC5929]  Altman, J., Williams, N., and L. Zhu, "Channel Bindings
+              for TLS", RFC 5929, July 2010.
+
+   [RFC5849]  Hammer-Lahav, E., "The OAuth 1.0 Protocol", RFC 5849,
+              April 2010.
+
+   [I-D.ietf-oauth-v2]
+              Hardt, D., "The OAuth 2.0 Authorization Framework",
+              draft-ietf-oauth-v2-31 (work in progress), August 2012.
+
+   [RFC4422]  Melnikov, A. and K. Zeilenga, "Simple Authentication and
+              Security Layer (SASL)", RFC 4422, June 2006.
+
+   [RFC5802]  Newman, C., Menon-Sen, A., Melnikov, A., and N. Williams,
+              "Salted Challenge Response Authentication Mechanism
+              (SCRAM) SASL and GSS-API Mechanisms", RFC 5802, July 2010.
+
+   [RFC4252]  Ylonen, T. and C. Lonvick, "The Secure Shell (SSH)
+              Authentication Protocol", RFC 4252, January 2006.
+
+   [RFC4559]  Jaganathan, K., Zhu, L., and J. Brezak, "SPNEGO-based
+              Kerberos and NTLM HTTP Authentication in Microsoft
+              Windows", RFC 4559, June 2006.
+
+   [RFC6631]  Kuegler, D. and Y. Sheffer, "Password Authenticated
+              Connection Establishment with the Internet Key Exchange
+              Protocol version 2 (IKEv2)", RFC 6631, June 2012.
+
+   [RFC2743]  Linn, J., "Generic Security Service Application Program
+              Interface Version 2, Update 1", RFC 2743, January 2000.
+
+
+
+
+Williams                  Expires June 16, 2013                 [Page 7]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+   [RFC5801]  Josefsson, S. and N. Williams, "Using Generic Security
+              Service Application Program Interface (GSS-API) Mechanisms
+              in Simple Authentication and Security Layer (SASL): The
+              GS2 Mechanism Family", RFC 5801, July 2010.
+
+   [RFC4121]  Zhu, L., Jaganathan, K., and S. Hartman, "The Kerberos
+              Version 5 Generic Security Service Application Program
+              Interface (GSS-API) Mechanism: Version 2", RFC 4121,
+              July 2005.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires June 16, 2013                 [Page 8]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+Author's Address
+
+   Nicolas Williams
+   Cryptonector, LLC
+
+   Email: nico@cryptonector.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires June 16, 2013                 [Page 9]
+
