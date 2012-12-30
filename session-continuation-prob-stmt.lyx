@@ -240,11 +240,12 @@ End
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
-\tracking_changes false
-\output_changes false
+\tracking_changes true
+\output_changes true
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
+\author -733538347 "Yaron Sheffer,,," 
 \end_header
 
 \begin_body
@@ -255,7 +256,7 @@ Hypertext Transport Protocol (HTTP) Session Continuation: Problem Statement
 
 \begin_layout Standard
 \begin_inset Flex DocName
-status open
+status collapsed
 
 \begin_layout Plain Layout
 draft-williams-websec-session-continue-prob-00
@@ -265,7 +266,7 @@ draft-williams-websec-session-continue-prob-00
 
 
 \begin_inset Flex IPR
-status open
+status collapsed
 
 \begin_layout Plain Layout
 trust200902
@@ -275,7 +276,7 @@ trust200902
 
 
 \begin_inset Flex IntendedStatus
-status open
+status collapsed
 
 \begin_layout Plain Layout
 info
@@ -285,7 +286,7 @@ info
 
 
 \begin_inset Flex TitleAbbrev
-status open
+status collapsed
 
 \begin_layout Plain Layout
 HTTP Session Problem
@@ -295,7 +296,7 @@ HTTP Session Problem
 
 
 \begin_inset Flex IETFArea
-status open
+status collapsed
 
 \begin_layout Plain Layout
 Security Area
@@ -305,7 +306,7 @@ Security Area
 
 
 \begin_inset Flex XML2RFCKeyword
-status open
+status collapsed
 
 \begin_layout Plain Layout
 Internet-Draft
@@ -315,7 +316,7 @@ Internet-Draft
 
 
 \begin_inset Flex PI
-status open
+status collapsed
 
 \begin_layout Plain Layout
 tocindent="no"
@@ -325,7 +326,7 @@ tocindent="no"
 
 
 \begin_inset Flex PI
-status open
+status collapsed
 
 \begin_layout Plain Layout
 comments="yes"
@@ -335,7 +336,7 @@ comments="yes"
 
 
 \begin_inset Flex PI
-status open
+status collapsed
 
 \begin_layout Plain Layout
 inline="yes"
@@ -349,7 +350,7 @@ inline="yes"
 \begin_layout Author
 Nicolas Williams
 \begin_inset Flex AuthorOrg
-status open
+status collapsed
 
 \begin_layout Plain Layout
 Cryptonector, LLC
@@ -359,7 +360,7 @@ Cryptonector, LLC
 
 
 \begin_inset Flex AuthorOrgAbbrev
-status open
+status collapsed
 
 \begin_layout Plain Layout
 Cryptonector
@@ -369,7 +370,7 @@ Cryptonector
 
 
 \begin_inset Flex AuthorEmailAddr
-status open
+status collapsed
 
 \begin_layout Plain Layout
 nico@cryptonector.com
@@ -480,9 +481,61 @@ Cookies
 \begin_inset Quotes erd
 \end_inset
 
- are server-assigned bearer tokens -- nothing more, nothing less.
+ are server-assigned bearer tokens
+\change_inserted -733538347 1355690293
+
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted -733538347 1355690305
+Need to explain what 
+\begin_inset Quotes eld
+\end_inset
+
+bearer token
+\begin_inset Quotes erd
+\end_inset
+
+ means
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
+ -- nothing more, nothing less.
  As such they are susceptible to theft in attacks such as BEAST and CRIME
- [XXX need refs], as well as to leakage in various ways [XXX expand].
+ [XXX need refs], as well as to leakage in various ways [XXX expand
+\change_inserted -733538347 1355690361
+
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted -733538347 1355690375
+and mention 
+\begin_inset Quotes eld
+\end_inset
+
+firesheep
+\begin_inset Quotes erd
+\end_inset
+
+
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
+].
 \end_layout
 
 \begin_layout Standard
@@ -518,6 +571,33 @@ Session continuation must be possible to implement without keeping state
 
 \begin_layout Enumerate
 Session continuation must use proof-of-possession of secret session key(s);
+\change_inserted -733538347 1355690414
+
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted -733538347 1355691326
+This is reasonable, but it's a solution, not a requirement.
+ Maybe 
+\begin_inset Quotes eld
+\end_inset
+
+must use identifiers that vary across exchanges, with cryptographic protection
+\begin_inset Quotes erd
+\end_inset
+
+
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
+
 \end_layout
 
 \begin_layout Enumerate
@@ -539,6 +619,50 @@ Session continuation header values used with TLS must be cryptographically
 \begin_layout Enumerate
 Session continuation must provide protection against man-in-the-middle (MITM)
  attacks when using TLS.
+\change_inserted -733538347 1355691049
+
+\end_layout
+
+\begin_layout Enumerate
+
+\change_inserted -733538347 1355691417
+Must support explicit session termination (
+\begin_inset Quotes eld
+\end_inset
+
+logout
+\begin_inset Quotes erd
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Enumerate
+
+\change_inserted -733538347 1355691503
+Do we need to say something about the relationship to origins (as in 
+\begin_inset Quotes eld
+\end_inset
+
+same origin policy
+\begin_inset Quotes erd
+\end_inset
+
+)?
+\end_layout
+
+\begin_layout Enumerate
+
+\change_inserted -733538347 1355691539
+Must support proxies?
+\end_layout
+
+\begin_layout Enumerate
+
+\change_inserted -733538347 1355691574
+Can you move a session from one server to another?
+\change_unchanged
+
 \end_layout
 
 \begin_layout Subsection
@@ -555,14 +679,37 @@ Statelessness
 Session continuation protocols for HTTP must allow for stateless implementation
  on the server side, at least when TLS is used.
  This means that any state must be encrypted and encoded into a session
- state cookie that is resent by the client to the server on every request.
+ state cookie that is re
+\change_inserted -733538347 1355691103
+-
+\change_unchanged
+sent by the client to the server on every request.
  The server, of course, must be the one to assign such state, and it must
  use an encryption key known only by the server.
 \end_layout
 
 \begin_layout Standard
 Note that statelessness implies that there is no way to implement replay
- protection.
+ protection
+\change_inserted -733538347 1355691143
+
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted -733538347 1355691170
+No, it means that replay protection is optional - the server chooses whether
+ it wants it or not
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
+.
  In the case of session continuation with TLS this is not a concern because
  TLS itself protects against replays.
  But when session continuation is used without TLS then statelessness really
@@ -645,7 +792,7 @@ Informative References
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -665,7 +812,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2616.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -685,7 +832,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2617.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -705,7 +852,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5246.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -725,7 +872,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5056.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -745,7 +892,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5929.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -765,7 +912,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5849.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -785,7 +932,7 @@ target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-v2.x
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -805,7 +952,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4422.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -825,7 +972,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5802.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -845,7 +992,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4252.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -865,7 +1012,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4559.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -885,7 +1032,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6631.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -905,7 +1052,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2743.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -925,7 +1072,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5801.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
