@@ -3,8 +3,8 @@
 
 Network Working Group                                        N. Williams
 Internet-Draft                                              Cryptonector
-Intended status: Informational                         December 13, 2012
-Expires: June 16, 2013
+Intended status: Informational                         December 29, 2012
+Expires: July 2, 2013
 
 
    Hypertext Transport Protocol (HTTP) Session Continuation: Problem
@@ -35,7 +35,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on June 16, 2013.
+   This Internet-Draft will expire on July 2, 2013.
 
 Copyright Notice
 
@@ -70,21 +70,33 @@ Table of Contents
    with "sessions".  A "session" is a set of related HTTP requests (and
    responses), where the relation is to some request(s) that created the
    session.  Some sessions are created by the act of authenticating a
-   user.  Other times a session is created when a request is received
-   that is not associated with any session.  We call the mechanisms by
-   which requests are strung into sessions "session continuation".
+   user, in which case the primary goal of "sessions" is to avoid having
+   to re-authenticate the user on every request.  Other times a session
+   is created when a request is received that is not associated with any
+   session, in which case the primary purpose of "sessions" may be to
+   provide a pseudonymous identifier for an otherwise anonymous user.
+   We call the mechanisms by which requests are strung into sessions
+   "session continuation".
 
    "Cookies" are server-assigned bearer tokens - nothing more, nothing
-   less.  As such they are susceptible to theft in attacks such as BEAST
+   less.  A bearer token is an octet blob which can be presented as-is,
+   possibly repeatedly, to authenticate a user to some party; mere
+   possession of the bearer token is sufficient to act on the user's
+   behalf to at least one service.As such they are susceptible to theft
+   via passive attacks (eavesdropping) if not protected in some other
+   way (e.g., by using TLS), or viaactive attacks attacks such as BEAST
    and CRIME [XXX need refs], as well as to leakage in various ways [XXX
    expand].
 
-   We would like a session continuation mechanism to replace cookies
-   that has better security semantics.  In particular we would like a
-   system that uses cryptographic algorithms and cryptographic session
-   keys, and is amenable to being keyed by HTTP and web authentication
-   mechanisms, is suitable for use in web and non-web HTTP applications,
-   and can be keyed even for unauthenticated sessions.
+   We would like a session continuation mechanism to replace (or
+   augment) cookies that has better security semantics.  In particular
+   we would like a system that is not susceptible to theft via active
+   attacks like BEAST and CRIME.  We believe that such a scheme should
+   use cryptographic algorithms and cryptographic session keys, and
+   should be amenable to being keyed by HTTP- and web-authentication
+   mechanisms.  A new session continuation mechanism should suitable for
+   use in web and non-web HTTP applications, and should work even for
+   unauthenticated sessions.
 
 
 2.  Requirements
@@ -92,46 +104,79 @@ Table of Contents
    Any session continuation scheme to replace (or augment) cookies must
    provide the following functionality:
 
-   1.  Support for authenticated and unauthenticated sessions alike;
+   1.   Support for authenticated and unauthenticated sessions alike;
 
-   2.  Support for http: and https: both;
+   2.   Support for http: and https: both;
 
-   3.  Session continuation must be possible to implement without
-       keeping state on the server side (see below);
+   3.   Session continuation must be possible to implement without
+        keeping state on the server side (see below);
 
-   4.  Session continuation must use proof-of-possession of secret
+   4.   Resistance to active attacks on https;
+
+   5.   Session continuation header values must be cryptographically
+        difficult for attackers to spoof, and servers must be able to
+        validate these values;
+
+   6.   Session continuation must be expressed via HTTP headers;
+
+   7.   Session continuation header values must include a
+        cryptographically-secure value (indistinguishable from random)
+        that can be validated by the server and is hard for attackers to
+        guess;
+
+   8.   Session continuation header values used with TLS must be
+        cryptographically distinct from those used without TLS such that
+        no such values taken from HTTP requests sent without TLS can be
+        used in HTTP requests with TLS;
+
+   9.   Session continuation must provide protection against man-in-the-
+        middle (MITM) attacks at least when using TLS.
+
+   10.  Must support explicit session termination ("logout").
+
+   11.  Do we need to say something about the relationship to origins
+        (as in "same origin policy")?
+
+   12.  Must support proxies;
+
+   [[anchor1: Can you move a session from one server to another?  No,
+   probably not.  Servers can share sessions, so we need to at least be
+   able to scope sessions to sets of servers or DNS sub-domains.  Once
+   we have proper session continuation we may well end up needing a
+   mechanism by which to authenticate to a service as a user of a given
+   session on a foreign service that is "friends" with the first.]]
+
+   Recommendations:
+
+   1.  Session continuation SHOULD use proof-of-possession of secret
        session key(s);
 
-   5.  Session continuation must be expressed via HTTP headers;
-
-   6.  Session continuation header values must include a
+   2.  Session continuation header values SHOULD include a
        cryptographically-secure value (indistinguishable from random)
        that can be validated by the server and is hard for attackers to
        guess;
-
-   7.  Session continuation header values used with TLS must be
-       cryptographically distinct from those used without TLS such that
-       no such values taken from HTTP requests sent without TLS can be
-       used in HTTP requests with TLS;
-
-   8.  Session continuation must provide protection against man-in-the-
-       middle (MITM) attacks when using TLS.
 
 2.1.  Statelessness
 
    Session continuation protocols for HTTP must allow for stateless
    implementation on the server side, at least when TLS is used.  This
-   means that any state must be encrypted and encoded into a session
-   state cookie that is resent by the client to the server on every
-   request.  The server, of course, must be the one to assign such
+   generally means that any state must be encrypted and encoded into a
+   session state cookie that is re-sent by the client to the server on
+   every request.  The server, of course, must be the one to assign such
    state, and it must use an encryption key known only by the server.
+
+   Server-side statelessness is NOT REQUIRED in actual deployments, but
+   the ability to implement session continuation in a stateless fashion
+   on the server side is REQUIRED.
 
    Note that statelessness implies that there is no way to implement
    replay protection.  In the case of session continuation with TLS this
    is not a concern because TLS itself protects against replays.  But
    when session continuation is used without TLS then statelessness
    really does mean that there can be no replay protection (of course,
-   this is also thus with web cookies).
+   this is also thus with web cookies).  Therefore servers that require
+   replay protection must either require the use of TLS or must use
+   stateful sessions.
 
 
 3.  IANA Considerations
@@ -151,17 +196,20 @@ Table of Contents
        (e.g., HTTP/Negotiate), thereby removing an obstacle to their
        use;
 
-   2.  reduce exposure to credentials theft via attacks on TLS such as
-       BEAST and CRIME;
+   2.  reducing exposure to session credentials theft via attacks on TLS
+       such as BEAST and CRIME;
 
-   3.  introducing a replacement for cookies that will give browsers a
+   3.  reducing exposure to session credentials theft when not using
+       TLS;
+
+   4.  introducing a replacement for cookies that will give browsers a
        chance to pursue better security policies.
 
    As discussed in Section 2.1, there is a security consideration
-   regarding session continuation without TLS and with statelessness:
-   there can be no replay protection in this case.  However, this is not
-   a loss of security relative to web cookies.  Applications must use
-   TLS if they require integrity protection.
+   regarding session continuation without TLS and with server-side
+   statelessness: there can be no replay protection in this case.
+   However, this is not a loss of security relative to web cookies.
+   Applications must use TLS if they require integrity protection.
 
 
 5.  Informative References

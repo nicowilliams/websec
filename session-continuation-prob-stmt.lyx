@@ -245,7 +245,7 @@ End
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
-\author -733538347 "Yaron Sheffer,,," 
+\author 1948836658 "Nico,,," 
 \end_header
 
 \begin_body
@@ -459,9 +459,34 @@ session
 
  is a set of related HTTP requests (and responses), where the relation is
  to some request(s) that created the session.
- Some sessions are created by the act of authenticating a user.
+ Some sessions are created by the act of authenticating a user
+\change_inserted 1948836658 1356840691
+, in which case the primary goal of 
+\begin_inset Quotes eld
+\end_inset
+
+sessions
+\begin_inset Quotes erd
+\end_inset
+
+ is to avoid having to re-authenticate the user on every request
+\change_unchanged
+.
  Other times a session is created when a request is received that is not
- associated with any session.
+ associated with any session
+\change_inserted 1948836658 1356840721
+, in which case the primary purpose of 
+\begin_inset Quotes eld
+\end_inset
+
+sessions
+\begin_inset Quotes erd
+\end_inset
+
+ may be to provide a pseudonymous identifier for an otherwise anonymous
+ user
+\change_unchanged
+.
  We call the mechanisms by which requests are strung into sessions 
 \begin_inset Quotes eld
 \end_inset
@@ -481,70 +506,50 @@ Cookies
 \begin_inset Quotes erd
 \end_inset
 
- are server-assigned bearer tokens
-\change_inserted -733538347 1355690293
-
-\begin_inset Note Greyedout
-status open
-
-\begin_layout Plain Layout
-
-\change_inserted -733538347 1355690305
-Need to explain what 
-\begin_inset Quotes eld
-\end_inset
-
-bearer token
-\begin_inset Quotes erd
-\end_inset
-
- means
+ are server-assigned bearer tokens -- nothing more, nothing less.
+ 
+\change_inserted 1948836658 1356840739
+A bearer token is an octet blob which can be presented as-is, possibly repeatedl
+y, to authenticate a user to some party; mere possession of the bearer token
+ is sufficient to act on the user's behalf to at least one service.
 \change_unchanged
-
-\end_layout
-
-\end_inset
-
-
+As such they are susceptible to theft
+\change_inserted 1948836658 1356840888
+ via passive attacks (eavesdropping) if not protected in some other way
+ (e.g., by using TLS),
 \change_unchanged
- -- nothing more, nothing less.
- As such they are susceptible to theft in attacks such as BEAST and CRIME
- [XXX need refs], as well as to leakage in various ways [XXX expand
-\change_inserted -733538347 1355690361
-
-\begin_inset Note Greyedout
-status open
-
-\begin_layout Plain Layout
-
-\change_inserted -733538347 1355690375
-and mention 
-\begin_inset Quotes eld
-\end_inset
-
-firesheep
-\begin_inset Quotes erd
-\end_inset
-
-
+ 
+\change_inserted 1948836658 1356840912
+or viaactive attacks
+\change_deleted 1948836658 1356840896
+in
 \change_unchanged
-
-\end_layout
-
-\end_inset
-
-
-\change_unchanged
-].
+ attacks such as BEAST and CRIME [XXX need refs], as well as to leakage
+ in various ways [XXX expand].
 \end_layout
 
 \begin_layout Standard
-We would like a session continuation mechanism to replace cookies that has
- better security semantics.
- In particular we would like a system that uses cryptographic algorithms
+We would like a session continuation mechanism to replace 
+\change_inserted 1948836658 1356840956
+(or augment) 
+\change_unchanged
+cookies that has better security semantics.
+ 
+\change_deleted 1948836658 1356840981
+In particular we would like a system that uses cryptographic algorithms
  and cryptographic session keys, and is amenable to being keyed by HTTP
  and web authentication mechanisms, is suitable for use in web and non-web
  HTTP applications, and can be keyed even for unauthenticated sessions.
+\change_inserted 1948836658 1356840981
+In particular we would like a system that is not susceptible to theft via
+ active attacks like BEAST and CRIME.
+ We believe that such a scheme should use cryptographic algorithms and cryptogra
+phic session keys, and should be amenable to being keyed by HTTP- and web-authen
+tication mechanisms.
+ A new session continuation mechanism should suitable for use in web and
+ non-web HTTP applications, and should work even for unauthenticated sessions.
+\change_unchanged
+
 \end_layout
 
 \begin_layout Section
@@ -567,35 +572,25 @@ Support for http: and https: both;
 \begin_layout Enumerate
 Session continuation must be possible to implement without keeping state
  on the server side (see below);
+\change_inserted 1948836658 1356841010
+
 \end_layout
 
 \begin_layout Enumerate
-Session continuation must use proof-of-possession of secret session key(s);
-\change_inserted -733538347 1355690414
 
-\begin_inset Note Greyedout
-status open
-
-\begin_layout Plain Layout
-
-\change_inserted -733538347 1355691326
-This is reasonable, but it's a solution, not a requirement.
- Maybe 
-\begin_inset Quotes eld
-\end_inset
-
-must use identifiers that vary across exchanges, with cryptographic protection
-\begin_inset Quotes erd
-\end_inset
-
-
+\change_inserted 1948836658 1356841011
+Resistance to active attacks on https;
 \change_unchanged
 
 \end_layout
 
-\end_inset
+\begin_layout Enumerate
 
-
+\change_deleted 1948836658 1356841025
+Session continuation must use proof-of-possession of secret session key(s);
+\change_inserted 1948836658 1356841025
+Session continuation header values must be cryptographically difficult for
+ attackers to spoof, and servers must be able to validate these values;
 \change_unchanged
 
 \end_layout
@@ -614,18 +609,22 @@ Session continuation header values must include a cryptographically-secure
 Session continuation header values used with TLS must be cryptographically
  distinct from those used without TLS such that no such values taken from
  HTTP requests sent without TLS can be used in HTTP requests with TLS;
+\change_inserted 1948836658 1356841348
+
 \end_layout
 
 \begin_layout Enumerate
 Session continuation must provide protection against man-in-the-middle (MITM)
- attacks when using TLS.
-\change_inserted -733538347 1355691049
+ attacks 
+\change_inserted 1948836658 1356841061
+at least 
+\change_unchanged
+when using TLS.
+\change_deleted 1948836658 1356841128
 
 \end_layout
 
 \begin_layout Enumerate
-
-\change_inserted -733538347 1355691417
 Must support explicit session termination (
 \begin_inset Quotes eld
 \end_inset
@@ -638,8 +637,6 @@ logout
 \end_layout
 
 \begin_layout Enumerate
-
-\change_inserted -733538347 1355691503
 Do we need to say something about the relationship to origins (as in 
 \begin_inset Quotes eld
 \end_inset
@@ -652,17 +649,54 @@ same origin policy
 \end_layout
 
 \begin_layout Enumerate
+Must support proxies
+\change_inserted 1948836658 1356841202
+;
+\change_deleted 1948836658 1356841201
+?
+\change_unchanged
 
-\change_inserted -733538347 1355691539
-Must support proxies?
+\end_layout
+
+\begin_layout RevisionRemark
+Can you move a session from one server to another?
+\change_inserted 1948836658 1356841327
+ No, probably not.
+ Servers can share sessions, so we need to at least be able to scope sessions
+ to sets of servers or DNS sub-domains.
+ Once we have proper session continuation we may well end up needing a mechanism
+ by which to authenticate to a service as a user of a given session on a
+ foreign service that is 
+\begin_inset Quotes eld
+\end_inset
+
+friends
+\begin_inset Quotes erd
+\end_inset
+
+ with the first.
+\change_unchanged
+
+\end_layout
+
+\begin_layout Standard
+
+\change_inserted 1948836658 1356841077
+Recommendations:
 \end_layout
 
 \begin_layout Enumerate
 
-\change_inserted -733538347 1355691574
-Can you move a session from one server to another?
-\change_unchanged
+\change_inserted 1948836658 1356841077
+Session continuation SHOULD use proof-of-possession of secret session key(s);
+\end_layout
 
+\begin_layout Enumerate
+
+\change_inserted 1948836658 1356841077
+Session continuation header values SHOULD include a cryptographically-secure
+ value (indistinguishable from random) that can be validated by the server
+ and is hard for attackers to guess;
 \end_layout
 
 \begin_layout Subsection
@@ -678,43 +712,42 @@ Statelessness
 \begin_layout Standard
 Session continuation protocols for HTTP must allow for stateless implementation
  on the server side, at least when TLS is used.
- This means that any state must be encrypted and encoded into a session
- state cookie that is re
-\change_inserted -733538347 1355691103
--
+ This 
+\change_inserted 1948836658 1356841391
+generally 
 \change_unchanged
-sent by the client to the server on every request.
+means that any state must be encrypted and encoded into a session state
+ cookie that is re-sent by the client to the server on every request.
  The server, of course, must be the one to assign such state, and it must
  use an encryption key known only by the server.
+\change_inserted 1948836658 1356841427
+
+\end_layout
+
+\begin_layout Standard
+
+\change_inserted 1948836658 1356841427
+Server-side statelessness is NOT REQUIRED in actual deployments, but the
+ ability to implement session continuation in a stateless fashion on the
+ server side is REQUIRED.
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
 Note that statelessness implies that there is no way to implement replay
- protection
-\change_inserted -733538347 1355691143
-
-\begin_inset Note Greyedout
-status open
-
-\begin_layout Plain Layout
-
-\change_inserted -733538347 1355691170
-No, it means that replay protection is optional - the server chooses whether
- it wants it or not
-\change_unchanged
-
-\end_layout
-
-\end_inset
-
-
-\change_unchanged
-.
+ protection.
  In the case of session continuation with TLS this is not a concern because
  TLS itself protects against replays.
  But when session continuation is used without TLS then statelessness really
  does mean that there can be no replay protection (of course, this is also
  thus with web cookies).
+
+\change_inserted 1948836658 1356841514
+ Therefore servers that require replay protection must either require the
+ use of TLS or must use stateful sessions.
+\change_unchanged
+
 \end_layout
 
 \begin_layout Section
@@ -757,8 +790,27 @@ e), thereby removing an obstacle to their use;
 \end_layout
 
 \begin_layout Enumerate
-reduce exposure to credentials theft via attacks on TLS such as BEAST and
- CRIME;
+reduc
+\change_deleted 1948836658 1356841609
+e
+\change_inserted 1948836658 1356841609
+ing
+\change_unchanged
+ exposure to 
+\change_inserted 1948836658 1356841644
+session 
+\change_unchanged
+credentials theft via attacks on TLS such as BEAST and CRIME;
+\change_inserted 1948836658 1356841612
+
+\end_layout
+
+\begin_layout Enumerate
+
+\change_inserted 1948836658 1356841648
+reducing exposure to session credentials theft when not using TLS;
+\change_unchanged
+
 \end_layout
 
 \begin_layout Enumerate
@@ -775,7 +827,11 @@ reference "sub:Statelessness"
 \end_inset
 
 , there is a security consideration regarding session continuation without
- TLS and with statelessness: there can be no replay protection in this case.
+ TLS and with 
+\change_inserted 1948836658 1356841764
+server-side 
+\change_unchanged
+statelessness: there can be no replay protection in this case.
  However, this is not a loss of security relative to web cookies.
  Applications must use TLS if they require integrity protection.
 \end_layout
