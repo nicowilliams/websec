@@ -3,8 +3,8 @@
 
 Network Working Group                                        N. Williams
 Internet-Draft                                              Cryptonector
-Intended status: Informational                         December 29, 2012
-Expires: July 2, 2013
+Intended status: Informational                         December 30, 2012
+Expires: July 3, 2013
 
 
    Hypertext Transport Protocol (HTTP) Session Continuation: Problem
@@ -35,7 +35,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on July 2, 2013.
+   This Internet-Draft will expire on July 3, 2013.
 
 Copyright Notice
 
@@ -52,7 +52,7 @@ Copyright Notice
 
 
 
-Williams                  Expires July 2, 2013                  [Page 1]
+Williams                  Expires July 3, 2013                  [Page 1]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
@@ -63,13 +63,13 @@ Internet-Draft            HTTP Session Problem             December 2012
 
 Table of Contents
 
-   1.    Introduction . . . . . . . . . . . . . . . . . . . . . . . .  3
-   2.    Requirements . . . . . . . . . . . . . . . . . . . . . . . .  4
-   2.1.  Statelessness  . . . . . . . . . . . . . . . . . . . . . . .  5
-   3.    IANA Considerations  . . . . . . . . . . . . . . . . . . . .  6
-   4.    Security Considerations  . . . . . . . . . . . . . . . . . .  7
-   5.    Informative References . . . . . . . . . . . . . . . . . . .  8
-         Author's Address . . . . . . . . . . . . . . . . . . . . . . 10
+   1.    Introduction  . . . . . . . . . . . . . . . . . . . . . . . . 3
+   2.    Requirements  . . . . . . . . . . . . . . . . . . . . . . . . 4
+   2.1.  Statelessness . . . . . . . . . . . . . . . . . . . . . . . . 5
+   3.    IANA Considerations . . . . . . . . . . . . . . . . . . . . . 6
+   4.    Security Considerations . . . . . . . . . . . . . . . . . . . 7
+   5.    Informative References  . . . . . . . . . . . . . . . . . . . 8
+         Author's Address  . . . . . . . . . . . . . . . . . . . . . . 9
 
 
 
@@ -108,7 +108,7 @@ Table of Contents
 
 
 
-Williams                  Expires July 2, 2013                  [Page 2]
+Williams                  Expires July 3, 2013                  [Page 2]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
@@ -164,7 +164,7 @@ Internet-Draft            HTTP Session Problem             December 2012
 
 
 
-Williams                  Expires July 2, 2013                  [Page 3]
+Williams                  Expires July 3, 2013                  [Page 3]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
@@ -220,7 +220,7 @@ Internet-Draft            HTTP Session Problem             December 2012
 
 
 
-Williams                  Expires July 2, 2013                  [Page 4]
+Williams                  Expires July 3, 2013                  [Page 4]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
@@ -276,7 +276,7 @@ Internet-Draft            HTTP Session Problem             December 2012
 
 
 
-Williams                  Expires July 2, 2013                  [Page 5]
+Williams                  Expires July 3, 2013                  [Page 5]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
@@ -332,7 +332,7 @@ Internet-Draft            HTTP Session Problem             December 2012
 
 
 
-Williams                  Expires July 2, 2013                  [Page 6]
+Williams                  Expires July 3, 2013                  [Page 6]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
@@ -388,7 +388,7 @@ Internet-Draft            HTTP Session Problem             December 2012
 
 
 
-Williams                  Expires July 2, 2013                  [Page 7]
+Williams                  Expires July 3, 2013                  [Page 7]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
@@ -420,44 +420,10 @@ Internet-Draft            HTTP Session Problem             December 2012
               Hardt, D., "The OAuth 2.0 Authorization Framework",
               draft-ietf-oauth-v2-31 (work in progress), August 2012.
 
-   [RFC4422]  Melnikov, A. and K. Zeilenga, "Simple Authentication and
-              Security Layer (SASL)", RFC 4422, June 2006.
-
-   [RFC5802]  Newman, C., Menon-Sen, A., Melnikov, A., and N. Williams,
-              "Salted Challenge Response Authentication Mechanism
-              (SCRAM) SASL and GSS-API Mechanisms", RFC 5802, July 2010.
-
-   [RFC4252]  Ylonen, T. and C. Lonvick, "The Secure Shell (SSH)
-              Authentication Protocol", RFC 4252, January 2006.
-
    [RFC4559]  Jaganathan, K., Zhu, L., and J. Brezak, "SPNEGO-based
               Kerberos and NTLM HTTP Authentication in Microsoft
               Windows", RFC 4559, June 2006.
 
-   [RFC6631]  Kuegler, D. and Y. Sheffer, "Password Authenticated
-              Connection Establishment with the Internet Key Exchange
-              Protocol version 2 (IKEv2)", RFC 6631, June 2012.
-
-   [RFC2743]  Linn, J., "Generic Security Service Application Program
-              Interface Version 2, Update 1", RFC 2743, January 2000.
-
-
-
-
-Williams                  Expires July 2, 2013                  [Page 8]
-
-Internet-Draft            HTTP Session Problem             December 2012
-
-
-   [RFC5801]  Josefsson, S. and N. Williams, "Using Generic Security
-              Service Application Program Interface (GSS-API) Mechanisms
-              in Simple Authentication and Security Layer (SASL): The
-              GS2 Mechanism Family", RFC 5801, July 2010.
-
-   [RFC4121]  Zhu, L., Jaganathan, K., and S. Hartman, "The Kerberos
-              Version 5 Generic Security Service Application Program
-              Interface (GSS-API) Mechanism: Version 2", RFC 4121,
-              July 2005.
 
 
 
@@ -478,29 +444,7 @@ Internet-Draft            HTTP Session Problem             December 2012
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Williams                  Expires July 2, 2013                  [Page 9]
+Williams                  Expires July 3, 2013                  [Page 8]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
@@ -556,5 +500,5 @@ Author's Address
 
 
 
-Williams                  Expires July 2, 2013                 [Page 10]
+Williams                  Expires July 3, 2013                  [Page 9]
 

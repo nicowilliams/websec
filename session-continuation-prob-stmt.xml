@@ -12,14 +12,7 @@
 <!ENTITY rfc5929 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5929.xml">
 <!ENTITY rfc5849 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5849.xml">
 <!ENTITY I-D.ietf-oauth-v2 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-v2.xml">
-<!ENTITY rfc4422 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4422.xml">
-<!ENTITY rfc5802 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5802.xml">
-<!ENTITY rfc4252 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4252.xml">
 <!ENTITY rfc4559 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4559.xml">
-<!ENTITY rfc6631 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6631.xml">
-<!ENTITY rfc2743 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2743.xml">
-<!ENTITY rfc5801 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5801.xml">
-<!ENTITY rfc4121 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4121.xml">
 ]>
 <rfc docName="draft-williams-websec-session-continue-prob-00" ipr="trust200902" category="info">
   <front>
@@ -136,14 +129,7 @@ As discussed in  <xref target="sub_Statelessness"/>, there is a security conside
 &rfc5929;
 &rfc5849;
 &I-D.ietf-oauth-v2;
-&rfc4422;
-&rfc5802;
-&rfc4252;
 &rfc4559;
-&rfc6631;
-&rfc2743;
-&rfc5801;
-&rfc4121;
 </references>
   </back>
 </rfc>

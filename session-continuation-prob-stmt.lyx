@@ -987,6 +987,8 @@ target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-v2.x
 \end_layout
 
 \begin_layout Standard
+
+\change_deleted 1948836658 1356851945
 \begin_inset Flex BibXML
 status collapsed
 
@@ -1007,6 +1009,8 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4422.xml"
 \end_layout
 
 \begin_layout Standard
+
+\change_deleted 1948836658 1356851945
 \begin_inset Flex BibXML
 status collapsed
 
@@ -1024,9 +1028,13 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5802.xml"
 \end_inset
 
 
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
+
+\change_deleted 1948836658 1356851958
 \begin_inset Flex BibXML
 status collapsed
 
@@ -1043,6 +1051,8 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4252.xml"
 
 \end_inset
 
+
+\change_unchanged
 
 \end_layout
 
@@ -1067,6 +1077,8 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4559.xml"
 \end_layout
 
 \begin_layout Standard
+
+\change_deleted 1948836658 1356851969
 \begin_inset Flex BibXML
 status collapsed
 
@@ -1084,9 +1096,13 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6631.xml"
 \end_inset
 
 
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
+
+\change_deleted 1948836658 1356851971
 \begin_inset Flex BibXML
 status collapsed
 
@@ -1104,9 +1120,13 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2743.xml"
 \end_inset
 
 
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
+
+\change_deleted 1948836658 1356851972
 \begin_inset Flex BibXML
 status collapsed
 
@@ -1124,9 +1144,13 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5801.xml"
 \end_inset
 
 
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
+
+\change_deleted 1948836658 1356851972
 \begin_inset Flex BibXML
 status collapsed
 
@@ -1143,6 +1167,8 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4121.xml"
 
 \end_inset
 
+
+\change_unchanged
 
 \end_layout
 
