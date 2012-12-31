@@ -245,7 +245,7 @@ End
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
-\author 1948836658 "Nico,,," 
+\author -733538347 "Yaron Sheffer,,," 
 \end_header
 
 \begin_body
@@ -459,9 +459,8 @@ session
 
  is a set of related HTTP requests (and responses), where the relation is
  to some request(s) that created the session.
- Some sessions are created by the act of authenticating a user
-\change_inserted 1948836658 1356840691
-, in which case the primary goal of 
+ Some sessions are created by the act of authenticating a user, in which
+ case the primary goal of 
 \begin_inset Quotes eld
 \end_inset
 
@@ -469,13 +468,9 @@ sessions
 \begin_inset Quotes erd
 \end_inset
 
- is to avoid having to re-authenticate the user on every request
-\change_unchanged
-.
+ is to avoid having to re-authenticate the user on every request.
  Other times a session is created when a request is received that is not
- associated with any session
-\change_inserted 1948836658 1356840721
-, in which case the primary purpose of 
+ associated with any session, in which case the primary purpose of 
 \begin_inset Quotes eld
 \end_inset
 
@@ -484,9 +479,7 @@ sessions
 \end_inset
 
  may be to provide a pseudonymous identifier for an otherwise anonymous
- user
-\change_unchanged
-.
+ user.
  We call the mechanisms by which requests are strung into sessions 
 \begin_inset Quotes eld
 \end_inset
@@ -507,49 +500,61 @@ Cookies
 \end_inset
 
  are server-assigned bearer tokens -- nothing more, nothing less.
+ A bearer token is an octet blob which can be presented as-is, possibly
+ repeatedly, to authenticate a user to some party; mere possession of the
+ bearer token is sufficient to act on the user's behalf to at least one
+ service.
+
+\change_inserted -733538347 1356974496
  
-\change_inserted 1948836658 1356840739
-A bearer token is an octet blob which can be presented as-is, possibly repeatedl
-y, to authenticate a user to some party; mere possession of the bearer token
- is sufficient to act on the user's behalf to at least one service.
 \change_unchanged
-As such they are susceptible to theft
-\change_inserted 1948836658 1356840888
- via passive attacks (eavesdropping) if not protected in some other way
- (e.g., by using TLS),
-\change_unchanged
+As such they are susceptible to theft via passive attacks (eavesdropping)
+ if not protected in some other way (e.g., by using TLS), or via
+\change_inserted -733538347 1356974503
  
-\change_inserted 1948836658 1356840912
-or viaactive attacks
-\change_deleted 1948836658 1356840896
-in
 \change_unchanged
- attacks such as BEAST and CRIME [XXX need refs], as well as to leakage
- in various ways [XXX expand].
+active 
+\change_deleted -733538347 1356974510
+attacks 
+\change_unchanged
+attacks such as BEAST and CRIME [
+\change_deleted -733538347 1356975487
+XXX need refs
+\change_inserted -733538347 1356975492
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted -733538347 1356976419
+The best ref I could find for BEAST is (PDF) http://www.xors.me/?attachment_id=372
+7
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
+], as well as to leakage in various ways [XXX expand].
 \end_layout
 
 \begin_layout Standard
-We would like a session continuation mechanism to replace 
-\change_inserted 1948836658 1356840956
-(or augment) 
-\change_unchanged
-cookies that has better security semantics.
- 
-\change_deleted 1948836658 1356840981
-In particular we would like a system that uses cryptographic algorithms
- and cryptographic session keys, and is amenable to being keyed by HTTP
- and web authentication mechanisms, is suitable for use in web and non-web
- HTTP applications, and can be keyed even for unauthenticated sessions.
-\change_inserted 1948836658 1356840981
-In particular we would like a system that is not susceptible to theft via
+We would like a session continuation mechanism to replace (or augment) cookies
+ that has better security semantics.
+ In particular we would like a system that is not susceptible to theft via
  active attacks like BEAST and CRIME.
  We believe that such a scheme should use cryptographic algorithms and cryptogra
 phic session keys, and should be amenable to being keyed by HTTP- and web-authen
 tication mechanisms.
- A new session continuation mechanism should suitable for use in web and
- non-web HTTP applications, and should work even for unauthenticated sessions.
+ A new session continuation mechanism should 
+\change_inserted -733538347 1356978442
+be 
 \change_unchanged
-
+suitable for use in web and non-web HTTP applications, and should work even
+ for unauthenticated sessions.
 \end_layout
 
 \begin_layout Section
@@ -572,31 +577,38 @@ Support for http: and https: both;
 \begin_layout Enumerate
 Session continuation must be possible to implement without keeping state
  on the server side (see below);
-\change_inserted 1948836658 1356841010
-
 \end_layout
 
 \begin_layout Enumerate
-
-\change_inserted 1948836658 1356841011
 Resistance to active attacks on https;
-\change_unchanged
-
 \end_layout
 
 \begin_layout Enumerate
-
-\change_deleted 1948836658 1356841025
-Session continuation must use proof-of-possession of secret session key(s);
-\change_inserted 1948836658 1356841025
 Session continuation header values must be cryptographically difficult for
  attackers to spoof, and servers must be able to validate these values;
-\change_unchanged
-
 \end_layout
 
 \begin_layout Enumerate
 Session continuation must be expressed via HTTP headers;
+\change_inserted -733538347 1356978526
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted -733538347 1356978585
+Move one up, because the previous bullet already assumes that the data is
+ in a header
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
+
 \end_layout
 
 \begin_layout Enumerate
@@ -609,22 +621,15 @@ Session continuation header values must include a cryptographically-secure
 Session continuation header values used with TLS must be cryptographically
  distinct from those used without TLS such that no such values taken from
  HTTP requests sent without TLS can be used in HTTP requests with TLS;
-\change_inserted 1948836658 1356841348
-
 \end_layout
 
 \begin_layout Enumerate
 Session continuation must provide protection against man-in-the-middle (MITM)
- attacks 
-\change_inserted 1948836658 1356841061
-at least 
+ attacks at least when using TLS.
+
+\change_inserted -733538347 1356978608
+ 
 \change_unchanged
-when using TLS.
-\change_deleted 1948836658 1356841128
-
-\end_layout
-
-\begin_layout Enumerate
 Must support explicit session termination (
 \begin_inset Quotes eld
 \end_inset
@@ -649,21 +654,32 @@ same origin policy
 \end_layout
 
 \begin_layout Enumerate
-Must support proxies
-\change_inserted 1948836658 1356841202
-;
-\change_deleted 1948836658 1356841201
-?
+Must support proxies;
+\end_layout
+
+\begin_layout RevisionRemark
+Can you move a session from one server to another? No, probably not.
+ Servers can share sessions
+\change_inserted -733538347 1356978715
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted -733538347 1356978755
+This could mean that sessions are named, and have a standard name format,
+ so that different servers can refer to the same session
 \change_unchanged
 
 \end_layout
 
-\begin_layout RevisionRemark
-Can you move a session from one server to another?
-\change_inserted 1948836658 1356841327
- No, probably not.
- Servers can share sessions, so we need to at least be able to scope sessions
- to sets of servers or DNS sub-domains.
+\end_inset
+
+
+\change_unchanged
+, so we need to at least be able to scope sessions to sets of servers or
+ DNS sub-domains.
  Once we have proper session continuation we may well end up needing a mechanism
  by which to authenticate to a service as a user of a given session on a
  foreign service that is 
@@ -675,25 +691,17 @@ friends
 \end_inset
 
  with the first.
-\change_unchanged
-
 \end_layout
 
 \begin_layout Standard
-
-\change_inserted 1948836658 1356841077
 Recommendations:
 \end_layout
 
 \begin_layout Enumerate
-
-\change_inserted 1948836658 1356841077
 Session continuation SHOULD use proof-of-possession of secret session key(s);
 \end_layout
 
 \begin_layout Enumerate
-
-\change_inserted 1948836658 1356841077
 Session continuation header values SHOULD include a cryptographically-secure
  value (indistinguishable from random) that can be validated by the server
  and is hard for attackers to guess;
@@ -712,26 +720,17 @@ Statelessness
 \begin_layout Standard
 Session continuation protocols for HTTP must allow for stateless implementation
  on the server side, at least when TLS is used.
- This 
-\change_inserted 1948836658 1356841391
-generally 
-\change_unchanged
-means that any state must be encrypted and encoded into a session state
- cookie that is re-sent by the client to the server on every request.
+ This generally means that any state must be encrypted and encoded into
+ a session state cookie that is re-sent by the client to the server on every
+ request.
  The server, of course, must be the one to assign such state, and it must
  use an encryption key known only by the server.
-\change_inserted 1948836658 1356841427
-
 \end_layout
 
 \begin_layout Standard
-
-\change_inserted 1948836658 1356841427
 Server-side statelessness is NOT REQUIRED in actual deployments, but the
  ability to implement session continuation in a stateless fashion on the
  server side is REQUIRED.
-\change_unchanged
-
 \end_layout
 
 \begin_layout Standard
@@ -742,12 +741,8 @@ Note that statelessness implies that there is no way to implement replay
  But when session continuation is used without TLS then statelessness really
  does mean that there can be no replay protection (of course, this is also
  thus with web cookies).
-
-\change_inserted 1948836658 1356841514
  Therefore servers that require replay protection must either require the
  use of TLS or must use stateful sessions.
-\change_unchanged
-
 \end_layout
 
 \begin_layout Section
@@ -790,27 +785,12 @@ e), thereby removing an obstacle to their use;
 \end_layout
 
 \begin_layout Enumerate
-reduc
-\change_deleted 1948836658 1356841609
-e
-\change_inserted 1948836658 1356841609
-ing
-\change_unchanged
- exposure to 
-\change_inserted 1948836658 1356841644
-session 
-\change_unchanged
-credentials theft via attacks on TLS such as BEAST and CRIME;
-\change_inserted 1948836658 1356841612
-
+reducing exposure to session credentials theft via attacks on TLS such as
+ BEAST and CRIME;
 \end_layout
 
 \begin_layout Enumerate
-
-\change_inserted 1948836658 1356841648
 reducing exposure to session credentials theft when not using TLS;
-\change_unchanged
-
 \end_layout
 
 \begin_layout Enumerate
@@ -827,11 +807,8 @@ reference "sub:Statelessness"
 \end_inset
 
 , there is a security consideration regarding session continuation without
- TLS and with 
-\change_inserted 1948836658 1356841764
-server-side 
-\change_unchanged
-statelessness: there can be no replay protection in this case.
+ TLS and with server-side statelessness: there can be no replay protection
+ in this case.
  However, this is not a loss of security relative to web cookies.
  Applications must use TLS if they require integrity protection.
 \end_layout
@@ -967,92 +944,15 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5849.xml"
 \end_layout
 
 \begin_layout Standard
-\begin_inset Flex BibXML
-status collapsed
+\begin_inset Note Note
+status open
 
 \begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "I-D.ietf-oauth-v2"
-target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-v2.xml"
-
-\end_inset
-
-
+Already published as RFC
 \end_layout
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-
-\change_deleted 1948836658 1356851945
-\begin_inset Flex BibXML
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "rfc4422"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4422.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\change_deleted 1948836658 1356851945
-\begin_inset Flex BibXML
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "rfc5802"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5802.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\change_unchanged
-
-\end_layout
-
-\begin_layout Standard
-
-\change_deleted 1948836658 1356851958
-\begin_inset Flex BibXML
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "rfc4252"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4252.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\change_unchanged
 
 \end_layout
 
@@ -1073,102 +973,6 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4559.xml"
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-
-\change_deleted 1948836658 1356851969
-\begin_inset Flex BibXML
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "rfc6631"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6631.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\change_unchanged
-
-\end_layout
-
-\begin_layout Standard
-
-\change_deleted 1948836658 1356851971
-\begin_inset Flex BibXML
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "rfc2743"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2743.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\change_unchanged
-
-\end_layout
-
-\begin_layout Standard
-
-\change_deleted 1948836658 1356851972
-\begin_inset Flex BibXML
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "rfc5801"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5801.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\change_unchanged
-
-\end_layout
-
-\begin_layout Standard
-
-\change_deleted 1948836658 1356851972
-\begin_inset Flex BibXML
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "rfc4121"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4121.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\change_unchanged
 
 \end_layout
 
