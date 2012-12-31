@@ -267,10 +267,10 @@ Introduction</h2>
 Today most web applications use &ldquo;cookies&rdquo; to associate HTTP requests with &ldquo;sessions&rdquo;. A &ldquo;session&rdquo; is a set of related HTTP requests (and responses), where the relation is to some request(s) that created the session. Some sessions are created by the act of authenticating a user, in which case the primary goal of &ldquo;sessions&rdquo; is to avoid having to re-authenticate the user on every request. Other times a session is created when a request is received that is not associated with any session, in which case the primary purpose of &ldquo;sessions&rdquo; may be to provide a pseudonymous identifier for an otherwise anonymous user. We call the mechanisms by which requests are strung into sessions &ldquo;session continuation&rdquo;.</div>
 
 <div class="standard"><a id='magicparlabel-56' />
-&ldquo;Cookies&rdquo; are server-assigned bearer tokens &ndash; nothing more, nothing less. A bearer token is an octet blob which can be presented as-is, possibly repeatedly, to authenticate a user to some party; mere possession of the bearer token is sufficient to act on the user's behalf to at least one service.As such they are susceptible to theft via passive attacks (eavesdropping) if not protected in some other way (e.g., by using TLS), or viaactive attacks attacks such as BEAST and CRIME [XXX need refs], as well as to leakage in various ways [XXX expand].</div>
+&ldquo;Cookies&rdquo; are server-assigned bearer tokens &ndash; nothing more, nothing less. A bearer token is an octet blob which can be presented as-is, possibly repeatedly, to authenticate a user to some party; mere possession of the bearer token is sufficient to act on the user's behalf to at least one service. As such they are susceptible to theft via passive attacks (eavesdropping) if not protected in some other way (e.g., by using TLS), or via active attacks such as BEAST and CRIME [http://www.xors.me/?attachment_id=3727], as well as to leakage in various ways [XXX expand].</div>
 
 <div class="standard"><a id='magicparlabel-57' />
-We would like a session continuation mechanism to replace (or augment) cookies that has better security semantics. In particular we would like a system that is not susceptible to theft via active attacks like BEAST and CRIME. We believe that such a scheme should use cryptographic algorithms and cryptographic session keys, and should be amenable to being keyed by HTTP- and web-authentication mechanisms. A new session continuation mechanism should suitable for use in web and non-web HTTP applications, and should work even for unauthenticated sessions.</div>
+We would like a session continuation mechanism to replace (or augment) cookies that has better security semantics. In particular we would like a system that is not susceptible to theft via active attacks like BEAST and CRIME. We believe that such a scheme should use cryptographic algorithms and cryptographic session keys, and should be amenable to being keyed by HTTP- and web-authentication mechanisms. A new session continuation mechanism should be suitable for use in web and non-web HTTP applications, and should work even for unauthenticated sessions.</div>
 <h2 class="section"><span class="section_label">2</span> <a id='magicparlabel-58' />
 Requirements</h2>
 <div class="standard"><a id='magicparlabel-59' />
@@ -285,24 +285,24 @@ Session continuation must be possible to implement without keeping state on the 
 <li class="enumerate_item"><a id='magicparlabel-63' />
 Resistance to active attacks on https;</li>
 <li class="enumerate_item"><a id='magicparlabel-64' />
-Session continuation header values must be cryptographically difficult for attackers to spoof, and servers must be able to validate these values;</li>
+</li>
 <li class="enumerate_item"><a id='magicparlabel-65' />
 Session continuation must be expressed via HTTP headers;</li>
 <li class="enumerate_item"><a id='magicparlabel-66' />
-Session continuation header values must include a cryptographically-secure value (indistinguishable from random) that can be validated by the server and is hard for attackers to guess;</li>
+Session continuation header values must be cryptographically difficult for attackers to spoof, and servers must be able to validate these values;</li>
 <li class="enumerate_item"><a id='magicparlabel-67' />
-Session continuation header values used with TLS must be cryptographically distinct from those used without TLS such that no such values taken from HTTP requests sent without TLS can be used in HTTP requests with TLS;</li>
+Session continuation header values must include a cryptographically-secure value (indistinguishable from random) that can be validated by the server and is hard for attackers to guess;</li>
 <li class="enumerate_item"><a id='magicparlabel-68' />
-Session continuation must provide protection against man-in-the-middle (MITM) attacks at least when using TLS.</li>
+Session continuation header values used with TLS must be cryptographically distinct from those used without TLS such that no such values taken from HTTP requests sent without TLS can be used in HTTP requests with TLS;</li>
 <li class="enumerate_item"><a id='magicparlabel-69' />
-Must support explicit session termination (&ldquo;logout&rdquo;).</li>
+Session continuation must provide protection against man-in-the-middle (MITM) attacks at least when using TLS. Must support explicit session termination (&ldquo;logout&rdquo;).</li>
 <li class="enumerate_item"><a id='magicparlabel-70' />
 Do we need to say something about the relationship to origins (as in &ldquo;same origin policy&rdquo;)?</li>
 <li class="enumerate_item"><a id='magicparlabel-71' />
 Must support proxies;</li>
 </ol>
 <div class="revisionremark"><a id='magicparlabel-72' />
-Can you move a session from one server to another? No, probably not. Servers can share sessions, so we need to at least be able to scope sessions to sets of servers or DNS sub-domains. Once we have proper session continuation we may well end up needing a mechanism by which to authenticate to a service as a user of a given session on a foreign service that is &ldquo;friends&rdquo; with the first.</div>
+Can you move a session from one server to another? No, probably not. Servers can share sessions, so we need to at least be able to scope sessions to sets of servers or DNS sub-domains. This appears to require that sessions have names. Once we have proper session continuation we may well end up needing a mechanism by which to authenticate to a service as a user of a given session on a foreign service that is &ldquo;friends&rdquo; with the first.</div>
 
 <div class="standard"><a id='magicparlabel-73' />
 Recommendations:</div>
@@ -382,34 +382,11 @@ Informative References</h2>
 </div></div>
 
 <div class="standard"><a id='magicparlabel-121' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-125' />
-<a href="http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-v2.xml">I-D.ietf-oauth-v2</a></div>
-</div></div>
-
-<div class="standard"><a id='magicparlabel-126' />
 </div>
 
-<div class="standard"><a id='magicparlabel-131' />
-</div>
-
-<div class="standard"><a id='magicparlabel-136' />
-</div>
-
-<div class="standard"><a id='magicparlabel-141' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-145' />
+<div class="standard"><a id='magicparlabel-130' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-134' />
 <a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.4559.xml">rfc4559</a></div>
 </div></div>
-
-<div class="standard"><a id='magicparlabel-146' />
-</div>
-
-<div class="standard"><a id='magicparlabel-151' />
-</div>
-
-<div class="standard"><a id='magicparlabel-156' />
-</div>
-
-<div class="standard"><a id='magicparlabel-161' />
-</div>
 </body>
 </html>

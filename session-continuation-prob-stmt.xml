@@ -11,7 +11,6 @@
 <!ENTITY rfc5056 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5056.xml">
 <!ENTITY rfc5929 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5929.xml">
 <!ENTITY rfc5849 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5849.xml">
-<!ENTITY I-D.ietf-oauth-v2 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-v2.xml">
 <!ENTITY rfc4559 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4559.xml">
 ]>
 <rfc docName="draft-williams-websec-session-continue-prob-00" ipr="trust200902" category="info">
@@ -38,9 +37,9 @@ One of the most often talked about problems in web security is “cookies”. We
       <t>
 Today most web applications use “cookies” to associate HTTP requests with “sessions”. A “session” is a set of related HTTP requests (and responses), where the relation is to some request(s) that created the session. Some sessions are created by the act of authenticating a user, in which case the primary goal of “sessions” is to avoid having to re-authenticate the user on every request. Other times a session is created when a request is received that is not associated with any session, in which case the primary purpose of “sessions” may be to provide a pseudonymous identifier for an otherwise anonymous user. We call the mechanisms by which requests are strung into sessions “session continuation”.</t>
       <t>
-“Cookies” are server-assigned bearer tokens – nothing more, nothing less. A bearer token is an octet blob which can be presented as-is, possibly repeatedly, to authenticate a user to some party; mere possession of the bearer token is sufficient to act on the user's behalf to at least one service.As such they are susceptible to theft via passive attacks (eavesdropping) if not protected in some other way (e.g., by using TLS), or viaactive attacks attacks such as BEAST and CRIME [XXX need refs], as well as to leakage in various ways [XXX expand].</t>
+“Cookies” are server-assigned bearer tokens – nothing more, nothing less. A bearer token is an octet blob which can be presented as-is, possibly repeatedly, to authenticate a user to some party; mere possession of the bearer token is sufficient to act on the user's behalf to at least one service. As such they are susceptible to theft via passive attacks (eavesdropping) if not protected in some other way (e.g., by using TLS), or via active attacks such as BEAST and CRIME [http://www.xors.me/?attachment_id=3727], as well as to leakage in various ways [XXX expand].</t>
       <t>
-We would like a session continuation mechanism to replace (or augment) cookies that has better security semantics. In particular we would like a system that is not susceptible to theft via active attacks like BEAST and CRIME. We believe that such a scheme should use cryptographic algorithms and cryptographic session keys, and should be amenable to being keyed by HTTP- and web-authentication mechanisms. A new session continuation mechanism should suitable for use in web and non-web HTTP applications, and should work even for unauthenticated sessions.</t>
+We would like a session continuation mechanism to replace (or augment) cookies that has better security semantics. In particular we would like a system that is not susceptible to theft via active attacks like BEAST and CRIME. We believe that such a scheme should use cryptographic algorithms and cryptographic session keys, and should be amenable to being keyed by HTTP- and web-authentication mechanisms. A new session continuation mechanism should be suitable for use in web and non-web HTTP applications, and should work even for unauthenticated sessions.</t>
     </section>
     <section title="Requirements" anchor="d1e161">
       <t>
@@ -56,17 +55,17 @@ Session continuation must be possible to implement without keeping state on the 
           <t>
 Resistance to active attacks on https;</t>
           <t>
-Session continuation header values must be cryptographically difficult for attackers to spoof, and servers must be able to validate these values;</t>
+</t>
           <t>
 Session continuation must be expressed via HTTP headers;</t>
+          <t>
+Session continuation header values must be cryptographically difficult for attackers to spoof, and servers must be able to validate these values;</t>
           <t>
 Session continuation header values must include a cryptographically-secure value (indistinguishable from random) that can be validated by the server and is hard for attackers to guess;</t>
           <t>
 Session continuation header values used with TLS must be cryptographically distinct from those used without TLS such that no such values taken from HTTP requests sent without TLS can be used in HTTP requests with TLS;</t>
           <t>
-Session continuation must provide protection against man-in-the-middle (MITM) attacks at least when using TLS.</t>
-          <t>
-Must support explicit session termination (“logout”).</t>
+Session continuation must provide protection against man-in-the-middle (MITM) attacks at least when using TLS. Must support explicit session termination (“logout”).</t>
           <t>
 Do we need to say something about the relationship to origins (as in “same origin policy”)?</t>
           <t>
@@ -75,7 +74,7 @@ Must support proxies;</t>
       </t>
       <t>
         <cref>
-Can you move a session from one server to another? No, probably not. Servers can share sessions, so we need to at least be able to scope sessions to sets of servers or DNS sub-domains. Once we have proper session continuation we may well end up needing a mechanism by which to authenticate to a service as a user of a given session on a foreign service that is “friends” with the first.</cref>
+Can you move a session from one server to another? No, probably not. Servers can share sessions, so we need to at least be able to scope sessions to sets of servers or DNS sub-domains. This appears to require that sessions have names. Once we have proper session continuation we may well end up needing a mechanism by which to authenticate to a service as a user of a given session on a foreign service that is “friends” with the first.</cref>
       </t>
       <t>
 Recommendations:</t>
@@ -128,7 +127,6 @@ As discussed in  <xref target="sub_Statelessness"/>, there is a security conside
 &rfc5056;
 &rfc5929;
 &rfc5849;
-&I-D.ietf-oauth-v2;
 &rfc4559;
 </references>
   </back>

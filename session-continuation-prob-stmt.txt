@@ -3,8 +3,8 @@
 
 Network Working Group                                        N. Williams
 Internet-Draft                                              Cryptonector
-Intended status: Informational                         December 30, 2012
-Expires: July 3, 2013
+Intended status: Informational                         December 31, 2012
+Expires: July 4, 2013
 
 
    Hypertext Transport Protocol (HTTP) Session Continuation: Problem
@@ -35,7 +35,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on July 3, 2013.
+   This Internet-Draft will expire on July 4, 2013.
 
 Copyright Notice
 
@@ -52,7 +52,7 @@ Copyright Notice
 
 
 
-Williams                  Expires July 3, 2013                  [Page 1]
+Williams                  Expires July 4, 2013                  [Page 1]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
@@ -108,7 +108,7 @@ Table of Contents
 
 
 
-Williams                  Expires July 3, 2013                  [Page 2]
+Williams                  Expires July 4, 2013                  [Page 2]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
@@ -131,11 +131,11 @@ Internet-Draft            HTTP Session Problem             December 2012
    less.  A bearer token is an octet blob which can be presented as-is,
    possibly repeatedly, to authenticate a user to some party; mere
    possession of the bearer token is sufficient to act on the user's
-   behalf to at least one service.As such they are susceptible to theft
-   via passive attacks (eavesdropping) if not protected in some other
-   way (e.g., by using TLS), or viaactive attacks attacks such as BEAST
-   and CRIME [XXX need refs], as well as to leakage in various ways [XXX
-   expand].
+   behalf to at least one service.  As such they are susceptible to
+   theft via passive attacks (eavesdropping) if not protected in some
+   other way (e.g., by using TLS), or via active attacks such as BEAST
+   and CRIME [http://www.xors.me/?attachment_id=3727], as well as to
+   leakage in various ways [XXX expand].
 
    We would like a session continuation mechanism to replace (or
    augment) cookies that has better security semantics.  In particular
@@ -143,9 +143,9 @@ Internet-Draft            HTTP Session Problem             December 2012
    attacks like BEAST and CRIME.  We believe that such a scheme should
    use cryptographic algorithms and cryptographic session keys, and
    should be amenable to being keyed by HTTP- and web-authentication
-   mechanisms.  A new session continuation mechanism should suitable for
-   use in web and non-web HTTP applications, and should work even for
-   unauthenticated sessions.
+   mechanisms.  A new session continuation mechanism should be suitable
+   for use in web and non-web HTTP applications, and should work even
+   for unauthenticated sessions.
 
 
 
@@ -164,7 +164,7 @@ Internet-Draft            HTTP Session Problem             December 2012
 
 
 
-Williams                  Expires July 3, 2013                  [Page 3]
+Williams                  Expires July 4, 2013                  [Page 3]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
@@ -183,26 +183,27 @@ Internet-Draft            HTTP Session Problem             December 2012
 
    4.   Resistance to active attacks on https;
 
-   5.   Session continuation header values must be cryptographically
-        difficult for attackers to spoof, and servers must be able to
-        validate these values;
+   5.
 
    6.   Session continuation must be expressed via HTTP headers;
 
-   7.   Session continuation header values must include a
+   7.   Session continuation header values must be cryptographically
+        difficult for attackers to spoof, and servers must be able to
+        validate these values;
+
+   8.   Session continuation header values must include a
         cryptographically-secure value (indistinguishable from random)
         that can be validated by the server and is hard for attackers to
         guess;
 
-   8.   Session continuation header values used with TLS must be
+   9.   Session continuation header values used with TLS must be
         cryptographically distinct from those used without TLS such that
         no such values taken from HTTP requests sent without TLS can be
         used in HTTP requests with TLS;
 
-   9.   Session continuation must provide protection against man-in-the-
-        middle (MITM) attacks at least when using TLS.
-
-   10.  Must support explicit session termination ("logout").
+   10.  Session continuation must provide protection against man-in-the-
+        middle (MITM) attacks at least when using TLS.  Must support
+        explicit session termination ("logout").
 
    11.  Do we need to say something about the relationship to origins
         (as in "same origin policy")?
@@ -211,19 +212,20 @@ Internet-Draft            HTTP Session Problem             December 2012
 
    [[anchor1: Can you move a session from one server to another?  No,
    probably not.  Servers can share sessions, so we need to at least be
-   able to scope sessions to sets of servers or DNS sub-domains.  Once
-   we have proper session continuation we may well end up needing a
-   mechanism by which to authenticate to a service as a user of a given
-   session on a foreign service that is "friends" with the first.]]
-
-   Recommendations:
-
+   able to scope sessions to sets of servers or DNS sub-domains.  This
+   appears to require that sessions have names.  Once we have proper
+   session continuation we may well end up needing a mechanism by which
+   to authenticate to a service as a user of a given session on a
+   foreign service that is "friends" with the first.]]
 
 
-Williams                  Expires July 3, 2013                  [Page 4]
+
+Williams                  Expires July 4, 2013                  [Page 4]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
+
+   Recommendations:
 
    1.  Session continuation SHOULD use proof-of-possession of secret
        session key(s);
@@ -274,9 +276,7 @@ Internet-Draft            HTTP Session Problem             December 2012
 
 
 
-
-
-Williams                  Expires July 3, 2013                  [Page 5]
+Williams                  Expires July 4, 2013                  [Page 5]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
@@ -332,7 +332,7 @@ Internet-Draft            HTTP Session Problem             December 2012
 
 
 
-Williams                  Expires July 3, 2013                  [Page 6]
+Williams                  Expires July 4, 2013                  [Page 6]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
@@ -388,7 +388,7 @@ Internet-Draft            HTTP Session Problem             December 2012
 
 
 
-Williams                  Expires July 3, 2013                  [Page 7]
+Williams                  Expires July 4, 2013                  [Page 7]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
@@ -416,10 +416,6 @@ Internet-Draft            HTTP Session Problem             December 2012
    [RFC5849]  Hammer-Lahav, E., "The OAuth 1.0 Protocol", RFC 5849,
               April 2010.
 
-   [I-D.ietf-oauth-v2]
-              Hardt, D., "The OAuth 2.0 Authorization Framework",
-              draft-ietf-oauth-v2-31 (work in progress), August 2012.
-
    [RFC4559]  Jaganathan, K., Zhu, L., and J. Brezak, "SPNEGO-based
               Kerberos and NTLM HTTP Authentication in Microsoft
               Windows", RFC 4559, June 2006.
@@ -444,7 +440,11 @@ Internet-Draft            HTTP Session Problem             December 2012
 
 
 
-Williams                  Expires July 3, 2013                  [Page 8]
+
+
+
+
+Williams                  Expires July 4, 2013                  [Page 8]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
@@ -500,5 +500,5 @@ Author's Address
 
 
 
-Williams                  Expires July 3, 2013                  [Page 9]
+Williams                  Expires July 4, 2013                  [Page 9]
 

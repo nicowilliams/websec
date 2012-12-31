@@ -246,6 +246,7 @@ End
 \html_css_as_file 0
 \html_be_strict false
 \author -733538347 "Yaron Sheffer,,," 
+\author 1948836658 "Nico,,," 
 \end_header
 
 \begin_body
@@ -509,34 +510,10 @@ Cookies
  
 \change_unchanged
 As such they are susceptible to theft via passive attacks (eavesdropping)
- if not protected in some other way (e.g., by using TLS), or via
-\change_inserted -733538347 1356974503
- 
-\change_unchanged
-active 
-\change_deleted -733538347 1356974510
-attacks 
-\change_unchanged
-attacks such as BEAST and CRIME [
-\change_deleted -733538347 1356975487
-XXX need refs
-\change_inserted -733538347 1356975492
-
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-
-\change_inserted -733538347 1356976419
-The best ref I could find for BEAST is (PDF) http://www.xors.me/?attachment_id=372
-7
-\change_unchanged
-
-\end_layout
-
-\end_inset
-
-
+ if not protected in some other way (e.g., by using TLS), or via active attacks
+ such as BEAST and CRIME [
+\change_inserted 1948836658 1356996526
+http://www.xors.me/?attachment_id=3727
 \change_unchanged
 ], as well as to leakage in various ways [XXX expand].
 \end_layout
@@ -549,12 +526,9 @@ We would like a session continuation mechanism to replace (or augment) cookies
  We believe that such a scheme should use cryptographic algorithms and cryptogra
 phic session keys, and should be amenable to being keyed by HTTP- and web-authen
 tication mechanisms.
- A new session continuation mechanism should 
-\change_inserted -733538347 1356978442
-be 
-\change_unchanged
-suitable for use in web and non-web HTTP applications, and should work even
- for unauthenticated sessions.
+ A new session continuation mechanism should be suitable for use in web
+ and non-web HTTP applications, and should work even for unauthenticated
+ sessions.
 \end_layout
 
 \begin_layout Section
@@ -584,29 +558,25 @@ Resistance to active attacks on https;
 \end_layout
 
 \begin_layout Enumerate
+
+\change_deleted 1948836658 1356996470
 Session continuation header values must be cryptographically difficult for
  attackers to spoof, and servers must be able to validate these values;
-\end_layout
-
-\begin_layout Enumerate
-Session continuation must be expressed via HTTP headers;
-\change_inserted -733538347 1356978526
-
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-
-\change_inserted -733538347 1356978585
-Move one up, because the previous bullet already assumes that the data is
- in a header
 \change_unchanged
 
 \end_layout
 
-\end_inset
+\begin_layout Enumerate
+Session continuation must be expressed via HTTP headers;
+\change_inserted 1948836658 1356996473
 
+\end_layout
 
+\begin_layout Enumerate
+
+\change_inserted 1948836658 1356996474
+Session continuation header values must be cryptographically difficult for
+ attackers to spoof, and servers must be able to validate these values;
 \change_unchanged
 
 \end_layout
@@ -659,28 +629,14 @@ Must support proxies;
 
 \begin_layout RevisionRemark
 Can you move a session from one server to another? No, probably not.
- Servers can share sessions
-\change_inserted -733538347 1356978715
-
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-
-\change_inserted -733538347 1356978755
-This could mean that sessions are named, and have a standard name format,
- so that different servers can refer to the same session
+ Servers can share sessions, so we need to at least be able to scope sessions
+ to sets of servers or DNS sub-domains.
+ 
+\change_inserted 1948836658 1356996642
+This appears to require that sessions have names.
+ 
 \change_unchanged
-
-\end_layout
-
-\end_inset
-
-
-\change_unchanged
-, so we need to at least be able to scope sessions to sets of servers or
- DNS sub-domains.
- Once we have proper session continuation we may well end up needing a mechanism
+Once we have proper session continuation we may well end up needing a mechanism
  by which to authenticate to a service as a user of a given session on a
  foreign service that is 
 \begin_inset Quotes eld
@@ -953,6 +909,24 @@ Already published as RFC
 
 \end_inset
 
+
+\change_inserted 1948836658 1356996763
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 1948836658 1356996768
+What is?
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
 
 \end_layout
 
