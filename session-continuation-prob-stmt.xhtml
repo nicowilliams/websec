@@ -250,14 +250,14 @@ One of the most often talked about problems in web security is &ldquo;cookies&rd
 
 <div class='lyxtoc-1'><a href='#magicparlabel-58' class='tocentry'>2 Requirements</a> <a href='#magicparlabel-58' class='tocarrow'>&gt;</a>
 
-<div class='lyxtoc-2'><a href='#magicparlabel-76' class='tocentry'>2.1 Statelessness</a> <a href='#magicparlabel-76' class='tocarrow'>&gt;</a></div>
+<div class='lyxtoc-2'><a href='#magicparlabel-75' class='tocentry'>2.1 Statelessness</a> <a href='#magicparlabel-75' class='tocarrow'>&gt;</a></div>
 </div>
 
-<div class='lyxtoc-1'><a href='#magicparlabel-80' class='tocentry'>3 IANA Considerations</a> <a href='#magicparlabel-80' class='tocarrow'>&gt;</a></div>
+<div class='lyxtoc-1'><a href='#magicparlabel-79' class='tocentry'>3 IANA Considerations</a> <a href='#magicparlabel-79' class='tocarrow'>&gt;</a></div>
 
-<div class='lyxtoc-1'><a href='#magicparlabel-82' class='tocentry'>4 Security Considerations</a> <a href='#magicparlabel-82' class='tocarrow'>&gt;</a></div>
+<div class='lyxtoc-1'><a href='#magicparlabel-81' class='tocentry'>4 Security Considerations</a> <a href='#magicparlabel-81' class='tocarrow'>&gt;</a></div>
 
-<div class='lyxtoc-1'><a href='#magicparlabel-90' class='tocentry'>5 Informative References</a> <a href='#magicparlabel-90' class='tocarrow'>&gt;</a></div>
+<div class='lyxtoc-1'><a href='#magicparlabel-89' class='tocentry'>5 Informative References</a> <a href='#magicparlabel-89' class='tocarrow'>&gt;</a></div>
 </div>
 
 <h2 class="section"><span class="section_label">1</span> <a id='magicparlabel-54' />
@@ -285,107 +285,105 @@ Session continuation must be possible to implement without keeping state on the 
 <li class="enumerate_item"><a id='magicparlabel-63' />
 Resistance to active attacks on https;</li>
 <li class="enumerate_item"><a id='magicparlabel-64' />
-</li>
-<li class="enumerate_item"><a id='magicparlabel-65' />
 Session continuation must be expressed via HTTP headers;</li>
-<li class="enumerate_item"><a id='magicparlabel-66' />
+<li class="enumerate_item"><a id='magicparlabel-65' />
 Session continuation header values must be cryptographically difficult for attackers to spoof, and servers must be able to validate these values;</li>
-<li class="enumerate_item"><a id='magicparlabel-67' />
+<li class="enumerate_item"><a id='magicparlabel-66' />
 Session continuation header values must include a cryptographically-secure value (indistinguishable from random) that can be validated by the server and is hard for attackers to guess;</li>
-<li class="enumerate_item"><a id='magicparlabel-68' />
+<li class="enumerate_item"><a id='magicparlabel-67' />
 Session continuation header values used with TLS must be cryptographically distinct from those used without TLS such that no such values taken from HTTP requests sent without TLS can be used in HTTP requests with TLS;</li>
-<li class="enumerate_item"><a id='magicparlabel-69' />
+<li class="enumerate_item"><a id='magicparlabel-68' />
 Session continuation must provide protection against man-in-the-middle (MITM) attacks at least when using TLS. Must support explicit session termination (&ldquo;logout&rdquo;).</li>
-<li class="enumerate_item"><a id='magicparlabel-70' />
+<li class="enumerate_item"><a id='magicparlabel-69' />
 Do we need to say something about the relationship to origins (as in &ldquo;same origin policy&rdquo;)?</li>
-<li class="enumerate_item"><a id='magicparlabel-71' />
+<li class="enumerate_item"><a id='magicparlabel-70' />
 Must support proxies;</li>
 </ol>
-<div class="revisionremark"><a id='magicparlabel-72' />
+<div class="revisionremark"><a id='magicparlabel-71' />
 Can you move a session from one server to another? No, probably not. Servers can share sessions, so we need to at least be able to scope sessions to sets of servers or DNS sub-domains. This appears to require that sessions have names. Once we have proper session continuation we may well end up needing a mechanism by which to authenticate to a service as a user of a given session on a foreign service that is &ldquo;friends&rdquo; with the first.</div>
 
-<div class="standard"><a id='magicparlabel-73' />
+<div class="standard"><a id='magicparlabel-72' />
 Recommendations:</div>
 
-<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-74' />
+<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-73' />
 Session continuation SHOULD use proof-of-possession of secret session key(s);</li>
-<li class="enumerate_item"><a id='magicparlabel-75' />
+<li class="enumerate_item"><a id='magicparlabel-74' />
 Session continuation header values SHOULD include a cryptographically-secure value (indistinguishable from random) that can be validated by the server and is hard for attackers to guess;</li>
 </ol>
-<h3 class="subsection"><span class="subsection_label">2.1</span> <a id='magicparlabel-76' />
+<h3 class="subsection"><span class="subsection_label">2.1</span> <a id='magicparlabel-75' />
 <a id="sub_Statelessness" />
 Statelessness</h3>
-<div class="standard"><a id='magicparlabel-77' />
+<div class="standard"><a id='magicparlabel-76' />
 Session continuation protocols for HTTP must allow for stateless implementation on the server side, at least when TLS is used. This generally means that any state must be encrypted and encoded into a session state cookie that is re-sent by the client to the server on every request. The server, of course, must be the one to assign such state, and it must use an encryption key known only by the server.</div>
 
-<div class="standard"><a id='magicparlabel-78' />
+<div class="standard"><a id='magicparlabel-77' />
 Server-side statelessness is NOT REQUIRED in actual deployments, but the ability to implement session continuation in a stateless fashion on the server side is REQUIRED.</div>
 
-<div class="standard"><a id='magicparlabel-79' />
+<div class="standard"><a id='magicparlabel-78' />
 Note that statelessness implies that there is no way to implement replay protection. In the case of session continuation with TLS this is not a concern because TLS itself protects against replays. But when session continuation is used without TLS then statelessness really does mean that there can be no replay protection (of course, this is also thus with web cookies). Therefore servers that require replay protection must either require the use of TLS or must use stateful sessions.</div>
-<h2 class="section"><span class="section_label">3</span> <a id='magicparlabel-80' />
+<h2 class="section"><span class="section_label">3</span> <a id='magicparlabel-79' />
 <a id="sec_IANA_Considerations" />
 IANA Considerations</h2>
-<div class="standard"><a id='magicparlabel-81' />
+<div class="standard"><a id='magicparlabel-80' />
 This document has no IANA considerations.</div>
-<h2 class="section"><span class="section_label">4</span> <a id='magicparlabel-82' />
+<h2 class="section"><span class="section_label">4</span> <a id='magicparlabel-81' />
 <a id="sec_Security_Considerations" />
 Security Considerations</h2>
-<div class="standard"><a id='magicparlabel-83' />
+<div class="standard"><a id='magicparlabel-82' />
 This document does not specify a protocol and is Informational. There are few security considerations to document here.</div>
 
-<div class="standard"><a id='magicparlabel-84' />
+<div class="standard"><a id='magicparlabel-83' />
 We seek to improve security on the web (as well as for non-web HTTP applications) by:</div>
 
-<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-85' />
+<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-84' />
 reducing the need for expensive HTTP authentication exchanges (e.g., HTTP/Negotiate), thereby removing an obstacle to their use;</li>
-<li class="enumerate_item"><a id='magicparlabel-86' />
+<li class="enumerate_item"><a id='magicparlabel-85' />
 reducing exposure to session credentials theft via attacks on TLS such as BEAST and CRIME;</li>
-<li class="enumerate_item"><a id='magicparlabel-87' />
+<li class="enumerate_item"><a id='magicparlabel-86' />
 reducing exposure to session credentials theft when not using TLS;</li>
-<li class="enumerate_item"><a id='magicparlabel-88' />
+<li class="enumerate_item"><a id='magicparlabel-87' />
 introducing a replacement for cookies that will give browsers a chance to pursue better security policies.</li>
 </ol>
-<div class="standard"><a id='magicparlabel-89' />
+<div class="standard"><a id='magicparlabel-88' />
 As discussed in <a href="#sub_Statelessness">2.1</a>, there is a security consideration regarding session continuation without TLS and with server-side statelessness: there can be no replay protection in this case. However, this is not a loss of security relative to web cookies. Applications must use TLS if they require integrity protection.</div>
-<h2 class="section"><span class="section_label">5</span> <a id='magicparlabel-90' />
+<h2 class="section"><span class="section_label">5</span> <a id='magicparlabel-89' />
 <a id="sec_Normative_References" />
 Informative References</h2>
-<div class="standard"><a id='magicparlabel-91' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-95' />
+<div class="standard"><a id='magicparlabel-90' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-94' />
 <a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2616.xml">rfc2616</a></div>
 </div></div>
 
-<div class="standard"><a id='magicparlabel-96' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-100' />
+<div class="standard"><a id='magicparlabel-95' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-99' />
 <a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2617.xml">rfc2617</a></div>
 </div></div>
 
-<div class="standard"><a id='magicparlabel-101' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-105' />
+<div class="standard"><a id='magicparlabel-100' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-104' />
 <a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5246.xml">rfc5246</a></div>
 </div></div>
 
-<div class="standard"><a id='magicparlabel-106' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-110' />
+<div class="standard"><a id='magicparlabel-105' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-109' />
 <a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5056.xml">rfc5056</a></div>
 </div></div>
 
-<div class="standard"><a id='magicparlabel-111' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-115' />
+<div class="standard"><a id='magicparlabel-110' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-114' />
 <a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5929.xml">rfc5929</a></div>
 </div></div>
 
-<div class="standard"><a id='magicparlabel-116' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-120' />
+<div class="standard"><a id='magicparlabel-115' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-119' />
 <a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5849.xml">rfc5849</a></div>
 </div></div>
 
-<div class="standard"><a id='magicparlabel-121' />
+<div class="standard"><a id='magicparlabel-120' />
 </div>
 
-<div class="standard"><a id='magicparlabel-130' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-134' />
+<div class="standard"><a id='magicparlabel-129' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-133' />
 <a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.4559.xml">rfc4559</a></div>
 </div></div>
 </body>

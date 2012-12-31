@@ -55,8 +55,6 @@ Session continuation must be possible to implement without keeping state on the 
           <t>
 Resistance to active attacks on https;</t>
           <t>
-</t>
-          <t>
 Session continuation must be expressed via HTTP headers;</t>
           <t>
 Session continuation header values must be cryptographically difficult for attackers to spoof, and servers must be able to validate these values;</t>

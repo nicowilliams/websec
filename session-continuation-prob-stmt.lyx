@@ -245,7 +245,6 @@ End
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
-\author -733538347 "Yaron Sheffer,,," 
 \author 1948836658 "Nico,,," 
 \end_header
 
@@ -505,17 +504,10 @@ Cookies
  repeatedly, to authenticate a user to some party; mere possession of the
  bearer token is sufficient to act on the user's behalf to at least one
  service.
-
-\change_inserted -733538347 1356974496
- 
-\change_unchanged
-As such they are susceptible to theft via passive attacks (eavesdropping)
+ As such they are susceptible to theft via passive attacks (eavesdropping)
  if not protected in some other way (e.g., by using TLS), or via active attacks
- such as BEAST and CRIME [
-\change_inserted 1948836658 1356996526
-http://www.xors.me/?attachment_id=3727
-\change_unchanged
-], as well as to leakage in various ways [XXX expand].
+ such as BEAST and CRIME [http://www.xors.me/?attachment_id=3727], as well
+ as to leakage in various ways [XXX expand].
 \end_layout
 
 \begin_layout Standard
@@ -558,27 +550,12 @@ Resistance to active attacks on https;
 \end_layout
 
 \begin_layout Enumerate
-
-\change_deleted 1948836658 1356996470
-Session continuation header values must be cryptographically difficult for
- attackers to spoof, and servers must be able to validate these values;
-\change_unchanged
-
-\end_layout
-
-\begin_layout Enumerate
 Session continuation must be expressed via HTTP headers;
-\change_inserted 1948836658 1356996473
-
 \end_layout
 
 \begin_layout Enumerate
-
-\change_inserted 1948836658 1356996474
 Session continuation header values must be cryptographically difficult for
  attackers to spoof, and servers must be able to validate these values;
-\change_unchanged
-
 \end_layout
 
 \begin_layout Enumerate
@@ -596,11 +573,7 @@ Session continuation header values used with TLS must be cryptographically
 \begin_layout Enumerate
 Session continuation must provide protection against man-in-the-middle (MITM)
  attacks at least when using TLS.
-
-\change_inserted -733538347 1356978608
- 
-\change_unchanged
-Must support explicit session termination (
+ Must support explicit session termination (
 \begin_inset Quotes eld
 \end_inset
 
@@ -631,12 +604,8 @@ Must support proxies;
 Can you move a session from one server to another? No, probably not.
  Servers can share sessions, so we need to at least be able to scope sessions
  to sets of servers or DNS sub-domains.
- 
-\change_inserted 1948836658 1356996642
-This appears to require that sessions have names.
- 
-\change_unchanged
-Once we have proper session continuation we may well end up needing a mechanism
+ This appears to require that sessions have names.
+ Once we have proper session continuation we may well end up needing a mechanism
  by which to authenticate to a service as a user of a given session on a
  foreign service that is 
 \begin_inset Quotes eld
@@ -916,11 +885,7 @@ Already published as RFC
 status open
 
 \begin_layout Plain Layout
-
-\change_inserted 1948836658 1356996768
 What is?
-\change_unchanged
-
 \end_layout
 
 \end_inset
