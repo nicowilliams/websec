@@ -1045,6 +1045,94 @@ URI The URI of the session (REQUIRED).
 State Server-side state to be stored on the client (OPTIONAL).
 \end_layout
 
+\begin_layout Description
+Host-Scope A DNS domainname (in A-label form) that the session can be used
+ with.
+ Multiple Scope parameters are allowed.
+ If the domainname starts with a '.' then the session may be used with all
+ server hosts whose domainnames are sub-domains of the given Host-Scope
+ domainname.
+\end_layout
+
+\begin_layout Section
+Session Scope: Sharing Sessions Across Servers
+\end_layout
+
+\begin_layout Standard
+A service might be composed of multiple related servers, each with a different
+ hostname.
+ As a result the service may require a client to use the same session across
+ the service's component servers.
+ We provide a mechanism by which the server may indicate a set of such servers
+ to the client: the Host-Scope session-param in the server's Session-Assign
+ response header.
+\end_layout
+
+\begin_layout Standard
+[XXX We need a way to constrain this for privacy protection reasons.
+ It's not yet clear how the client can judge which Host-Scope paramters
+ to accept or ignore, only that must be allowed to do so.]
+\end_layout
+
+\begin_layout Standard
+To facilitate interoperable session sharing across heterogeneous server
+ implementations we define a session resource -named by its session URI-
+ that can be obtained with a properly-authenticated GET by authorized entities.
+ The session resource's representation is a application/json document type,
+ containing a JSON-serialized associative array with the following REQUIRED
+ keys:
+\end_layout
+
+\begin_layout Description
+Master-Key The session's master key, base64-encoded.
+\end_layout
+
+\begin_layout Description
+MAC-Alg The MAC algorithm for this session.
+\end_layout
+
+\begin_layout Standard
+[XXX We probably want each server to see a different master key, in which
+ case we probably want to use a KDF with the server's hostname as part of
+ the salt.]
+\end_layout
+
+\begin_layout Standard
+[XXX We probably want to define some OPTIONAL keys, such as 
+\begin_inset Quotes eld
+\end_inset
+
+User
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+User-URI
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+HTTP-Auth-Scheme-Used
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+HTTP-Auth-Scheme-<param>
+\begin_inset Quotes erd
+\end_inset
+
+, and so on.]
+\end_layout
+
 \begin_layout Section
 \begin_inset CommandInset label
 LatexCommand label
@@ -1117,7 +1205,7 @@ status open
 
 \begin_layout Plain Layout
 
-   MAC = <base64-encoded MAC taken over b64-nonce || b64-CB [|| content]>
+   MAC = <b64 MAC taken over b64-nonce || b64-CB [|| content]>
 \end_layout
 
 \begin_layout Plain Layout
@@ -1155,6 +1243,40 @@ Where the response must carry a Session header, the form of the value is
 \begin_layout Standard
 The MAC is taken over the nonce, the channel bindings, and the content as
  specified in the Session-Init header used to create this session.
+\end_layout
+
+\begin_layout Standard
+[XXX Add text indicating that headers to be MACed are to be encoded per-DKIM.]
+\end_layout
+
+\begin_layout Subsection
+Alternative: Define Session Scheme for WWW-Authenticate
+\end_layout
+
+\begin_layout Standard
+One possibility that has some appeal would be to define a new HTTP authenticatio
+n scheme called 
+\begin_inset Quotes eld
+\end_inset
+
+Session
+\begin_inset Quotes erd
+\end_inset
+
+ (say) and use that instead of the 
+\begin_inset Quotes eld
+\end_inset
+
+Session
+\begin_inset Quotes erd
+\end_inset
+
+ header defined above.
+ The primary advantage to the WWW-Authenticate approach is that it fits
+ the existing HTTP authentication framework, allowing a server to present
+ to an application the user authentication information embedded in the session
+ state as if the user were re-authenticated in each request.
+ Session continuation can then be seen as a form of fast re-authentication.
 \end_layout
 
 \begin_layout Section
@@ -1197,6 +1319,24 @@ name "sec:Security-Considerations"
 \end_inset
 
 Security Considerations
+\end_layout
+
+\begin_layout Standard
+This session continuation protocol appears to meet the requirements outlined
+ in 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+I-D.williams-websec-session-continue-prob
+\end_layout
+
+\end_inset
+
+.
+ [XXX Add analysis.
+ In particular explain how MAC(CB + nonce) is sufficient to defeat BEAST
+ and CRIME.]
 \end_layout
 
 \begin_layout Standard
@@ -1429,8 +1569,8 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset href
 LatexCommand href
-name "rfc4559"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4559.xml"
+name "I-D.hallambaker-httpintegrity"
+target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.hallambaker-httpintegrity.xml"
 
 \end_inset
 

@@ -14,7 +14,7 @@
 <!ENTITY rfc2617 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2617.xml">
 <!ENTITY rfc5849 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5849.xml">
 <!ENTITY I-D.ietf-oauth-v2 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-v2.xml">
-<!ENTITY rfc4559 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4559.xml">
+<!ENTITY I-D.I-D.hallambaker-httpintegrity PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.hallambaker-httpintegrity.xml">
 ]>
 <rfc docName="draft-williams-websec-session-continue-proto-00" ipr="trust200902" category="std">
   <front>
@@ -201,7 +201,7 @@ The value of the Session header consists of a base64-encoded 128-bit nonce and a
       <t>
         <figure anchor="magicparlabel-194" title="Session header">
           <artwork>   nonce = &lt;base64-encoded 128-bit nonce&gt;
-   MAC = &lt;base64-encoded MAC taken over b64-nonce || b64-CB [|| content]&gt;
+   MAC = &lt;b64 MAC taken over b64-nonce || b64-CB [|| content]&gt;
    Session = nonce "," MAC</artwork>
         </figure>
       </t>
@@ -239,7 +239,7 @@ This document creates a number of new HTTP request and response headers. These h
     <references title="Informative References" anchor="sec_Normative_References">&rfc2617;
 &rfc5849;
 &I-D.ietf-oauth-v2;
-&rfc4559;
+&I-D.I-D.hallambaker-httpintegrity;
 </references>
   </back>
 </rfc>

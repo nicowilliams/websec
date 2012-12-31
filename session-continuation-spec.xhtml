@@ -524,7 +524,7 @@ The value of the Session header consists of a base64-encoded 128-bit nonce and a
 <div class='float float-figure'><div class="plain_layout"><a id='magicparlabel-183' />
 </div>
 <div class='float float-listings'><pre>   nonce = &lt;base64-encoded 128-bit nonce&gt;
-   MAC = &lt;base64-encoded MAC taken over b64-nonce || b64-CB [|| content]&gt;
+   MAC = &lt;b64 MAC taken over b64-nonce || b64-CB [|| content]&gt;
    Session = nonce "," MAC</pre></div>
 
 
@@ -614,7 +614,7 @@ Informative References</h2>
 
 <div class="standard"><a id='magicparlabel-257' />
 <div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-261' />
-<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.4559.xml">rfc4559</a></div>
+<a href="http://xml.resource.org/public/rfc/bibxml3/reference.I-D.hallambaker-httpintegrity.xml">I-D.I-D.hallambaker-httpintegrity</a></div>
 </div></div>
 </body>
 </html>

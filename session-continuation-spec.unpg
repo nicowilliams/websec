@@ -304,9 +304,9 @@ Table of Contents
    the channel binding, each base64-encoded then concatenated in that
    order:
 
-   nonce = <base64-encoded 128-bit nonce>
-   MAC = <base64-encoded MAC taken over b64-nonce || b64-CB [|| content]>
-   Session = nonce "," MAC
+      nonce = <base64-encoded 128-bit nonce>
+      MAC = <b64 MAC taken over b64-nonce || b64-CB [|| content]>
+      Session = nonce "," MAC
 
                          Figure 3: Session header
 
@@ -385,9 +385,10 @@ Table of Contents
               Hardt, D., "The OAuth 2.0 Authorization Framework",
               draft-ietf-oauth-v2-31 (work in progress), August 2012.
 
-   [RFC4559]  Jaganathan, K., Zhu, L., and J. Brezak, "SPNEGO-based
-              Kerberos and NTLM HTTP Authentication in Microsoft
-              Windows", RFC 4559, June 2006.
+   [I-D.hallambaker-httpintegrity]
+              Hallam-Baker, P., "HTTP Integrity Header",
+              draft-hallambaker-httpintegrity-02 (work in progress),
+              November 2012.
 
 
 Author's Address
