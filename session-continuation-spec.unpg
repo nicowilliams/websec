@@ -3,8 +3,8 @@
 
 Network Working Group                                        N. Williams
 Internet-Draft                                              Cryptonector
-Intended status: Standards Track                       December 13, 2012
-Expires: June 16, 2013
+Intended status: Standards Track                       December 30, 2012
+Expires: July 3, 2013
 
 
    Hypertext Transport Protocol (HTTP) Session Continuation Protocol
@@ -34,7 +34,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on June 16, 2013.
+   This Internet-Draft will expire on July 3, 2013.
 
 Copyright Notice
 
@@ -55,29 +55,106 @@ Copyright Notice
 Table of Contents
 
    1.    Introduction
-   2.    Session Initiation
-   2.1.  Unauthenticated Session Initiation
-   2.2.  HTTP Authentication Framework
-   2.3.  Unauthenticated to Authenticated Session Upgrade
-   3.    Session Continuation
-   4.    IANA Considerations
-   5.    Security Considerations
-   6.    Informative References
+   2.    Session Keying
+   2.1.  Mixing HTTP and HTTPS
+   2.2.  Authenticated Session Keying
+   2.3.  Unauthenticated Session Keying
+   3.    Session Initiation
+   4.    Unauthenticated to Authenticated Session Upgrade
+   5.    Session Continuation
+   6.    IANA Considerations
+   7.    Security Considerations
+   8.    References
+   8.1.  Normative References
+   8.2.  Informative References
          Author's Address
 
 
 1.  Introduction
 
-   [XXX Reference the problem statement.]
+   The motivation for this protocol is described in
+   [I-D.williams-websec-session-continue-prob].
+
+   We define a protocol for cryptographic "session continuation" for
+   HyperText Transport Protocol (HTTP) [RFC2616].  Session continuation
+   is the act of binding an HTTP request to a "session".  A "session"
+   consists of all the HTTP requests by a given user (possibly an
+   authenticated user, or possibly an anonymous user).  This protocol is
+   a cryptographic protocol that aims to meet all the requirements given
+   in [I-D.williams-websec-session-continue-prob].
+
+   The protocol consists of:
+
+   o  a request header carrying a keyed Message Authentication Code
+      (MAC) that prove possession of a shared session key (shared
+      between the user and the server);
+
+   o  a response header advertising a default session scope to clients;
+
+   o  a session identification in the form of a URI;
+
+   o  optional server-side statelessness by storing state on the client-
+      side, encrypted in a secret key known to the server;
+
+   o  a request header for requesting the establishment of a session;
+
+   o  a response header for indicating the establishment of a session,
+      and including a session URI and any optional state to be repeated
+      by the client.
 
 
-2.  Session Initiation
+2.  Session Keying
 
-   Sessions are initiated either as an outcome of HTTP authentication,
-   or by a client.  Session identifiers, however, are assigned by the
-   server.
+   There are two methods for keying an HTTP session:
 
-2.1.  Unauthenticated Session Initiation
+   o  session keys are output by HTTP authentication;
+
+   o  or session keys are asserted by the client;
+
+   For the key assertion method TLS with confidentiality protection is
+   clearly REQUIRED for security.  We've considered the possibility of
+   using Diffie-Hellman key agreement or RSA key transport, but as that
+   would duplicate functionality that is in TLS we consider that out of
+   scope for the time being.  (We could also use the TLS extractor to
+   generate keys, but that would be an unnecessary complication and
+   would provide very little additional value.)
+
+2.1.  Mixing HTTP and HTTPS
+
+   We expect that many sites will continute to mix HTTP and HTTPS for
+   various reasons.  To make this possible sessions will have two
+   session keys: one for use over HTTPS, and the other for use over
+   HTTP.
+
+2.2.  Authenticated Session Keying
+
+   When an HTTP client uses HTTP authentication, and the authentication
+   mechanism used can establish a session key, then the client SHOULD
+   request session initiation using a shared session key output by the
+   HTTP authentication mechanism.  The client MUST send the session
+   initiation header concurrently with the last HTTP authentication
+   message.
+
+2.3.  Unauthenticated Session Keying
+
+   Sessions for unauthenticated users may appear to make little sense at
+   first.  This is useful, for example, and just as web cookies are, for
+   tracking "shopping carts" when a user is window shopping, so to
+   speak.
+
+   For unauthenticated session initiation the client merely requests the
+   creation of a session with an asserted session key, for lack of a
+   better choice.
+
+
+3.  Session Initiation
+
+   Sessions are initiated either as an outcome of HTTP authentication
+   (see RFC2617, or in spite of the absence of any HTTP authentication;
+   sessions are always initiated by the client.
+
+   Servers that support sessions will respond by creating a session and
+   returning a session ID URI.
 
    For unauthenticated session initiation the client includes a
    "Session-Init" header in its request.  This header's value will
@@ -99,12 +176,11 @@ Table of Contents
 
    [XXX Add MAC and KDF algorithm negotiation.]
 
-2.2.  HTTP Authentication Framework
 
-2.3.  Unauthenticated to Authenticated Session Upgrade
+4.  Unauthenticated to Authenticated Session Upgrade
 
 
-3.  Session Continuation
+5.  Session Continuation
 
    Once a session is established the client binds requests to sessions
    as described here.
@@ -117,26 +193,25 @@ Table of Contents
    the TLS channel bindings.
 
 
-4.  IANA Considerations
+6.  IANA Considerations
 
-   This document has no IANA considerations.
+   This document creates a number of new HTTP request and response
+   headers.  These headers will need to be added to the HTTP header
+   registry: <TBD>.
 
 
-5.  Security Considerations
+7.  Security Considerations
 
    [...]
 
 
-6.  Informative References
+8.  References
+
+8.1.  Normative References
 
    [RFC2616]  Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
               Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext
               Transfer Protocol -- HTTP/1.1", RFC 2616, June 1999.
-
-   [RFC2617]  Franks, J., Hallam-Baker, P., Hostetler, J., Lawrence, S.,
-              Leach, P., Luotonen, A., and L. Stewart, "HTTP
-              Authentication: Basic and Digest Access Authentication",
-              RFC 2617, June 1999.
 
    [RFC5246]  Dierks, T. and E. Rescorla, "The Transport Layer Security
               (TLS) Protocol Version 1.2", RFC 5246, August 2008.
@@ -147,6 +222,19 @@ Table of Contents
    [RFC5929]  Altman, J., Williams, N., and L. Zhu, "Channel Bindings
               for TLS", RFC 5929, July 2010.
 
+   [I-D.williams-websec-session-continue-prob]
+              Williams, N., "Hypertext Transport Protocol (HTTP) Session
+              Continuation: Problem Statement",
+              draft-williams-websec-session-continue-prob-00 (work in
+              progress), January 2013.
+
+8.2.  Informative References
+
+   [RFC2617]  Franks, J., Hallam-Baker, P., Hostetler, J., Lawrence, S.,
+              Leach, P., Luotonen, A., and L. Stewart, "HTTP
+              Authentication: Basic and Digest Access Authentication",
+              RFC 2617, June 1999.
+
    [RFC5849]  Hammer-Lahav, E., "The OAuth 1.0 Protocol", RFC 5849,
               April 2010.
 
@@ -154,36 +242,9 @@ Table of Contents
               Hardt, D., "The OAuth 2.0 Authorization Framework",
               draft-ietf-oauth-v2-31 (work in progress), August 2012.
 
-   [RFC4422]  Melnikov, A. and K. Zeilenga, "Simple Authentication and
-              Security Layer (SASL)", RFC 4422, June 2006.
-
-   [RFC5802]  Newman, C., Menon-Sen, A., Melnikov, A., and N. Williams,
-              "Salted Challenge Response Authentication Mechanism
-              (SCRAM) SASL and GSS-API Mechanisms", RFC 5802, July 2010.
-
-   [RFC4252]  Ylonen, T. and C. Lonvick, "The Secure Shell (SSH)
-              Authentication Protocol", RFC 4252, January 2006.
-
    [RFC4559]  Jaganathan, K., Zhu, L., and J. Brezak, "SPNEGO-based
               Kerberos and NTLM HTTP Authentication in Microsoft
               Windows", RFC 4559, June 2006.
-
-   [RFC6631]  Kuegler, D. and Y. Sheffer, "Password Authenticated
-              Connection Establishment with the Internet Key Exchange
-              Protocol version 2 (IKEv2)", RFC 6631, June 2012.
-
-   [RFC2743]  Linn, J., "Generic Security Service Application Program
-              Interface Version 2, Update 1", RFC 2743, January 2000.
-
-   [RFC5801]  Josefsson, S. and N. Williams, "Using Generic Security
-              Service Application Program Interface (GSS-API) Mechanisms
-              in Simple Authentication and Security Layer (SASL): The
-              GS2 Mechanism Family", RFC 5801, July 2010.
-
-   [RFC4121]  Zhu, L., Jaganathan, K., and S. Hartman, "The Kerberos
-              Version 5 Generic Security Service Application Program
-              Interface (GSS-API) Mechanism: Version 2", RFC 4121,
-              July 2005.
 
 
 Author's Address

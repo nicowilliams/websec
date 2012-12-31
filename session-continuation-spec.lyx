@@ -193,6 +193,12 @@ InsetLayout Flex:BibXML
     HTMLTag div
     LabelString BibXML
 End
+
+InsetLayout Flex:EmbeddedBibXML
+    LyXType Custom
+    HTMLTag div
+    LabelString EmbeddedBibXML
+End
 \end_local_layout
 \language english
 \language_package default
@@ -431,7 +437,175 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-[XXX Reference the problem statement.]
+The motivation for this protocol is described in 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+I-D.williams-websec-session-continue-prob
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+We define a protocol for cryptographic 
+\begin_inset Quotes eld
+\end_inset
+
+session continuation
+\begin_inset Quotes erd
+\end_inset
+
+ for HyperText Transport Protocol (HTTP) 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC2616
+\end_layout
+
+\end_inset
+
+.
+ Session continuation is the act of binding an HTTP request to a 
+\begin_inset Quotes eld
+\end_inset
+
+session
+\begin_inset Quotes erd
+\end_inset
+
+.
+ A 
+\begin_inset Quotes eld
+\end_inset
+
+session
+\begin_inset Quotes erd
+\end_inset
+
+ consists of all the HTTP requests by a given user (possibly an authenticated
+ user, or possibly an anonymous user).
+ This protocol is a cryptographic protocol that aims to meet all the requirement
+s given in 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+I-D.williams-websec-session-continue-prob
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The protocol consists of:
+\end_layout
+
+\begin_layout Itemize
+a request header carrying a keyed Message Authentication Code (MAC) that
+ prove possession of a shared session key (shared between the user and the
+ server);
+\end_layout
+
+\begin_layout Itemize
+a response header advertising a default session scope to clients;
+\end_layout
+
+\begin_layout Itemize
+a session identification in the form of a URI;
+\end_layout
+
+\begin_layout Itemize
+optional server-side statelessness by storing state on the client-side,
+ encrypted in a secret key known to the server;
+\end_layout
+
+\begin_layout Itemize
+a request header for requesting the establishment of a session;
+\end_layout
+
+\begin_layout Itemize
+a response header for indicating the establishment of a session, and including
+ a session URI and any optional state to be repeated by the client.
+\end_layout
+
+\begin_layout Section
+Session Keying
+\end_layout
+
+\begin_layout Standard
+There are two methods for keying an HTTP session:
+\end_layout
+
+\begin_layout Itemize
+session keys are output by HTTP authentication;
+\end_layout
+
+\begin_layout Itemize
+or session keys are asserted by the client;
+\end_layout
+
+\begin_layout Standard
+For the key assertion method TLS with confidentiality protection is clearly
+ REQUIRED for security.
+ We've considered the possibility of using Diffie-Hellman key agreement
+ or RSA key transport, but as that would duplicate functionality that is
+ in TLS we consider that out of scope for the time being.
+ (We could also use the TLS extractor to generate keys, but that would be
+ an unnecessary complication and would provide very little additional value.)
+\end_layout
+
+\begin_layout Subsection
+Mixing HTTP and HTTPS
+\end_layout
+
+\begin_layout Standard
+We expect that many sites will continute to mix HTTP and HTTPS for various
+ reasons.
+ To make this possible sessions will have two session keys: one for use
+ over HTTPS, and the other for use over HTTP.
+\end_layout
+
+\begin_layout Subsection
+Authenticated Session Keying
+\end_layout
+
+\begin_layout Standard
+When an HTTP client uses HTTP authentication, and the authentication mechanism
+ used can establish a session key, then the client SHOULD request session
+ initiation using a shared session key output by the HTTP authentication
+ mechanism.
+ The client MUST send the session initiation header concurrently with the
+ last HTTP authentication message.
+\end_layout
+
+\begin_layout Subsection
+Unauthenticated Session Keying
+\end_layout
+
+\begin_layout Standard
+Sessions for unauthenticated users may appear to make little sense at first.
+ This is useful, for example, and just as web cookies are, for tracking
+ 
+\begin_inset Quotes eld
+\end_inset
+
+shopping carts
+\begin_inset Quotes erd
+\end_inset
+
+ when a user is window shopping, so to speak.
+\end_layout
+
+\begin_layout Standard
+For unauthenticated session initiation the client merely requests the creation
+ of a session with an asserted session key, for lack of a better choice.
 \end_layout
 
 \begin_layout Section
@@ -439,13 +613,14 @@ Session Initiation
 \end_layout
 
 \begin_layout Standard
-Sessions are initiated either as an outcome of HTTP authentication, or by
- a client.
- Session identifiers, however, are assigned by the server.
+Sessions are initiated either as an outcome of HTTP authentication (see
+ RFC2617, or in spite of the absence of any HTTP authentication; sessions
+ are always initiated by the client.
 \end_layout
 
-\begin_layout Subsection
-Unauthenticated Session Initiation
+\begin_layout Standard
+Servers that support sessions will respond by creating a session and returning
+ a session ID URI.
 \end_layout
 
 \begin_layout Standard
@@ -493,11 +668,7 @@ t if a server cert is used, else tls-unique.]
 [XXX Add MAC and KDF algorithm negotiation.]
 \end_layout
 
-\begin_layout Subsection
-HTTP Authentication Framework
-\end_layout
-
-\begin_layout Subsection
+\begin_layout Section
 Unauthenticated to Authenticated Session Upgrade
 \end_layout
 
@@ -539,7 +710,8 @@ IANA Considerations
 \end_layout
 
 \begin_layout Standard
-This document has no IANA considerations.
+This document creates a number of new HTTP request and response headers.
+ These headers will need to be added to the HTTP header registry: <TBD>.
 \end_layout
 
 \begin_layout Section
@@ -557,13 +729,32 @@ Security Considerations
 \end_layout
 
 \begin_layout Section
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:Normative-References"
+Normative References
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex EmbeddedBibXML
+status collapsed
+
+\begin_layout Plain Layout
+<reference anchor='I-D.williams-websec-session-continue-prob'> <front> <title>Hyp
+ertext Transport Protocol (HTTP) Session Continuation: Problem Statement</title>
+ <author initials='N.' surname='Williams' fullname='Nicolas Williams'> <organizat
+ion /> </author> <date month='January' day='1' year='2013' /> <abstract><t>Abstr
+act One of the most often talked about problems in web security is “cookies”.
+ Web cookies are a method of associating requests with “sessions” that may
+ have been authenticated somehow.
+ Cookies are a form of bearer token that leave much to be desired.
+ This document describes the session “continuation” problem for the HyperText
+ Transport Protocol (HTTP).</t></abstract> </front> <seriesInfo name='Internet-Dr
+aft' value='draft-williams-websec-session-continue-prob-00' /> <format type='TXT
+' target='http://www.ietf.org/internet-drafts/draft-draft-williams-websec-session-
+continue-prob-00.txt' /> </reference> 
+\end_layout
 
 \end_inset
 
-Informative References
+
 \end_layout
 
 \begin_layout Standard
@@ -575,26 +766,6 @@ status open
 LatexCommand href
 name "rfc2616"
 target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2616.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Flex BibXML
-status open
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "rfc2617"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2617.xml"
 
 \end_inset
 
@@ -666,6 +837,36 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5929.xml"
 
 \end_layout
 
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Normative-References"
+
+\end_inset
+
+Informative References
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "rfc2617"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2617.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
 \begin_inset Flex BibXML
 status open
@@ -713,148 +914,8 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset href
 LatexCommand href
-name "rfc4422"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4422.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Flex BibXML
-status open
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "rfc5802"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5802.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Flex BibXML
-status open
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "rfc4252"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4252.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Flex BibXML
-status open
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
 name "rfc4559"
 target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4559.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Flex BibXML
-status open
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "rfc6631"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6631.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Flex BibXML
-status open
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "rfc2743"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2743.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Flex BibXML
-status open
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "rfc5801"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5801.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Flex BibXML
-status open
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "rfc4121"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4121.xml"
 
 \end_inset
 
