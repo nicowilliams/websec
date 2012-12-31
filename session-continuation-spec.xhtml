@@ -121,6 +121,7 @@ margin-bottom: 0.5ex;
 text-align: left;
 
 }
+dl.description dt { font-weight: bold; }
 div.flex_docname {
 font-family: serif;
 font-weight: normal;
@@ -198,6 +199,19 @@ font-style: normal;
 font-variant: normal;
 font-size: medium;
 }
+div.float {
+border: 2px solid black;
+text-align: center;
+}
+div.listings {
+font-family: monospace;
+}
+div.float-caption {
+text-align: center;
+border: 2px solid black;
+padding: 1ex;
+margin: 1ex;
+}
 div.flex_embeddedbibxml {
 font-family: serif;
 font-weight: normal;
@@ -260,26 +274,30 @@ One of the most often talked about problems in web security is &ldquo;cookies&rd
 
 <div class='lyxtoc-1'><a href='#magicparlabel-76' class='tocentry'>2 Session Keying</a> <a href='#magicparlabel-76' class='tocarrow'>&gt;</a>
 
-<div class='lyxtoc-2'><a href='#magicparlabel-81' class='tocentry'>2.1 Mixing HTTP and HTTPS</a> <a href='#magicparlabel-81' class='tocarrow'>&gt;</a></div>
+<div class='lyxtoc-2'><a href='#magicparlabel-87' class='tocentry'>2.1 Mixing HTTP and HTTPS</a> <a href='#magicparlabel-87' class='tocarrow'>&gt;</a></div>
 
-<div class='lyxtoc-2'><a href='#magicparlabel-83' class='tocentry'>2.2 Authenticated Session Keying</a> <a href='#magicparlabel-83' class='tocarrow'>&gt;</a></div>
+<div class='lyxtoc-2'><a href='#magicparlabel-89' class='tocentry'>2.2 Authenticated Session Keying</a> <a href='#magicparlabel-89' class='tocarrow'>&gt;</a></div>
 
-<div class='lyxtoc-2'><a href='#magicparlabel-85' class='tocentry'>2.3 Unauthenticated Session Keying</a> <a href='#magicparlabel-85' class='tocarrow'>&gt;</a></div>
+<div class='lyxtoc-2'><a href='#magicparlabel-91' class='tocentry'>2.3 Unauthenticated Session Keying</a> <a href='#magicparlabel-91' class='tocarrow'>&gt;</a></div>
 </div>
 
-<div class='lyxtoc-1'><a href='#magicparlabel-88' class='tocentry'>3 Session Initiation</a> <a href='#magicparlabel-88' class='tocarrow'>&gt;</a></div>
+<div class='lyxtoc-1'><a href='#magicparlabel-94' class='tocentry'>3 Session Initiation</a> <a href='#magicparlabel-94' class='tocarrow'>&gt;</a></div>
 
-<div class='lyxtoc-1'><a href='#magicparlabel-96' class='tocentry'>4 Unauthenticated to Authenticated Session Upgrade</a> <a href='#magicparlabel-96' class='tocarrow'>&gt;</a></div>
+<div class='lyxtoc-1'><a href='#magicparlabel-172' class='tocentry'>4 Unauthenticated to Authenticated Session Upgrade</a> <a href='#magicparlabel-172' class='tocarrow'>&gt;</a></div>
 
-<div class='lyxtoc-1'><a href='#magicparlabel-97' class='tocentry'>5 Session Continuation</a> <a href='#magicparlabel-97' class='tocarrow'>&gt;</a></div>
+<div class='lyxtoc-1'><a href='#magicparlabel-174' class='tocentry'>5 Session Continuation</a> <a href='#magicparlabel-174' class='tocarrow'>&gt;</a></div>
 
-<div class='lyxtoc-1'><a href='#magicparlabel-101' class='tocentry'>6 IANA Considerations</a> <a href='#magicparlabel-101' class='tocarrow'>&gt;</a></div>
+<div class='lyxtoc-1'><a href='#magicparlabel-197' class='tocentry'>6 Logout</a> <a href='#magicparlabel-197' class='tocarrow'>&gt;</a></div>
 
-<div class='lyxtoc-1'><a href='#magicparlabel-103' class='tocentry'>7 Security Considerations</a> <a href='#magicparlabel-103' class='tocarrow'>&gt;</a></div>
+<div class='lyxtoc-1'><a href='#magicparlabel-199' class='tocentry'>7 Inquiring Session Status</a> <a href='#magicparlabel-199' class='tocarrow'>&gt;</a></div>
 
-<div class='lyxtoc-1'><a href='#magicparlabel-105' class='tocentry'>8 Normative References</a> <a href='#magicparlabel-105' class='tocarrow'>&gt;</a></div>
+<div class='lyxtoc-1'><a href='#magicparlabel-201' class='tocentry'>8 IANA Considerations</a> <a href='#magicparlabel-201' class='tocarrow'>&gt;</a></div>
 
-<div class='lyxtoc-1'><a href='#magicparlabel-131' class='tocentry'>9 Informative References</a> <a href='#magicparlabel-131' class='tocarrow'>&gt;</a></div>
+<div class='lyxtoc-1'><a href='#magicparlabel-203' class='tocentry'>9 Security Considerations</a> <a href='#magicparlabel-203' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-205' class='tocentry'>10 Normative References</a> <a href='#magicparlabel-205' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-241' class='tocentry'>11 Informative References</a> <a href='#magicparlabel-241' class='tocarrow'>&gt;</a></div>
 </div>
 
 <h2 class="section"><span class="section_label">1</span> <a id='magicparlabel-54' />
@@ -325,111 +343,277 @@ or session keys are asserted by the client;</li>
 </ul>
 <div class="standard"><a id='magicparlabel-80' />
 For the key assertion method TLS with confidentiality protection is clearly REQUIRED for security. We've considered the possibility of using Diffie-Hellman key agreement or RSA key transport, but as that would duplicate functionality that is in TLS we consider that out of scope for the time being. (We could also use the TLS extractor to generate keys, but that would be an unnecessary complication and would provide very little additional value.)</div>
-<h3 class="subsection"><span class="subsection_label">2.1</span> <a id='magicparlabel-81' />
-Mixing HTTP and HTTPS</h3>
+
+<div class="standard"><a id='magicparlabel-81' />
+[XXX Should we have distinct session keys for request and response MACs?]</div>
+
 <div class="standard"><a id='magicparlabel-82' />
+In either case a single master key is generated or asserted and a Key Derivation Function (KDF) <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-86' />
+RFC5869</div>
+</div> is used to generate the session keys for use with HTTP and HTTPS. Keys are derived by applying the negotiated KDF to the master key (output by the HTTP authentication method, or asserted) and either &ldquo;secure&rdquo; or &ldquo;insecure&rdquo; as the salt. All session keys for MAC algorithms specified here SHALL be 128 bits long.</div>
+<h3 class="subsection"><span class="subsection_label">2.1</span> <a id='magicparlabel-87' />
+Mixing HTTP and HTTPS</h3>
+<div class="standard"><a id='magicparlabel-88' />
 We expect that many sites will continute to mix HTTP and HTTPS for various reasons. To make this possible sessions will have two session keys: one for use over HTTPS, and the other for use over HTTP.</div>
-<h3 class="subsection"><span class="subsection_label">2.2</span> <a id='magicparlabel-83' />
+<h3 class="subsection"><span class="subsection_label">2.2</span> <a id='magicparlabel-89' />
 Authenticated Session Keying</h3>
-<div class="standard"><a id='magicparlabel-84' />
+<div class="standard"><a id='magicparlabel-90' />
 When an HTTP client uses HTTP authentication, and the authentication mechanism used can establish a session key, then the client SHOULD request session initiation using a shared session key output by the HTTP authentication mechanism. The client MUST send the session initiation header concurrently with the last HTTP authentication message.</div>
-<h3 class="subsection"><span class="subsection_label">2.3</span> <a id='magicparlabel-85' />
+<h3 class="subsection"><span class="subsection_label">2.3</span> <a id='magicparlabel-91' />
 Unauthenticated Session Keying</h3>
-<div class="standard"><a id='magicparlabel-86' />
+<div class="standard"><a id='magicparlabel-92' />
 Sessions for unauthenticated users may appear to make little sense at first. This is useful, for example, and just as web cookies are, for tracking &ldquo;shopping carts&rdquo; when a user is window shopping, so to speak.</div>
 
-<div class="standard"><a id='magicparlabel-87' />
+<div class="standard"><a id='magicparlabel-93' />
 For unauthenticated session initiation the client merely requests the creation of a session with an asserted session key, for lack of a better choice.</div>
-<h2 class="section"><span class="section_label">3</span> <a id='magicparlabel-88' />
+<h2 class="section"><span class="section_label">3</span> <a id='magicparlabel-94' />
 Session Initiation</h2>
-<div class="standard"><a id='magicparlabel-89' />
-Sessions are initiated either as an outcome of HTTP authentication (see RFC2617, or in spite of the absence of any HTTP authentication; sessions are always initiated by the client.</div>
+<div class="standard"><a id='magicparlabel-95' />
+Sessions are always initiated by the client by including a Session-Init header in the client's request carrying the client's proposal for a session.</div>
 
-<div class="standard"><a id='magicparlabel-90' />
+<div class="standard"><a id='magicparlabel-96' />
 Servers that support sessions will respond by creating a session and returning a session ID URI.</div>
 
-<div class="standard"><a id='magicparlabel-91' />
-For unauthenticated session initiation the client includes a &ldquo;Session-Init&rdquo; header in its request. This header's value will consist of a base64-encoding of a randomly-generated octet string of at least 64 bits and up to 256 bits, and a boolean indicating whether the session will also operate without TLS. The server's response, if it agrees to session initiation, will contain a &ldquo;Session-Init&rdquo; header with a session identifier.</div>
+<div class="standard"><a id='magicparlabel-97' />
+The Session-Init proposal header's value consists of a comma-separated list of proposal parameters:</div>
 
-<div class="standard"><a id='magicparlabel-92' />
-If the server accepts then the client and server will generate a session key as described in [...].</div>
-
-<div class="standard"><a id='magicparlabel-93' />
-If the request is sent over HTTPS (TLS) then the client may allow the use of the session without TLS, in which case a second session key will be generated for use without TLS as described in [...].</div>
-
-<div class="standard"><a id='magicparlabel-94' />
-[XXX Add a channel binding type negotiation, or perhaps say: tls-server-end-point if a server cert is used, else tls-unique.]</div>
-
-<div class="standard"><a id='magicparlabel-95' />
-[XXX Add MAC and KDF algorithm negotiation.]</div>
-<h2 class="section"><span class="section_label">4</span> <a id='magicparlabel-96' />
-Unauthenticated to Authenticated Session Upgrade</h2>
-<h2 class="section"><span class="section_label">5</span> <a id='magicparlabel-97' />
-Session Continuation</h2>
 <div class="standard"><a id='magicparlabel-98' />
+</div>
+<div class='float float-figure'><div class="plain_layout"><a id='magicparlabel-102' />
+</div>
+<div class='float float-listings'><pre>   session-param = token "=" ( token | quoted-string )
+   Session-Init = 1#session-param</pre></div>
+
+
+<div class="plain_layout"><a id='magicparlabel-108' />
+<div class='float-caption float-caption-figure'>Figure 1:<div class="plain_layout"><a id='magicparlabel-112' />
+Session-Init request header</div>
+</div></div>
+</div>
+
+
+<div class="standard"><a id='magicparlabel-113' />
+The following session parameters are defined:</div>
+
+<dl class='description'><dt class="description_label">Key-Method</dt>
+<dd class="description_item"><a id='magicparlabel-114' />
+ The type of keying: &ldquo;auth&rdquo; (key will be output by HTTP authentication), &ldquo;c-assert&rdquo; (key is asserted in this Session-Init) or &ldquo;s-assert&rdquo; (the server is expected to assert a key). In the &ldquo;auth&rdquo; case the Session-Init MUST also carry a nonce and a MAC.</dd>
+<dt class="description_label">Key</dt>
+<dd class="description_item"><a id='magicparlabel-115' />
+ The key that the client asserts, if the client asserts a key.</dd>
+<dt class="description_label">MAC-Algs</dt>
+<dd class="description_item"><a id='magicparlabel-116' />
+ The MAC algorithms supported by the client. This document defines only &ldquo;HMAC-SHA-1&rdquo; (HMAC with SHA-1), &ldquo;HMAC-SHA-1-96&rdquo; (HMAC with SHA-1 and truncation to 96 bits), &ldquo;HMAC-SHA256&rdquo; (HMAC with SHA256), and &ldquo;HMAC-SHA256-128&rdquo; (HMAC with SHA256 and truncation to 128 bits). All of these use HMAC <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-120' />
+RFC2104</div>
+</div>. Clients and servers MUST support HMAC-SHA-1-96 and HMAC-SHA256-128. If absent the default value is &ldquo;HMAC-SHA256-128&rdquo;.</dd>
+<dt class="description_label">KDF-Algs</dt>
+<dd class="description_item"><a id='magicparlabel-121' />
+ A list of KDF algorithms. The following are specified here: &ldquo;HKDF-SHA-1&rdquo; (HKDF <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-125' />
+RFC5869</div>
+</div> with SHA-1) and &ldquo;HKDF-SHA256&rdquo; (HKDF with SHA256). Clients and servers MUST support HKDF-SHA256. If absent the default value is HKDF-SHA256.</dd>
+<dt class="description_label">Channel-Binding-Types</dt>
+<dd class="description_item"><a id='magicparlabel-126' />
+ A comma-separated list of channel binding <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-130' />
+RFC5056</div>
+</div> types. Clients and servers MUST support 'tls-server-end-point' <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-134' />
+RFC5929</div>
+</div> when using HTTPS.</dd>
+<dt class="description_label">nonce</dt>
+<dd class="description_item"><a id='magicparlabel-135' />
+ A 128-bit nonce, base64-encoded.</dd>
+<dt class="description_label">Previous-Session-URI</dt>
+<dd class="description_item"><a id='magicparlabel-136' />
+ The URI of a previous session. See <a href="#sec_Unauthenticated_to_Authenticated">4</a>.</dd>
+<dt class="description_label">Previous-Session-State</dt>
+<dd class="description_item"><a id='magicparlabel-137' />
+ The session state for the previous session, if any. See <a href="#sec_Unauthenticated_to_Authenticated">4</a>.</dd>
+<dt class="description_label">MAC-&lt;MAC-alg&gt;-&lt;CB-type&gt;</dt>
+<dd class="description_item"><a id='magicparlabel-138' />
+ A base64-encoded MAC (in the given algorithm) of the Session-Init header value (excluding the MAC session-params), the nonce, the channel binding for the given channel binding type, and the previous session URI and state, if any. The items to be MACed are base64-encoded, then concatenated with commas in the ordered mentioned in the previous sentence, then the keyed MAC is applied.</dd>
+<dt class="description_label">Req-MAC-Secure-Content</dt>
+<dd class="description_item"><a id='magicparlabel-139' />
+ A comma-separated list of indicators of what request content is to be MACed when using HTTPS.</dd>
+<dt class="description_label">Resp-MAC-Secure-Content</dt>
+<dd class="description_item"><a id='magicparlabel-140' />
+ A comma-separated list of indicators of what response content is to be MACed when using HTTPS. If empty then the responses for this session over HTTPS will not contain a MAC (none is needed since if the channel binding is correct in the request then there is no MITM and TLS provides all the necessary protection).</dd>
+<dt class="description_label">Req-MAC-Insecure-Content</dt>
+<dd class="description_item"><a id='magicparlabel-141' />
+ A comma-separated list of indicators of what request content is to be MACed.</dd>
+<dt class="description_label">Resp-MAC-Insecure-Content</dt>
+<dd class="description_item"><a id='magicparlabel-142' />
+ A comma-separated list of indicators of what response content is to be MACed.</dd>
+<dt class="description_label">Insecure-Allowed</dt>
+<dd class="description_item"><a id='magicparlabel-143' />
+ If present the value MUST be &ldquo;true&rdquo;, and indicates that HTTP and HTTPS are both allowed for this session. Otherwise only HTTPS is allowed for this session.</dd>
+</dl>
+<div class="standard"><a id='magicparlabel-144' />
+The MAC-Content indicators are:</div>
+
+<dl class='description'><dt class="description_label">Start</dt>
+<dd class="description_item"><a id='magicparlabel-145' />
+ The message start line.</dd>
+<dt class="description_label">CB</dt>
+<dd class="description_item"><a id='magicparlabel-146' />
+ Channel binding.</dd>
+<dt class="description_label">Body</dt>
+<dd class="description_item"><a id='magicparlabel-147' />
+ The body of the message. The content transfer encoding (e.g. chunked) is ignored for the purpose of determining the content.</dd>
+<dt class="description_label">H-&lt;header-name&gt;</dt>
+<dd class="description_item"><a id='magicparlabel-148' />
+ The given header name.</dd>
+</dl>
+<div class="standard"><a id='magicparlabel-149' />
+The server responds with a Session-Assign header:</div>
+
+<div class="standard"><a id='magicparlabel-150' />
+</div>
+<div class='float float-figure'><div class="plain_layout"><a id='magicparlabel-154' />
+</div>
+<div class='float float-listings'><pre>   session-URI = &lt;URI&gt;
+   session-state = &lt;base64 encoding of server-side state&gt;
+   Session-Assign = (1#session-param ",")</pre></div>
+
+
+<div class="plain_layout"><a id='magicparlabel-161' />
+<div class='float-caption float-caption-figure'>Figure 2:<div class="plain_layout"><a id='magicparlabel-165' />
+Session-Assign response header</div>
+</div></div>
+</div>
+
+
+<div class="standard"><a id='magicparlabel-166' />
+The session-params for Session-Assign are:</div>
+
+<dl class='description'><dt class="description_label">Key</dt>
+<dd class="description_item"><a id='magicparlabel-167' />
+ The server-asserted key, if the client requested a server-asserted key.</dd>
+<dt class="description_label">MAC-Alg</dt>
+<dd class="description_item"><a id='magicparlabel-168' />
+ The name of the MAC algorithm selected by the server from the client's proposal (REQUIRED).</dd>
+<dt class="description_label">MAC</dt>
+<dd class="description_item"><a id='magicparlabel-169' />
+ A MAC of the client's Session-Init header and the server's Session-Assign header (excluding the MAC session-param). This is OPTIONAL when using HTTPS, REQUIRED when using HTTP. [XXX expand].</dd>
+<dt class="description_label">URI</dt>
+<dd class="description_item"><a id='magicparlabel-170' />
+ The URI of the session (REQUIRED).</dd>
+<dt class="description_label">State</dt>
+<dd class="description_item"><a id='magicparlabel-171' />
+ Server-side state to be stored on the client (OPTIONAL).</dd>
+</dl>
+<h2 class="section"><span class="section_label">4</span> <a id='magicparlabel-172' />
+<a id="sec_Unauthenticated_to_Authenticated" />
+Unauthenticated to Authenticated Session Upgrade</h2>
+<div class="standard"><a id='magicparlabel-173' />
+A client might first establish an unauthenticated session then authenticate the user later. When authentication is done the client might wish to preserve any state associated with the preceding unauthenticated session. The client does this by sending a Session-Init at authentication time with a 'Previous-Session-URI' session-param and, if there was server-assigned session state, a 'Previous-Session-State' session-param.</div>
+<h2 class="section"><span class="section_label">5</span> <a id='magicparlabel-174' />
+Session Continuation</h2>
+<div class="standard"><a id='magicparlabel-175' />
 Once a session is established the client binds requests to sessions as described here.</div>
 
-<div class="standard"><a id='magicparlabel-99' />
-There are two cases: HTTPS and HTTP.</div>
+<div class="standard"><a id='magicparlabel-176' />
+There are two cases: HTTPS and HTTP. In both cases the client adds a header</div>
 
-<div class="standard"><a id='magicparlabel-100' />
+<div class="standard"><a id='magicparlabel-177' />
 For the HTTPS case the client adds a &ldquo;Session&rdquo; header to its requests with the following content: the session identifier assigned by the server, a nonce generated by the client, and a MAC of the nonce and the TLS channel bindings.</div>
-<h2 class="section"><span class="section_label">6</span> <a id='magicparlabel-101' />
+
+<div class="standard"><a id='magicparlabel-178' />
+The value of the Session header consists of a base64-encoded 128-bit nonce and a MAC, using the session's MAC algorithm, of the nonce and the channel binding, each base64-encoded then concatenated in that order:</div>
+
+<div class="standard"><a id='magicparlabel-179' />
+</div>
+<div class='float float-figure'><div class="plain_layout"><a id='magicparlabel-183' />
+</div>
+<div class='float float-listings'><pre>   nonce = &lt;base64-encoded 128-bit nonce&gt;
+   MAC = &lt;base64-encoded MAC taken over b64-nonce || b64-CB [|| content]&gt;
+   Session = nonce "," MAC</pre></div>
+
+
+<div class="plain_layout"><a id='magicparlabel-190' />
+<div class='float-caption float-caption-figure'>Figure 3:<div class="plain_layout"><a id='magicparlabel-194' />
+Session header</div>
+</div></div>
+</div>
+
+
+<div class="standard"><a id='magicparlabel-195' />
+Where the response must carry a Session header, the form of the value is the same as for requests.</div>
+
+<div class="standard"><a id='magicparlabel-196' />
+The MAC is taken over the nonce, the channel bindings, and the content as specified in the Session-Init header used to create this session.</div>
+<h2 class="section"><span class="section_label">6</span> <a id='magicparlabel-197' />
+Logout</h2>
+<div class="standard"><a id='magicparlabel-198' />
+To logout the client SHOULD perform a DELETE of the session URI.</div>
+<h2 class="section"><span class="section_label">7</span> <a id='magicparlabel-199' />
+Inquiring Session Status</h2>
+<div class="standard"><a id='magicparlabel-200' />
+The client MAY do a GET of the session URI. The semantics of the response body for this are not specified here.</div>
+<h2 class="section"><span class="section_label">8</span> <a id='magicparlabel-201' />
 <a id="sec_IANA_Considerations" />
 IANA Considerations</h2>
-<div class="standard"><a id='magicparlabel-102' />
+<div class="standard"><a id='magicparlabel-202' />
 This document creates a number of new HTTP request and response headers. These headers will need to be added to the HTTP header registry: &lt;TBD&gt;.</div>
-<h2 class="section"><span class="section_label">7</span> <a id='magicparlabel-103' />
+<h2 class="section"><span class="section_label">9</span> <a id='magicparlabel-203' />
 <a id="sec_Security_Considerations" />
 Security Considerations</h2>
-<div class="standard"><a id='magicparlabel-104' />
+<div class="standard"><a id='magicparlabel-204' />
 [...]</div>
-<h2 class="section"><span class="section_label">8</span> <a id='magicparlabel-105' />
+<h2 class="section"><span class="section_label">10</span> <a id='magicparlabel-205' />
 Normative References</h2>
-<div class="standard"><a id='magicparlabel-106' />
-<div class="flex_embeddedbibxml"><div class="plain_layout"><a id='magicparlabel-110' />
+<div class="standard"><a id='magicparlabel-206' />
+<div class="flex_embeddedbibxml"><div class="plain_layout"><a id='magicparlabel-210' />
 &lt;reference anchor='I-D.williams-websec-session-continue-prob'&gt; &lt;front&gt; &lt;title&gt;Hypertext Transport Protocol (HTTP) Session Continuation: Problem Statement&lt;/title&gt; &lt;author initials='N.' surname='Williams' fullname='Nicolas Williams'&gt; &lt;organization /&gt; &lt;/author&gt; &lt;date month='January' day='1' year='2013' /&gt; &lt;abstract&gt;&lt;t&gt;Abstract One of the most often talked about problems in web security is “cookies”. Web cookies are a method of associating requests with “sessions” that may have been authenticated somehow. Cookies are a form of bearer token that leave much to be desired. This document describes the session “continuation” problem for the HyperText Transport Protocol (HTTP).&lt;/t&gt;&lt;/abstract&gt; &lt;/front&gt; &lt;seriesInfo name='Internet-Draft' value='draft-williams-websec-session-continue-prob-00' /&gt; &lt;format type='TXT' target='http://www.ietf.org/internet-drafts/draft-draft-williams-websec-session-continue-prob-00.txt' /&gt; &lt;/reference&gt; </div>
 </div></div>
 
-<div class="standard"><a id='magicparlabel-111' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-115' />
+<div class="standard"><a id='magicparlabel-211' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-215' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2104.xml">rfc2104</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-216' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-220' />
 <a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2616.xml">rfc2616</a></div>
 </div></div>
 
-<div class="standard"><a id='magicparlabel-116' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-120' />
+<div class="standard"><a id='magicparlabel-221' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-225' />
 <a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5246.xml">rfc5246</a></div>
 </div></div>
 
-<div class="standard"><a id='magicparlabel-121' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-125' />
+<div class="standard"><a id='magicparlabel-226' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-230' />
 <a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5056.xml">rfc5056</a></div>
 </div></div>
 
-<div class="standard"><a id='magicparlabel-126' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-130' />
+<div class="standard"><a id='magicparlabel-231' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-235' />
 <a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5929.xml">rfc5929</a></div>
 </div></div>
-<h2 class="section"><span class="section_label">9</span> <a id='magicparlabel-131' />
+
+<div class="standard"><a id='magicparlabel-236' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-240' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5869.xml">rfc5869</a></div>
+</div></div>
+<h2 class="section"><span class="section_label">11</span> <a id='magicparlabel-241' />
 <a id="sec_Normative_References" />
 Informative References</h2>
-<div class="standard"><a id='magicparlabel-132' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-136' />
+<div class="standard"><a id='magicparlabel-242' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-246' />
 <a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2617.xml">rfc2617</a></div>
 </div></div>
 
-<div class="standard"><a id='magicparlabel-137' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-141' />
+<div class="standard"><a id='magicparlabel-247' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-251' />
 <a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5849.xml">rfc5849</a></div>
 </div></div>
 
-<div class="standard"><a id='magicparlabel-142' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-146' />
+<div class="standard"><a id='magicparlabel-252' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-256' />
 <a href="http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-v2.xml">I-D.ietf-oauth-v2</a></div>
 </div></div>
 
-<div class="standard"><a id='magicparlabel-147' />
-<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-151' />
+<div class="standard"><a id='magicparlabel-257' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-261' />
 <a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.4559.xml">rfc4559</a></div>
 </div></div>
 </body>

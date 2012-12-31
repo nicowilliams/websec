@@ -3,8 +3,8 @@
 
 Network Working Group                                        N. Williams
 Internet-Draft                                              Cryptonector
-Intended status: Standards Track                       December 30, 2012
-Expires: July 3, 2013
+Intended status: Standards Track                       December 31, 2012
+Expires: July 4, 2013
 
 
    Hypertext Transport Protocol (HTTP) Session Continuation Protocol
@@ -34,7 +34,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on July 3, 2013.
+   This Internet-Draft will expire on July 4, 2013.
 
 Copyright Notice
 
@@ -62,11 +62,13 @@ Table of Contents
    3.    Session Initiation
    4.    Unauthenticated to Authenticated Session Upgrade
    5.    Session Continuation
-   6.    IANA Considerations
-   7.    Security Considerations
-   8.    References
-   8.1.  Normative References
-   8.2.  Informative References
+   6.    Logout
+   7.    Inquiring Session Status
+   8.    IANA Considerations
+   9.    Security Considerations
+   10.   References
+   10.1. Normative References
+   10.2. Informative References
          Author's Address
 
 
@@ -119,6 +121,17 @@ Table of Contents
    generate keys, but that would be an unnecessary complication and
    would provide very little additional value.)
 
+   [XXX Should we have distinct session keys for request and response
+   MACs?]
+
+   In either case a single master key is generated or asserted and a Key
+   Derivation Function (KDF) [RFC5869] is used to generate the session
+   keys for use with HTTP and HTTPS.  Keys are derived by applying the
+   negotiated KDF to the master key (output by the HTTP authentication
+   method, or asserted) and either "secure" or "insecure" as the salt.
+   All session keys for MAC algorithms specified here SHALL be 128 bits
+   long.
+
 2.1.  Mixing HTTP and HTTPS
 
    We expect that many sites will continute to mix HTTP and HTTPS for
@@ -149,35 +162,128 @@ Table of Contents
 
 3.  Session Initiation
 
-   Sessions are initiated either as an outcome of HTTP authentication
-   (see RFC2617, or in spite of the absence of any HTTP authentication;
-   sessions are always initiated by the client.
+   Sessions are always initiated by the client by including a Session-
+   Init header in the client's request carrying the client's proposal
+   for a session.
 
    Servers that support sessions will respond by creating a session and
    returning a session ID URI.
 
-   For unauthenticated session initiation the client includes a
-   "Session-Init" header in its request.  This header's value will
-   consist of a base64-encoding of a randomly-generated octet string of
-   at least 64 bits and up to 256 bits, and a boolean indicating whether
-   the session will also operate without TLS.  The server's response, if
-   it agrees to session initiation, will contain a "Session-Init" header
-   with a session identifier.
+   The Session-Init proposal header's value consists of a comma-
+   separated list of proposal parameters:
 
-   If the server accepts then the client and server will generate a
-   session key as described in [...].
+      session-param = token "=" ( token | quoted-string )
+      Session-Init = 1#session-param
 
-   If the request is sent over HTTPS (TLS) then the client may allow the
-   use of the session without TLS, in which case a second session key
-   will be generated for use without TLS as described in [...].
+                   Figure 1: Session-Init request header
 
-   [XXX Add a channel binding type negotiation, or perhaps say: tls-
-   server-end-point if a server cert is used, else tls-unique.]
+   The following session parameters are defined:
 
-   [XXX Add MAC and KDF algorithm negotiation.]
+   Key-Method  The type of keying: "auth" (key will be output by HTTP
+      authentication), "c-assert" (key is asserted in this Session-Init)
+      or "s-assert" (the server is expected to assert a key).  In the
+      "auth" case the Session-Init MUST also carry a nonce and a MAC.
+
+   Key  The key that the client asserts, if the client asserts a key.
+
+   MAC-Algs  The MAC algorithms supported by the client.  This document
+      defines only "HMAC-SHA-1" (HMAC with SHA-1), "HMAC-SHA-1-96" (HMAC
+      with SHA-1 and truncation to 96 bits), "HMAC-SHA256" (HMAC with
+      SHA256), and "HMAC-SHA256-128" (HMAC with SHA256 and truncation to
+      128 bits).  All of these use HMAC [RFC2104].  Clients and servers
+      MUST support HMAC-SHA-1-96 and HMAC-SHA256-128.  If absent the
+      default value is "HMAC-SHA256-128".
+
+   KDF-Algs  A list of KDF algorithms.  The following are specified
+      here: "HKDF-SHA-1" (HKDF [RFC5869] with SHA-1) and "HKDF-SHA256"
+      (HKDF with SHA256).  Clients and servers MUST support HKDF-SHA256.
+      If absent the default value is HKDF-SHA256.
+
+   Channel-Binding-Types  A comma-separated list of channel binding
+      [RFC5056] types.  Clients and servers MUST support 'tls-server-
+      end-point' [RFC5929] when using HTTPS.
+
+   nonce  A 128-bit nonce, base64-encoded.
+
+   Previous-Session-URI  The URI of a previous session.  See Section 4.
+
+   Previous-Session-State  The session state for the previous session,
+      if any.  See Section 4.
+
+   MAC-<MAC-alg>-<CB-type>  A base64-encoded MAC (in the given
+      algorithm) of the Session-Init header value (excluding the MAC
+      session-params), the nonce, the channel binding for the given
+      channel binding type, and the previous session URI and state, if
+      any.  The items to be MACed are base64-encoded, then concatenated
+      with commas in the ordered mentioned in the previous sentence,
+      then the keyed MAC is applied.
+
+   Req-MAC-Secure-Content  A comma-separated list of indicators of what
+      request content is to be MACed when using HTTPS.
+
+   Resp-MAC-Secure-Content  A comma-separated list of indicators of what
+      response content is to be MACed when using HTTPS.  If empty then
+      the responses for this session over HTTPS will not contain a MAC
+      (none is needed since if the channel binding is correct in the
+      request then there is no MITM and TLS provides all the necessary
+      protection).
+
+   Req-MAC-Insecure-Content  A comma-separated list of indicators of
+      what request content is to be MACed.
+
+   Resp-MAC-Insecure-Content  A comma-separated list of indicators of
+      what response content is to be MACed.
+
+   Insecure-Allowed  If present the value MUST be "true", and indicates
+      that HTTP and HTTPS are both allowed for this session.  Otherwise
+      only HTTPS is allowed for this session.
+
+   The MAC-Content indicators are:
+
+   Start  The message start line.
+
+   CB Channel binding.
+
+   Body  The body of the message.  The content transfer encoding (e.g.
+      chunked) is ignored for the purpose of determining the content.
+
+   H-<header-name>  The given header name.
+
+   The server responds with a Session-Assign header:
+
+      session-URI = <URI>
+      session-state = <base64 encoding of server-side state>
+      Session-Assign = (1#session-param ",")
+
+                 Figure 2: Session-Assign response header
+
+   The session-params for Session-Assign are:
+
+   Key  The server-asserted key, if the client requested a server-
+      asserted key.
+
+   MAC-Alg  The name of the MAC algorithm selected by the server from
+      the client's proposal (REQUIRED).
+
+   MAC  A MAC of the client's Session-Init header and the server's
+      Session-Assign header (excluding the MAC session-param).  This is
+      OPTIONAL when using HTTPS, REQUIRED when using HTTP.  [XXX
+      expand].
+
+   URI  The URI of the session (REQUIRED).
+
+   State  Server-side state to be stored on the client (OPTIONAL).
 
 
 4.  Unauthenticated to Authenticated Session Upgrade
+
+   A client might first establish an unauthenticated session then
+   authenticate the user later.  When authentication is done the client
+   might wish to preserve any state associated with the preceding
+   unauthenticated session.  The client does this by sending a Session-
+   Init at authentication time with a 'Previous-Session-URI' session-
+   param and, if there was server-assigned session state, a 'Previous-
+   Session-State' session-param.
 
 
 5.  Session Continuation
@@ -185,29 +291,63 @@ Table of Contents
    Once a session is established the client binds requests to sessions
    as described here.
 
-   There are two cases: HTTPS and HTTP.
+   There are two cases: HTTPS and HTTP.  In both cases the client adds a
+   header
 
    For the HTTPS case the client adds a "Session" header to its requests
    with the following content: the session identifier assigned by the
    server, a nonce generated by the client, and a MAC of the nonce and
    the TLS channel bindings.
 
+   The value of the Session header consists of a base64-encoded 128-bit
+   nonce and a MAC, using the session's MAC algorithm, of the nonce and
+   the channel binding, each base64-encoded then concatenated in that
+   order:
 
-6.  IANA Considerations
+   nonce = <base64-encoded 128-bit nonce>
+   MAC = <base64-encoded MAC taken over b64-nonce || b64-CB [|| content]>
+   Session = nonce "," MAC
+
+                         Figure 3: Session header
+
+   Where the response must carry a Session header, the form of the value
+   is the same as for requests.
+
+   The MAC is taken over the nonce, the channel bindings, and the
+   content as specified in the Session-Init header used to create this
+   session.
+
+
+6.  Logout
+
+   To logout the client SHOULD perform a DELETE of the session URI.
+
+
+7.  Inquiring Session Status
+
+   The client MAY do a GET of the session URI.  The semantics of the
+   response body for this are not specified here.
+
+
+8.  IANA Considerations
 
    This document creates a number of new HTTP request and response
    headers.  These headers will need to be added to the HTTP header
    registry: <TBD>.
 
 
-7.  Security Considerations
+9.  Security Considerations
 
    [...]
 
 
-8.  References
+10.  References
 
-8.1.  Normative References
+10.1.  Normative References
+
+   [RFC2104]  Krawczyk, H., Bellare, M., and R. Canetti, "HMAC: Keyed-
+              Hashing for Message Authentication", RFC 2104,
+              February 1997.
 
    [RFC2616]  Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
               Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext
@@ -222,13 +362,16 @@ Table of Contents
    [RFC5929]  Altman, J., Williams, N., and L. Zhu, "Channel Bindings
               for TLS", RFC 5929, July 2010.
 
+   [RFC5869]  Krawczyk, H. and P. Eronen, "HMAC-based Extract-and-Expand
+              Key Derivation Function (HKDF)", RFC 5869, May 2010.
+
    [I-D.williams-websec-session-continue-prob]
               Williams, N., "Hypertext Transport Protocol (HTTP) Session
               Continuation: Problem Statement",
               draft-williams-websec-session-continue-prob-00 (work in
               progress), January 2013.
 
-8.2.  Informative References
+10.2.  Informative References
 
    [RFC2617]  Franks, J., Hallam-Baker, P., Hostetler, J., Lawrence, S.,
               Leach, P., Luotonen, A., and L. Stewart, "HTTP
