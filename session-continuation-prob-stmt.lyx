@@ -556,12 +556,18 @@ Session continuation must be expressed via HTTP headers;
 \begin_layout Enumerate
 Session continuation header values must be cryptographically difficult for
  attackers to spoof, and servers must be able to validate these values;
+\change_deleted 1948836658 1356998346
+
 \end_layout
 
 \begin_layout Enumerate
+
+\change_deleted 1948836658 1356998346
 Session continuation header values must include a cryptographically-secure
  value (indistinguishable from random) that can be validated by the server
  and is hard for attackers to guess;
+\change_unchanged
+
 \end_layout
 
 \begin_layout Enumerate
@@ -573,7 +579,16 @@ Session continuation header values used with TLS must be cryptographically
 \begin_layout Enumerate
 Session continuation must provide protection against man-in-the-middle (MITM)
  attacks at least when using TLS.
- Must support explicit session termination (
+\change_inserted 1948836658 1356997748
+
+\end_layout
+
+\begin_layout Enumerate
+
+\change_deleted 1948836658 1356997748
+ 
+\change_unchanged
+Must support explicit session termination (
 \begin_inset Quotes eld
 \end_inset
 
