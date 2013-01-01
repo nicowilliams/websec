@@ -14,7 +14,7 @@
 <!ENTITY rfc2617 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2617.xml">
 <!ENTITY rfc5849 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5849.xml">
 <!ENTITY I-D.ietf-oauth-v2 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-v2.xml">
-<!ENTITY I-D.I-D.hallambaker-httpintegrity PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.hallambaker-httpintegrity.xml">
+<!ENTITY I-D.hallambaker-httpintegrity PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.hallambaker-httpintegrity.xml">
 ]>
 <rfc docName="draft-williams-websec-session-continue-proto-00" ipr="trust200902" category="std">
   <front>
@@ -60,7 +60,7 @@ a response header for indicating the establishment of a session, and including a
         </list>
       </t>
     </section>
-    <section title="Session Keying" anchor="d1e256">
+    <section title="Session Keying" anchor="d1e279">
       <t>
 There are two methods for keying an HTTP session:</t>
       <t>
@@ -77,22 +77,22 @@ For the key assertion method TLS with confidentiality protection is clearly REQU
 [XXX Should we have distinct session keys for request and response MACs?]</t>
       <t>
 In either case a single master key is generated or asserted and a Key Derivation Function (KDF) <xref target="RFC5869"/> is used to generate the session keys for use with HTTP and HTTPS. Keys are derived by applying the negotiated KDF to the master key (output by the HTTP authentication method, or asserted) and either “secure” or “insecure” as the salt. All session keys for MAC algorithms specified here SHALL be 128 bits long.</t>
-      <section title="Mixing HTTP and HTTPS" anchor="d1e287">
+      <section title="Mixing HTTP and HTTPS" anchor="d1e310">
         <t>
 We expect that many sites will continute to mix HTTP and HTTPS for various reasons. To make this possible sessions will have two session keys: one for use over HTTPS, and the other for use over HTTP.</t>
       </section>
-      <section title="Authenticated Session Keying" anchor="d1e296">
+      <section title="Authenticated Session Keying" anchor="d1e319">
         <t>
 When an HTTP client uses HTTP authentication, and the authentication mechanism used can establish a session key, then the client SHOULD request session initiation using a shared session key output by the HTTP authentication mechanism. The client MUST send the session initiation header concurrently with the last HTTP authentication message.</t>
       </section>
-      <section title="Unauthenticated Session Keying" anchor="d1e305">
+      <section title="Unauthenticated Session Keying" anchor="d1e328">
         <t>
 Sessions for unauthenticated users may appear to make little sense at first. This is useful, for example, and just as web cookies are, for tracking “shopping carts” when a user is window shopping, so to speak.</t>
         <t>
 For unauthenticated session initiation the client merely requests the creation of a session with an asserted session key, for lack of a better choice.</t>
       </section>
     </section>
-    <section title="Session Initiation" anchor="d1e318">
+    <section title="Session Initiation" anchor="d1e341">
       <t>
 Sessions are always initiated by the client by including a Session-Init header in the client's request carrying the client's proposal for a session.</t>
       <t>
@@ -180,14 +180,36 @@ The session-params for Session-Assign are:</t>
  The URI of the session (REQUIRED).</t>
           <t hangText="State">
  Server-side state to be stored on the client (OPTIONAL).</t>
+          <t hangText="Host-Scope">
+ A DNS domainname (in A-label form) that the session can be used with. Multiple Scope parameters are allowed. If the domainname starts with a '.' then the session may be used with all server hosts whose domainnames are sub-domains of the given Host-Scope domainname.</t>
         </list>
       </t>
+    </section>
+    <section title="Session Scope: Sharing Sessions Across Servers" anchor="sec_Session_Scope__Sharing">
+      <t>
+A service might be composed of multiple related servers, each with a different hostname. As a result the service may require a client to use the same session across the service's component servers. We provide a mechanism by which the server may indicate a set of such servers to the client: the Host-Scope session-param in the server's Session-Assign response header.</t>
+      <t>
+[XXX We need a way to constrain this for privacy protection reasons. It's not yet clear how the client can judge which Host-Scope paramters to accept or ignore, only that must be allowed to do so.]</t>
+      <t>
+To facilitate interoperable session sharing across heterogeneous server implementations we define a session resource -named by its session URI- that can be obtained with a properly-authenticated GET by authorized entities. The session resource's representation is a application/json document type, containing a JSON-serialized associative array with the following REQUIRED keys:</t>
+      <t>
+        <list style="hanging">
+          <t hangText="Master-Key">
+ The session's master key, base64-encoded.</t>
+          <t hangText="MAC-Alg">
+ The MAC algorithm for this session.</t>
+        </list>
+      </t>
+      <t>
+[XXX We probably want each server to see a different master key, in which case we probably want to use a KDF with the server's hostname as part of the salt.]</t>
+      <t>
+[XXX We probably want to define some OPTIONAL keys, such as “User”, “User-URI”, “HTTP-Auth-Scheme-Used”, “HTTP-Auth-Scheme-&lt;param&gt;”, and so on.]</t>
     </section>
     <section title="Unauthenticated to Authenticated Session Upgrade" anchor="sec_Unauthenticated_to_Authenticated">
       <t>
 A client might first establish an unauthenticated session then authenticate the user later. When authentication is done the client might wish to preserve any state associated with the preceding unauthenticated session. The client does this by sending a Session-Init at authentication time with a 'Previous-Session-URI' session-param and, if there was server-assigned session state, a 'Previous-Session-State' session-param.</t>
     </section>
-    <section title="Session Continuation" anchor="d1e551">
+    <section title="Session Continuation" anchor="d1e615">
       <t>
 Once a session is established the client binds requests to sessions as described here.</t>
       <t>
@@ -199,7 +221,7 @@ The value of the Session header consists of a base64-encoded 128-bit nonce and a
       <t>
 </t>
       <t>
-        <figure anchor="magicparlabel-194" title="Session header">
+        <figure anchor="magicparlabel-203" title="Session header">
           <artwork>   nonce = &lt;base64-encoded 128-bit nonce&gt;
    MAC = &lt;b64 MAC taken over b64-nonce || b64-CB [|| content]&gt;
    Session = nonce "," MAC</artwork>
@@ -209,14 +231,42 @@ The value of the Session header consists of a base64-encoded 128-bit nonce and a
 Where the response must carry a Session header, the form of the value is the same as for requests.</t>
       <t>
 The MAC is taken over the nonce, the channel bindings, and the content as specified in the Session-Init header used to create this session.</t>
+      <t>
+[XXX Add text indicating that headers to be MACed are to be encoded per-DKIM.]</t>
+      <section title="Alternative: Define Session Scheme for WWW-Authenticate" anchor="d1e665">
+        <t>
+One possibility that has some appeal would be to define a new HTTP authentication scheme called “Session” (say) and use that instead of the “Session” header defined above. The primary advantage to the WWW-Authenticate approach is that it fits the existing HTTP authentication framework, allowing a server to present to an application the user authentication information embedded in the session state as if the user were re-authenticated in each request. Session continuation can then be seen as a form of fast re-authentication.</t>
+      </section>
     </section>
-    <section title="Logout" anchor="d1e598">
+    <section title="Logout" anchor="d1e674">
       <t>
 To logout the client SHOULD perform a DELETE of the session URI.</t>
     </section>
-    <section title="Inquiring Session Status" anchor="d1e607">
+    <section title="Inquiring Session Status" anchor="d1e683">
       <t>
-The client MAY do a GET of the session URI. The semantics of the response body for this are not specified here.</t>
+The client MAY do a GET of the session URI. The semantics of the response body for this are not specified here. As explained in  <xref target="sec_Session_Scope__Sharing"/>, servers also may GET a session URI; see  <xref target="sec_Session_Scope__Sharing"/> for more details.</t>
+    </section>
+    <section title="Analysis" anchor="sec_Analysis">
+      <t>
+Quite clearly this protocol meets requirements 1, 2, 3, and 5 from <xref target="I-D.williams-websec-session-continue-prob"/>.</t>
+      <t>
+The security requirements are also met:</t>
+      <t>
+        <list style="hanging">
+          <t hangText="requirement 4">
+ The active cookie recovery attacks on TLS are adaptive chosen plaintext attacks. These attacks depend on the cookies sent by the client being the same in every request. This protocol uses MAC of at least channel bindings data (which doesn't change for any one connection) salted (so to speak) with a nonce. This use of nonces causes the MAC sent to be different for each request, which defeats the known cookie recovery attacks on TLS. Note that we assume confidentiality protection from TLS; clients MUST NOT negotiate cipher suites that provide no confidentiality protection.</t>
+          <t hangText="requirement 6">
+ This is clearly met by the use of a MAC keyed with a session key not available to attackers. This clearly depends on implementations having decent entropy sources, but this is no different than for TLS. Note, however, that insecure session initiation with key assertion is clearly insecure relative to passive attackers, as well as active attackers that can redirect packet flows so they can observe session initiation.</t>
+          <t hangText="requirement_7">
+ This is clearly met by using a cryptographically secure KDF to derive distinct keys for use with HTTP and HTTPS.</t>
+          <t hangText="requirement_8">
+ The use of channel bindings as an input to the MAC meets this requirement.</t>
+          <t hangText="requirement_9">
+ This requirement is clearly met by having DELETE of a session URI terminate a session. It is important that clients promptly destroy any remnant of deleted sessions' state so that servers get no benefit from not deleting sessions when the clients demand it.</t>
+          <t hangText="requirement_10">
+ This is clearly met by using headers that proxies will pass unmodified.</t>
+        </list>
+      </t>
     </section>
     <section title="IANA Considerations" anchor="sec_IANA_Considerations">
       <t>
@@ -224,11 +274,15 @@ This document creates a number of new HTTP request and response headers. These h
     </section>
     <section title="Security Considerations" anchor="sec_Security_Considerations">
       <t>
+This session continuation protocol appears to meet the requirements outlined in <xref target="I-D.williams-websec-session-continue-prob"/>. [XXX Add analysis. In particular explain how MAC(CB + nonce) is sufficient to defeat BEAST and CRIME.]</t>
+      <t>
+This proposal meets security requirements from the problem statement <xref target="I-D.williams-websec-session-continue-prob"/>. See  <xref target="sec_Analysis"/> for details.</t>
+      <t>
 [...]</t>
     </section>
   </middle>
   <back>
-    <references title="Normative References" anchor="d1e639">&rfc2104;
+    <references title="Normative References" anchor="d1e794">&rfc2104;
 &rfc2616;
 &rfc5246;
 &rfc5056;
@@ -239,7 +293,7 @@ This document creates a number of new HTTP request and response headers. These h
     <references title="Informative References" anchor="sec_Normative_References">&rfc2617;
 &rfc5849;
 &I-D.ietf-oauth-v2;
-&I-D.I-D.hallambaker-httpintegrity;
+&I-D.hallambaker-httpintegrity;
 </references>
   </back>
 </rfc>

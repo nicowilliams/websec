@@ -68,19 +68,19 @@ Table of Contents
    2.2.  Authenticated Session Keying . . . . . . . . . . . . . . . .  4
    2.3.  Unauthenticated Session Keying . . . . . . . . . . . . . . .  4
    3.    Session Initiation . . . . . . . . . . . . . . . . . . . . .  6
-   4.    Unauthenticated to Authenticated Session Upgrade . . . . . .  9
-   5.    Session Continuation . . . . . . . . . . . . . . . . . . . . 10
-   6.    Logout . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
-   7.    Inquiring Session Status . . . . . . . . . . . . . . . . . . 12
-   8.    IANA Considerations  . . . . . . . . . . . . . . . . . . . . 13
-   9.    Security Considerations  . . . . . . . . . . . . . . . . . . 14
-   10.   References . . . . . . . . . . . . . . . . . . . . . . . . . 15
-   10.1. Normative References . . . . . . . . . . . . . . . . . . . . 15
-   10.2. Informative References . . . . . . . . . . . . . . . . . . . 15
-         Author's Address . . . . . . . . . . . . . . . . . . . . . . 16
-
-
-
+   4.    Session Scope: Sharing Sessions Across Servers . . . . . . .  9
+   5.    Unauthenticated to Authenticated Session Upgrade . . . . . . 10
+   6.    Session Continuation . . . . . . . . . . . . . . . . . . . . 11
+   6.1.  Alternative: Define Session Scheme for WWW-Authenticate  . . 11
+   7.    Logout . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+   8.    Inquiring Session Status . . . . . . . . . . . . . . . . . . 13
+   9.    Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+   10.   IANA Considerations  . . . . . . . . . . . . . . . . . . . . 15
+   11.   Security Considerations  . . . . . . . . . . . . . . . . . . 16
+   12.   References . . . . . . . . . . . . . . . . . . . . . . . . . 17
+   12.1. Normative References . . . . . . . . . . . . . . . . . . . . 17
+   12.2. Informative References . . . . . . . . . . . . . . . . . . . 17
+         Author's Address . . . . . . . . . . . . . . . . . . . . . . 18
 
 
 
@@ -337,10 +337,10 @@ Williams                  Expires July 4, 2013                  [Page 6]
 Internet-Draft            HTTP Session Problem             December 2012
 
 
-   Previous-Session-URI  The URI of a previous session.  See Section 4.
+   Previous-Session-URI  The URI of a previous session.  See Section 5.
 
    Previous-Session-State  The session state for the previous session,
-      if any.  See Section 4.
+      if any.  See Section 5.
 
    MAC-<MAC-alg>-<CB-type>  A base64-encoded MAC (in the given
       algorithm) of the Session-Init header value (excluding the MAC
@@ -416,11 +416,11 @@ Internet-Draft            HTTP Session Problem             December 2012
 
    State  Server-side state to be stored on the client (OPTIONAL).
 
-
-
-
-
-
+   Host-Scope  A DNS domainname (in A-label form) that the session can
+      be used with.  Multiple Scope parameters are allowed.  If the
+      domainname starts with a '.' then the session may be used with all
+      server hosts whose domainnames are sub-domains of the given Host-
+      Scope domainname.
 
 
 
@@ -449,7 +449,63 @@ Williams                  Expires July 4, 2013                  [Page 8]
 Internet-Draft            HTTP Session Problem             December 2012
 
 
-4.  Unauthenticated to Authenticated Session Upgrade
+4.  Session Scope: Sharing Sessions Across Servers
+
+   A service might be composed of multiple related servers, each with a
+   different hostname.  As a result the service may require a client to
+   use the same session across the service's component servers.  We
+   provide a mechanism by which the server may indicate a set of such
+   servers to the client: the Host-Scope session-param in the server's
+   Session-Assign response header.
+
+   [XXX We need a way to constrain this for privacy protection reasons.
+   It's not yet clear how the client can judge which Host-Scope
+   paramters to accept or ignore, only that must be allowed to do so.]
+
+   To facilitate interoperable session sharing across heterogeneous
+   server implementations we define a session resource -named by its
+   session URI- that can be obtained with a properly-authenticated GET
+   by authorized entities.  The session resource's representation is a
+   application/json document type, containing a JSON-serialized
+   associative array with the following REQUIRED keys:
+
+   Master-Key  The session's master key, base64-encoded.
+
+   MAC-Alg  The MAC algorithm for this session.
+
+   [XXX We probably want each server to see a different master key, in
+   which case we probably want to use a KDF with the server's hostname
+   as part of the salt.]
+
+   [XXX We probably want to define some OPTIONAL keys, such as "User",
+   "User-URI", "HTTP-Auth-Scheme-Used", "HTTP-Auth-Scheme-<param>", and
+   so on.]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires July 4, 2013                  [Page 9]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+5.  Unauthenticated to Authenticated Session Upgrade
 
    A client might first establish an unauthenticated session then
    authenticate the user later.  When authentication is done the client
@@ -500,12 +556,12 @@ Internet-Draft            HTTP Session Problem             December 2012
 
 
 
-Williams                  Expires July 4, 2013                  [Page 9]
+Williams                  Expires July 4, 2013                 [Page 10]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
 
-5.  Session Continuation
+6.  Session Continuation
 
    Once a session is established the client binds requests to sessions
    as described here.
@@ -536,76 +592,20 @@ Internet-Draft            HTTP Session Problem             December 2012
    content as specified in the Session-Init header used to create this
    session.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Williams                  Expires July 4, 2013                 [Page 10]
-
-Internet-Draft            HTTP Session Problem             December 2012
-
-
-6.  Logout
-
-   To logout the client SHOULD perform a DELETE of the session URI.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+   [XXX Add text indicating that headers to be MACed are to be encoded
+   per-DKIM.]
+
+6.1.  Alternative: Define Session Scheme for WWW-Authenticate
+
+   One possibility that has some appeal would be to define a new HTTP
+   authentication scheme called "Session" (say) and use that instead of
+   the "Session" header defined above.  The primary advantage to the
+   WWW-Authenticate approach is that it fits the existing HTTP
+   authentication framework, allowing a server to present to an
+   application the user authentication information embedded in the
+   session state as if the user were re-authenticated in each request.
+   Session continuation can then be seen as a form of fast re-
+   authentication.
 
 
 
@@ -617,10 +617,10 @@ Williams                  Expires July 4, 2013                 [Page 11]
 Internet-Draft            HTTP Session Problem             December 2012
 
 
-7.  Inquiring Session Status
+7.  Logout
 
-   The client MAY do a GET of the session URI.  The semantics of the
-   response body for this are not specified here.
+   To logout the client SHOULD perform a DELETE of the session URI.
+
 
 
 
@@ -673,12 +673,12 @@ Williams                  Expires July 4, 2013                 [Page 12]
 Internet-Draft            HTTP Session Problem             December 2012
 
 
-8.  IANA Considerations
+8.  Inquiring Session Status
 
-   This document creates a number of new HTTP request and response
-   headers.  These headers will need to be added to the HTTP header
-   registry: <TBD>.
-
+   The client MAY do a GET of the session URI.  The semantics of the
+   response body for this are not specified here.  As explained in
+   Section 4, servers also may GET a session URI; see Section 4 for more
+   details.
 
 
 
@@ -729,7 +729,128 @@ Williams                  Expires July 4, 2013                 [Page 13]
 Internet-Draft            HTTP Session Problem             December 2012
 
 
-9.  Security Considerations
+9.  Analysis
+
+   Quite clearly this protocol meets requirements 1, 2, 3, and 5 from
+   [I-D.williams-websec-session-continue-prob].
+
+   The security requirements are also met:
+
+   requirement 4  The active cookie recovery attacks on TLS are adaptive
+      chosen plaintext attacks.  These attacks depend on the cookies
+      sent by the client being the same in every request.  This protocol
+      uses MAC of at least channel bindings data (which doesn't change
+      for any one connection) salted (so to speak) with a nonce.  This
+      use of nonces causes the MAC sent to be different for each
+      request, which defeats the known cookie recovery attacks on TLS.
+      Note that we assume confidentiality protection from TLS; clients
+      MUST NOT negotiate cipher suites that provide no confidentiality
+      protection.
+
+   requirement 6  This is clearly met by the use of a MAC keyed with a
+      session key not available to attackers.  This clearly depends on
+      implementations having decent entropy sources, but this is no
+      different than for TLS.  Note, however, that insecure session
+      initiation with key assertion is clearly insecure relative to
+      passive attackers, as well as active attackers that can redirect
+      packet flows so they can observe session initiation.
+
+   requirement_7  This is clearly met by using a cryptographically
+      secure KDF to derive distinct keys for use with HTTP and HTTPS.
+
+   requirement_8  The use of channel bindings as an input to the MAC
+      meets this requirement.
+
+   requirement_9  This requirement is clearly met by having DELETE of a
+      session URI terminate a session.  It is important that clients
+      promptly destroy any remnant of deleted sessions' state so that
+      servers get no benefit from not deleting sessions when the clients
+      demand it.
+
+   requirement_10  This is clearly met by using headers that proxies
+      will pass unmodified.
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires July 4, 2013                 [Page 14]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+10.  IANA Considerations
+
+   This document creates a number of new HTTP request and response
+   headers.  These headers will need to be added to the HTTP header
+   registry: <TBD>.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Williams                  Expires July 4, 2013                 [Page 15]
+
+Internet-Draft            HTTP Session Problem             December 2012
+
+
+11.  Security Considerations
+
+   This session continuation protocol appears to meet the requirements
+   outlined in [I-D.williams-websec-session-continue-prob].  [XXX Add
+   analysis.  In particular explain how MAC(CB + nonce) is sufficient to
+   defeat BEAST and CRIME.]
+
+   This proposal meets security requirements from the problem statement
+   [I-D.williams-websec-session-continue-prob].  See Section 9 for
+   details.
 
    [...]
 
@@ -771,23 +892,14 @@ Internet-Draft            HTTP Session Problem             December 2012
 
 
 
-
-
-
-
-
-
-
-
-
-Williams                  Expires July 4, 2013                 [Page 14]
+Williams                  Expires July 4, 2013                 [Page 16]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
 
-10.  References
+12.  References
 
-10.1.  Normative References
+12.1.  Normative References
 
    [RFC2104]  Krawczyk, H., Bellare, M., and R. Canetti, "HMAC: Keyed-
               Hashing for Message Authentication", RFC 2104,
@@ -815,7 +927,7 @@ Internet-Draft            HTTP Session Problem             December 2012
               draft-williams-websec-session-continue-prob-00 (work in
               progress), January 2013.
 
-10.2.  Informative References
+12.2.  Informative References
 
    [RFC2617]  Franks, J., Hallam-Baker, P., Hostetler, J., Lawrence, S.,
               Leach, P., Luotonen, A., and L. Stewart, "HTTP
@@ -836,7 +948,7 @@ Internet-Draft            HTTP Session Problem             December 2012
 
 
 
-Williams                  Expires July 4, 2013                 [Page 15]
+Williams                  Expires July 4, 2013                 [Page 17]
 
 Internet-Draft            HTTP Session Problem             December 2012
 
@@ -892,5 +1004,5 @@ Author's Address
 
 
 
-Williams                  Expires July 4, 2013                 [Page 16]
+Williams                  Expires July 4, 2013                 [Page 18]
 

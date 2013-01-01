@@ -1055,6 +1055,12 @@ Host-Scope A DNS domainname (in A-label form) that the session can be used
 \end_layout
 
 \begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Session-Scope:-Sharing"
+
+\end_inset
+
 Session Scope: Sharing Sessions Across Servers
 \end_layout
 
@@ -1294,6 +1300,103 @@ Inquiring Session Status
 \begin_layout Standard
 The client MAY do a GET of the session URI.
  The semantics of the response body for this are not specified here.
+ As explained in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Session-Scope:-Sharing"
+
+\end_inset
+
+, servers also may GET a session URI; see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Session-Scope:-Sharing"
+
+\end_inset
+
+ for more details.
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Analysis"
+
+\end_inset
+
+Analysis
+\end_layout
+
+\begin_layout Standard
+Quite clearly this protocol meets requirements 1, 2, 3, and 5 from 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+I-D.williams-websec-session-continue-prob
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The security requirements are also met:
+\end_layout
+
+\begin_layout Description
+requirement
+\begin_inset space ~
+\end_inset
+
+4 The active cookie recovery attacks on TLS are adaptive chosen plaintext
+ attacks.
+ These attacks depend on the cookies sent by the client being the same in
+ every request.
+ This protocol uses MAC of at least channel bindings data (which doesn't
+ change for any one connection) salted (so to speak) with a nonce.
+ This use of nonces causes the MAC sent to be different for each request,
+ which defeats the known cookie recovery attacks on TLS.
+ Note that we assume confidentiality protection from TLS; clients MUST NOT
+ negotiate cipher suites that provide no confidentiality protection.
+\end_layout
+
+\begin_layout Description
+requirement
+\begin_inset space ~
+\end_inset
+
+6 This is clearly met by the use of a MAC keyed with a session key not available
+ to attackers.
+ This clearly depends on implementations having decent entropy sources,
+ but this is no different than for TLS.
+ Note, however, that insecure session initiation with key assertion is clearly
+ insecure relative to passive attackers, as well as active attackers that
+ can redirect packet flows so they can observe session initiation.
+\end_layout
+
+\begin_layout Description
+requirement_7 This is clearly met by using a cryptographically secure KDF
+ to derive distinct keys for use with HTTP and HTTPS.
+\end_layout
+
+\begin_layout Description
+requirement_8 The use of channel bindings as an input to the MAC meets this
+ requirement.
+\end_layout
+
+\begin_layout Description
+requirement_9 This requirement is clearly met by having DELETE of a session
+ URI terminate a session.
+ It is important that clients promptly destroy any remnant of deleted sessions'
+ state so that servers get no benefit from not deleting sessions when the
+ clients demand it.
+\end_layout
+
+\begin_layout Description
+requirement_10 This is clearly met by using headers that proxies will pass
+ unmodified.
 \end_layout
 
 \begin_layout Section
@@ -1337,6 +1440,28 @@ I-D.williams-websec-session-continue-prob
  [XXX Add analysis.
  In particular explain how MAC(CB + nonce) is sufficient to defeat BEAST
  and CRIME.]
+\end_layout
+
+\begin_layout Standard
+This proposal meets security requirements from the problem statement 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+I-D.williams-websec-session-continue-prob
+\end_layout
+
+\end_inset
+
+.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Analysis"
+
+\end_inset
+
+ for details.
 \end_layout
 
 \begin_layout Standard
