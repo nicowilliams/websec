@@ -119,22 +119,20 @@ Table of Contents
         difficult for attackers to spoof, and servers must be able to
         validate these values;
 
-   7.
-
-   8.   Session continuation header values used with TLS must be
+   7.   Session continuation header values used with TLS must be
         cryptographically distinct from those used without TLS such that
         no such values taken from HTTP requests sent without TLS can be
         used in HTTP requests with TLS;
 
-   9.   Session continuation must provide protection against man-in-the-
+   8.   Session continuation must provide protection against man-in-the-
         middle (MITM) attacks at least when using TLS.
 
-   10.  Must support explicit session termination ("logout").
+   9.   Must support explicit session termination ("logout").
+
+   10.  Must support proxies;
 
    11.  Do we need to say something about the relationship to origins
         (as in "same origin policy")?
-
-   12.  Must support proxies;
 
    [[anchor1: Can you move a session from one server to another?  No,
    probably not.  Servers can share sessions, so we need to at least be

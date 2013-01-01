@@ -59,17 +59,15 @@ Session continuation must be expressed via HTTP headers;</t>
           <t>
 Session continuation header values must be cryptographically difficult for attackers to spoof, and servers must be able to validate these values;</t>
           <t>
-</t>
-          <t>
 Session continuation header values used with TLS must be cryptographically distinct from those used without TLS such that no such values taken from HTTP requests sent without TLS can be used in HTTP requests with TLS;</t>
           <t>
 Session continuation must provide protection against man-in-the-middle (MITM) attacks at least when using TLS.</t>
           <t>
 Must support explicit session termination (“logout”).</t>
           <t>
-Do we need to say something about the relationship to origins (as in “same origin policy”)?</t>
-          <t>
 Must support proxies;</t>
+          <t>
+Do we need to say something about the relationship to origins (as in “same origin policy”)?</t>
         </list>
       </t>
       <t>
