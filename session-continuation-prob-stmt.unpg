@@ -3,8 +3,8 @@
 
 Network Working Group                                        N. Williams
 Internet-Draft                                              Cryptonector
-Intended status: Informational                         December 31, 2012
-Expires: July 4, 2013
+Intended status: Informational                           January 1, 2013
+Expires: July 5, 2013
 
 
    Hypertext Transport Protocol (HTTP) Session Continuation: Problem
@@ -35,11 +35,11 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on July 4, 2013.
+   This Internet-Draft will expire on July 5, 2013.
 
 Copyright Notice
 
-   Copyright (c) 2012 IETF Trust and the persons identified as the
+   Copyright (c) 2013 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -56,11 +56,16 @@ Copyright Notice
 Table of Contents
 
    1.    Introduction
+   1.1.  Motivation
+   1.2.  Conventions used in this document
    2.    Requirements
    2.1.  Statelessness
    3.    IANA Considerations
    4.    Security Considerations
-   5.    Informative References
+   5.    Acknowledgements
+   6.    References
+   6.1.  Normative References
+   6.2.  Informative References
          Author's Address
 
 
@@ -98,41 +103,86 @@ Table of Contents
    for use in web and non-web HTTP applications, and should work even
    for unauthenticated sessions.
 
+1.1.  Motivation
+
+   The motivation for this document and the related session continuation
+   protocol [I-D.draft-williams-websec-session-continue-proto] document
+   is as follows.  We want:
+
+   o  A variable authentication token instead of web cookies, for
+      resistance to BEAST, CRIME, and other adaptive chosen plaintext
+      active attacks on TLS.
+
+   o  The ability to explicitly logout and destroy all session state
+      even if the session has been compromised, assuming there is no Man
+      In The Browser (MITB).
+
+   o  The ability to manage sessions using an explicit session name.
+
+   o  The ability to negotiate replay protection.
+
+   o  Cryptographic binding ("channel binding" [RFC5056]) to the lower
+      transport layer (TLS, where available).
+
+   o  Cryptographic binding to the user authentication mechanisms (where
+      the authentication mechanism can export a secret value).
+
+   o  The ability to use HTTP/Negotiate [RFC4559] in such a way that a)
+      new HTTP(S) connections need not result in re-authentication, b)
+      does not strobgly bind requests in a single HTTP connection to the
+      HTTP/Negotiate authentication that precedes them.
+
+1.2.  Conventions used in this document
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in [RFC2119].
+
 
 2.  Requirements
 
    Any session continuation scheme to replace (or augment) cookies must
    provide the following functionality:
 
-   1.   Support for authenticated and unauthenticated sessions alike;
+   1.   Support for authenticated and unauthenticated sessions alike.
 
-   2.   Support for http: and https: both;
+   2.   Support for http: and https: both.
 
    3.   Session continuation must be possible to implement without
-        keeping state on the server side (see below);
+        keeping state on the server side (see below), and it must be
+        possible to keep some state on the server and some on the
+        client.
 
-   4.   Resistance to active attacks on https;
+   4.   Resistance to active attacks on https.
 
-   5.   Session continuation must be expressed via HTTP headers;
+   5.   Session continuation must be expressed via HTTP headers.
 
    6.   Session continuation header values must be cryptographically
         difficult for attackers to spoof, and servers must be able to
-        validate these values;
+        validate these values.
 
    7.   Session continuation header values used with TLS must be
         cryptographically distinct from those used without TLS such that
         no such values taken from HTTP requests sent without TLS can be
-        used in HTTP requests with TLS;
+        used in HTTP requests with TLS.
 
    8.   Session continuation must provide protection against man-in-the-
         middle (MITM) attacks at least when using TLS.
 
-   9.   Must support explicit session termination ("logout").
+   9.   Must support explicit session termination ("logout"), initiated
+        by either party, client or server.  Once a session is logged out
+        there should be no way to use it again, even if any session keys
+        are compromised.  Note that this is not a deployment
+        requirement, just a protocol requirement; a fully stateless
+        deployment may not be able to implement faithful logout.
 
-   10.  Must support proxies;
+   10.  Must work across all types of proxies.  Proxies that can modify
+        the plaintext HTTP requests and responses can (but should not)
+        interfere with any session continuation protocol.
 
-   11.  Do we need to say something about the relationship to origins
-        (as in "same origin policy")?
+   11.  Sessions should be tied to "origins"; multi-origin sessions
+        (sharing sessions across servers) are allowed, but there are
+        user interface considerations.
 
    [[anchor1: Can you move a session from one server to another?  No,
    probably not.  Servers can share sessions, so we need to at least be
@@ -145,16 +195,19 @@ Table of Contents
    Recommendations:
 
    1.  Session continuation SHOULD use proof-of-possession of secret
-       session key(s);
+       session key(s).
 
    2.  Session continuation header values SHOULD include a
        cryptographically-secure value (indistinguishable from random)
        that can be validated by the server and is hard for attackers to
-       guess;
+       guess.
+
+   3.  Session continuation header values should be salted with a nonce
+       to defeate BEAST- and CRIME-style active attacks.
 
 2.1.  Statelessness
 
-   Session continuation protocols for HTTP must allow for stateless
+   Session continuation protocols for HTTP MUST allow for stateless
    implementation on the server side, at least when TLS is used.  This
    generally means that any state must be encrypted and encoded into a
    session state cookie that is re-sent by the client to the server on
@@ -174,16 +227,30 @@ Table of Contents
    replay protection must either require the use of TLS or must use
    stateful sessions.
 
+   Note also that statelessness makes session logout a no-op on the
+   server-side, which means that a compromised session can continue to
+   be used even after a client attempts to logout.  A session
+   continuation protocol MUST allow for storing some state on the
+   server, and some on the client, allowing deployments where the only
+   state stored is the existence of a session.
+
+   Probabilistic data structures (e.g., Bloom filters) MAY be used to
+   record logouts.  This may require the ability to expire and refresh
+   sessions to render the logout system scalable.  In other words, HTTP
+   responses MUST be allowed to replace session server state stored on
+   the client side.
+
 
 3.  IANA Considerations
 
-   This document has no IANA considerations.
+   This document does not specify any protocols and has no IANA
+   considerations.
 
 
 4.  Security Considerations
 
-   This document does not specify a protocol and is Informational.
-   There are few security considerations to document here.
+   This document does not specify any protocols and is Informational.
+   There are, however, few security considerations to document here.
 
    We seek to improve security on the web (as well as for non-web HTTP
    applications) by:
@@ -208,7 +275,22 @@ Table of Contents
    Applications must use TLS if they require integrity protection.
 
 
-5.  Informative References
+5.  Acknowledgements
+
+   The author thanks Yaron Sheffer, Yoav Nir, and Phillip Hallam-Baker,
+   all of whom are practically co-authors, and invited to be listed as
+   such.  The term "session continuation" is Phillip's.  The motivation,
+   requirements and recommendations text is a group effort.
+
+
+6.  References
+
+6.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, March 1997.
+
+6.2.  Informative References
 
    [RFC2616]  Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
               Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext
@@ -234,6 +316,12 @@ Table of Contents
    [RFC4559]  Jaganathan, K., Zhu, L., and J. Brezak, "SPNEGO-based
               Kerberos and NTLM HTTP Authentication in Microsoft
               Windows", RFC 4559, June 2006.
+
+   [I-D.draft-williams-websec-session-continue-proto]
+              Williams, N., "Hypertext Transport Protocol (HTTP) Session
+              Continuation Protocol",
+              draft-williams-websec-session-continue-proto-00 (work in
+              progress), January 2013.
 
 
 Author's Address

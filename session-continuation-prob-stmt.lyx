@@ -251,7 +251,6 @@ End
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
-\author 1948836658 "Nico,,," 
 \end_header
 
 \begin_body
@@ -527,30 +526,20 @@ tication mechanisms.
  A new session continuation mechanism should be suitable for use in web
  and non-web HTTP applications, and should work even for unauthenticated
  sessions.
-\change_inserted 1948836658 1357074690
-
 \end_layout
 
 \begin_layout Subsection
-
-\change_inserted 1948836658 1357074713
 Motivation
 \end_layout
 
 \begin_layout Standard
-
-\change_inserted 1948836658 1357075931
 The motivation for this document and the related session continuation protocol
  
 \begin_inset Flex EntityXRef
 status collapsed
 
 \begin_layout Plain Layout
-
-\change_inserted 1948836658 1357075864
 I-D.draft-williams-websec-session-continue-proto
-\change_unchanged
-
 \end_layout
 
 \end_inset
@@ -560,34 +549,24 @@ I-D.draft-williams-websec-session-continue-proto
 \end_layout
 
 \begin_layout Itemize
-
-\change_inserted 1948836658 1357075935
 A variable authentication token instead of web cookies, for resistance to
  BEAST, CRIME, and other adaptive chosen plaintext active attacks on TLS.
 \end_layout
 
 \begin_layout Itemize
-
-\change_inserted 1948836658 1357075980
 The ability to explicitly logout and destroy all session state even if the
  session has been compromised, assuming there is no Man In The Browser (MITB).
 \end_layout
 
 \begin_layout Itemize
-
-\change_inserted 1948836658 1357075991
 The ability to manage sessions using an explicit session name.
 \end_layout
 
 \begin_layout Itemize
-
-\change_inserted 1948836658 1357075997
 The ability to negotiate replay protection.
 \end_layout
 
 \begin_layout Itemize
-
-\change_inserted 1948836658 1357076036
 Cryptographic binding (
 \begin_inset Quotes eld
 \end_inset
@@ -601,11 +580,7 @@ channel binding
 status collapsed
 
 \begin_layout Plain Layout
-
-\change_inserted 1948836658 1357076030
 RFC5056
-\change_unchanged
-
 \end_layout
 
 \end_inset
@@ -614,25 +589,17 @@ RFC5056
 \end_layout
 
 \begin_layout Itemize
-
-\change_inserted 1948836658 1357076084
 Cryptographic binding to the user authentication mechanisms (where the authentic
 ation mechanism can export a secret value).
 \end_layout
 
 \begin_layout Itemize
-
-\change_inserted 1948836658 1357077865
 The ability to use HTTP/Negotiate 
 \begin_inset Flex EntityXRef
 status collapsed
 
 \begin_layout Plain Layout
-
-\change_inserted 1948836658 1357076143
 RFC4559
-\change_unchanged
-
 \end_layout
 
 \end_inset
@@ -643,14 +610,10 @@ ion, b) does not strobgly bind requests in a single HTTP connection to the
 \end_layout
 
 \begin_layout Subsection
-
-\change_inserted 1948836658 1357075556
 Conventions used in this document
 \end_layout
 
 \begin_layout Standard
-
-\change_inserted 1948836658 1357075556
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
  "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are
  to be interpreted as described in 
@@ -658,8 +621,6 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 status open
 
 \begin_layout Plain Layout
-
-\change_inserted 1948836658 1357075556
 RFC2119
 \end_layout
 
@@ -678,78 +639,36 @@ Any session continuation scheme to replace (or augment) cookies must provide
 \end_layout
 
 \begin_layout Enumerate
-Support for authenticated and unauthenticated sessions alike
-\change_inserted 1948836658 1357073112
-.
-\change_deleted 1948836658 1357073110
-;
-\change_unchanged
-
+Support for authenticated and unauthenticated sessions alike.
 \end_layout
 
 \begin_layout Enumerate
-Support for http: and https: both
-\change_inserted 1948836658 1357073109
-.
-\change_deleted 1948836658 1357073108
-;
-\change_unchanged
-
+Support for http: and https: both.
 \end_layout
 
 \begin_layout Enumerate
 Session continuation must be possible to implement without keeping state
- on the server side (see below)
-\change_inserted 1948836658 1357073117
-, and it must be possible to keep some state on the server and some on the
- client.
-\change_deleted 1948836658 1357073117
-;
-\change_unchanged
-
+ on the server side (see below), and it must be possible to keep some state
+ on the server and some on the client.
 \end_layout
 
 \begin_layout Enumerate
-Resistance to active attacks on https
-\change_inserted 1948836658 1357073107
-.
-\change_deleted 1948836658 1357073106
-;
-\change_unchanged
-
+Resistance to active attacks on https.
 \end_layout
 
 \begin_layout Enumerate
-Session continuation must be expressed via HTTP headers
-\change_inserted 1948836658 1357073104
-.
-\change_deleted 1948836658 1357073103
-;
-\change_unchanged
-
+Session continuation must be expressed via HTTP headers.
 \end_layout
 
 \begin_layout Enumerate
 Session continuation header values must be cryptographically difficult for
- attackers to spoof, and servers must be able to validate these values
-\change_inserted 1948836658 1357073100
-.
-\change_deleted 1948836658 1357073099
-;
-\change_unchanged
-
+ attackers to spoof, and servers must be able to validate these values.
 \end_layout
 
 \begin_layout Enumerate
 Session continuation header values used with TLS must be cryptographically
  distinct from those used without TLS such that no such values taken from
- HTTP requests sent without TLS can be used in HTTP requests with TLS
-\change_inserted 1948836658 1357073102
-.
-\change_deleted 1948836658 1357073101
-;
-\change_unchanged
-
+ HTTP requests sent without TLS can be used in HTTP requests with TLS.
 \end_layout
 
 \begin_layout Enumerate
@@ -766,40 +685,20 @@ logout
 \begin_inset Quotes erd
 \end_inset
 
-)
-\change_inserted 1948836658 1357072804
-, initiated by either party, client or server
-\change_unchanged
-.
-
-\change_inserted 1948836658 1357073215
+), initiated by either party, client or server.
  Once a session is logged out there should be no way to use it again, even
  if any session keys are compromised.
  Note that this is not a deployment requirement, just a protocol requirement;
  a fully stateless deployment may not be able to implement faithful logout.
-\change_unchanged
-
 \end_layout
 
 \begin_layout Enumerate
-Must 
-\change_deleted 1948836658 1357072633
-support
-\change_inserted 1948836658 1357072781
-work across all types of
-\change_unchanged
- proxies
-\change_deleted 1948836658 1357074492
-;
-\change_inserted 1948836658 1357074553
-.
+Must work across all types of proxies.
  Proxies that can modify the plaintext HTTP requests and responses can (but
  should not) interfere with any session continuation protocol.
 \end_layout
 
 \begin_layout Enumerate
-
-\change_inserted 1948836658 1357072913
 Sessions should be tied to 
 \begin_inset Quotes eld
 \end_inset
@@ -810,24 +709,6 @@ origins
 
 ; multi-origin sessions (sharing sessions across servers) are allowed, but
  there are user interface considerations.
-\change_unchanged
-
-\end_layout
-
-\begin_layout Standard
-
-\change_deleted 1948836658 1357072761
-Do we need to say something about the relationship to origins (as in 
-\begin_inset Quotes eld
-\end_inset
-
-same origin policy
-\begin_inset Quotes erd
-\end_inset
-
-)?
-\change_unchanged
-
 \end_layout
 
 \begin_layout RevisionRemark
@@ -853,34 +734,18 @@ Recommendations:
 \end_layout
 
 \begin_layout Enumerate
-Session continuation SHOULD use proof-of-possession of secret session key(s)
-\change_inserted 1948836658 1357074657
-.
-\change_deleted 1948836658 1357074657
-;
-\change_unchanged
-
+Session continuation SHOULD use proof-of-possession of secret session key(s).
 \end_layout
 
 \begin_layout Enumerate
 Session continuation header values SHOULD include a cryptographically-secure
  value (indistinguishable from random) that can be validated by the server
- and is hard for attackers to guess
-\change_inserted 1948836658 1357074659
-.
-\change_deleted 1948836658 1357074659
-;
-\change_inserted 1948836658 1357072976
-
+ and is hard for attackers to guess.
 \end_layout
 
 \begin_layout Enumerate
-
-\change_inserted 1948836658 1357074666
 Session continuation header values should be salted with a nonce to defeate
  BEAST- and CRIME-style active attacks.
-\change_unchanged
-
 \end_layout
 
 \begin_layout Subsection
@@ -894,14 +759,8 @@ Statelessness
 \end_layout
 
 \begin_layout Standard
-Session continuation protocols for HTTP 
-\change_deleted 1948836658 1357075614
-must
-\change_inserted 1948836658 1357075615
-MUST
-\change_unchanged
- allow for stateless implementation on the server side, at least when TLS
- is used.
+Session continuation protocols for HTTP MUST allow for stateless implementation
+ on the server side, at least when TLS is used.
  This generally means that any state must be encrypted and encoded into
  a session state cookie that is re-sent by the client to the server on every
  request.
@@ -925,13 +784,9 @@ Note that statelessness implies that there is no way to implement replay
  thus with web cookies).
  Therefore servers that require replay protection must either require the
  use of TLS or must use stateful sessions.
-\change_inserted 1948836658 1357075397
-
 \end_layout
 
 \begin_layout Standard
-
-\change_inserted 1948836658 1357075668
 Note also that statelessness makes session logout a no-op on the server-side,
  which means that a compromised session can continue to be used even after
  a client attempts to logout.
@@ -941,16 +796,12 @@ Note also that statelessness makes session logout a no-op on the server-side,
 \end_layout
 
 \begin_layout Standard
-
-\change_inserted 1948836658 1357075754
 Probabilistic data structures (e.g., Bloom filters) MAY be used to record
  logouts.
  This may require the ability to expire and refresh sessions to render the
  logout system scalable.
  In other words, HTTP responses MUST be allowed to replace session server
  state stored on the client side.
-\change_unchanged
-
 \end_layout
 
 \begin_layout Section
@@ -964,11 +815,7 @@ IANA Considerations
 \end_layout
 
 \begin_layout Standard
-This document
-\change_inserted 1948836658 1357075770
- does not specify any protocols and
-\change_unchanged
- has no IANA considerations.
+This document does not specify any protocols and has no IANA considerations.
 \end_layout
 
 \begin_layout Section
@@ -982,20 +829,8 @@ Security Considerations
 \end_layout
 
 \begin_layout Standard
-This document does not specify a
-\change_inserted 1948836658 1357075777
-ny
-\change_unchanged
- protocol
-\change_inserted 1948836658 1357075779
-s
-\change_unchanged
- and is Informational.
- There are
-\change_inserted 1948836658 1357075791
-, however,
-\change_unchanged
- few security considerations to document here.
+This document does not specify any protocols and is Informational.
+ There are, however, few security considerations to document here.
 \end_layout
 
 \begin_layout Standard
@@ -1035,25 +870,17 @@ reference "sub:Statelessness"
  in this case.
  However, this is not a loss of security relative to web cookies.
  Applications must use TLS if they require integrity protection.
-\change_inserted 1948836658 1357075476
-
 \end_layout
 
 \begin_layout Section
-
-\change_inserted 1948836658 1357075489
 Normative References
 \end_layout
 
 \begin_layout Standard
-
-\change_inserted 1948836658 1357075499
 \begin_inset Flex BibXML
 status collapsed
 
 \begin_layout Plain Layout
-
-\change_inserted 1948836658 1357075499
 \begin_inset CommandInset href
 LatexCommand href
 name "rfc2119"
@@ -1200,33 +1027,6 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5849.xml"
 \end_layout
 
 \begin_layout Standard
-
-\change_deleted 1948836658 1357075352
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Already published as RFC
-\end_layout
-
-\end_inset
-
-
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-What is?
-\end_layout
-
-\end_inset
-
-
-\change_unchanged
-
-\end_layout
-
-\begin_layout Standard
 \begin_inset Flex BibXML
 status collapsed
 
@@ -1244,19 +1044,13 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4559.xml"
 \end_inset
 
 
-\change_inserted 1948836658 1357075269
-
 \end_layout
 
 \begin_layout Standard
-
-\change_inserted 1948836658 1357075337
 \begin_inset Flex EmbeddedBibXML
 status collapsed
 
 \begin_layout Plain Layout
-
-\change_inserted 1948836658 1357075345
 <reference anchor='I-D.draft-williams-websec-session-continue-proto'> <front>
  <title>Hypertext Transport Protocol (HTTP) Session Continuation Protocol</title
 > <author initials='N.' surname='Williams' fullname='Nicolas Williams'> <organiza
@@ -1270,8 +1064,6 @@ ract One of the most often talked about problems in web security is â€œcookiesâ€
 aft' value='draft-williams-websec-session-continue-proto-00' /> <format
  type='TXT' target='http://www.ietf.org/internet-drafts/draft-draft-williams-webse
 c-session-continue-proto-00.txt' /> </reference> 
-\change_unchanged
-
 \end_layout
 
 \end_inset
@@ -1280,14 +1072,10 @@ c-session-continue-proto-00.txt' /> </reference>
 \end_layout
 
 \begin_layout Section
-
-\change_inserted 1948836658 1357074581
 Acknowledgements
 \end_layout
 
 \begin_layout Standard
-
-\change_inserted 1948836658 1357074796
 The author thanks Yaron Sheffer, Yoav Nir, and Phillip Hallam-Baker, all
  of whom are practically co-authors, and invited to be listed as such.
  The term 
@@ -1300,8 +1088,6 @@ session continuation
 
  is Phillip's.
  The motivation, requirements and recommendations text is a group effort.
-\change_unchanged
-
 \end_layout
 
 \end_body
