@@ -251,6 +251,7 @@ End
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
+\author 1948836658 "Nico,,," 
 \end_header
 
 \begin_body
@@ -504,7 +505,19 @@ Cookies
 \begin_inset Quotes erd
 \end_inset
 
- are server-assigned bearer tokens -- nothing more, nothing less.
+ are server-assigned bearer tokens -- nothing more, nothing less
+\change_inserted 1948836658 1357085079
+, though some cookies are used just to store things like 
+\begin_inset Quotes eld
+\end_inset
+
+shopping cart
+\begin_inset Quotes erd
+\end_inset
+
+ state
+\change_unchanged
+.
  A bearer token is an octet blob which can be presented as-is, possibly
  repeatedly, to authenticate a user to some party; mere possession of the
  bearer token is sufficient to act on the user's behalf to at least one
@@ -516,8 +529,19 @@ Cookies
 \end_layout
 
 \begin_layout Standard
-We would like a session continuation mechanism to replace (or augment) cookies
- that has better security semantics.
+We would like a session continuation mechanism to replace 
+\change_deleted 1948836658 1357085087
+(
+\change_unchanged
+or augment
+\change_deleted 1948836658 1357085089
+)
+\change_unchanged
+ cookies that has better security semantics
+\change_inserted 1948836658 1357085102
+ than bearer tokens
+\change_unchanged
+.
  In particular we would like a system that is not susceptible to theft via
  active attacks like BEAST and CRIME.
  We believe that such a scheme should use cryptographic algorithms and cryptogra
@@ -549,8 +573,12 @@ I-D.draft-williams-websec-session-continue-proto
 \end_layout
 
 \begin_layout Itemize
-A variable authentication token instead of web cookies, for resistance to
- BEAST, CRIME, and other adaptive chosen plaintext active attacks on TLS.
+A variable authentication token instead of
+\change_inserted 1948836658 1357085130
+ (or in addition to)
+\change_unchanged
+ web cookies, for resistance to BEAST, CRIME, and other adaptive chosen
+ plaintext active attacks on TLS.
 \end_layout
 
 \begin_layout Itemize
@@ -559,7 +587,11 @@ The ability to explicitly logout and destroy all session state even if the
 \end_layout
 
 \begin_layout Itemize
-The ability to manage sessions using an explicit session name.
+The ability to manage sessions
+\change_deleted 1948836658 1357084655
+ using an explicit session name
+\change_unchanged
+.
 \end_layout
 
 \begin_layout Itemize
@@ -634,8 +666,15 @@ Requirements
 \end_layout
 
 \begin_layout Standard
-Any session continuation scheme to replace (or augment) cookies must provide
- the following functionality:
+Any session continuation scheme to replace 
+\change_deleted 1948836658 1357085145
+(
+\change_unchanged
+or augment
+\change_deleted 1948836658 1357085144
+)
+\change_unchanged
+ cookies must provide the following functionality:
 \end_layout
 
 \begin_layout Enumerate
@@ -654,6 +693,12 @@ Session continuation must be possible to implement without keeping state
 
 \begin_layout Enumerate
 Resistance to active attacks on https.
+
+\change_inserted 1948836658 1357091395
+ [NOTE: This should probably NOT be a requirement.
+ Instead we should be happy to note where a proposed protocol provides this.]
+\change_unchanged
+
 \end_layout
 
 \begin_layout Enumerate
@@ -673,7 +718,18 @@ Session continuation header values used with TLS must be cryptographically
 
 \begin_layout Enumerate
 Session continuation must provide protection against man-in-the-middle (MITM)
- attacks at least when using TLS.
+ attacks 
+\change_deleted 1948836658 1357092135
+at least 
+\change_unchanged
+when using TLS.
+
+\change_inserted 1948836658 1357092210
+ (This is important when using anonymous Diffie-Hellman cipher suites for
+ TLS, as well as when using server certificates from low-value Public Key
+ Infrastructures (PKI).
+\change_unchanged
+
 \end_layout
 
 \begin_layout Enumerate
@@ -761,6 +817,12 @@ Statelessness
 \begin_layout Standard
 Session continuation protocols for HTTP MUST allow for stateless implementation
  on the server side, at least when TLS is used.
+
+\change_inserted 1948836658 1357085320
+ Statelessness is not a requirement of deployments; implementations SHOULD
+ support both, stateful and stateless servers.
+
+\change_unchanged
  This generally means that any state must be encrypted and encoded into
  a session state cookie that is re-sent by the client to the server on every
  request.
@@ -853,8 +915,11 @@ reducing exposure to session credentials theft when not using TLS;
 \end_layout
 
 \begin_layout Enumerate
-introducing a replacement for cookies that will give browsers a chance to
- pursue better security policies.
+introducing a replacement for
+\change_inserted 1948836658 1357085231
+ / augmentation of
+\change_unchanged
+ cookies that will give browsers a chance to pursue better security policies.
 \end_layout
 
 \begin_layout Standard

@@ -509,8 +509,8 @@ The protocol consists of:
 
 \begin_layout Itemize
 a request header carrying a keyed Message Authentication Code (MAC) that
- prove possession of a shared session key (shared between the user and the
- server);
+ proves possession of a shared session key (shared between the user and
+ the server);
 \end_layout
 
 \begin_layout Itemize
@@ -522,8 +522,8 @@ a session identification in the form of a URI;
 \end_layout
 
 \begin_layout Itemize
-optional server-side statelessness by storing state on the client-side,
- encrypted in a secret key known to the server;
+an optional facility for server-side statelessness by storing state on the
+ client-side, encrypted in a secret key known to the server;
 \end_layout
 
 \begin_layout Itemize
@@ -533,6 +533,26 @@ a request header for requesting the establishment of a session;
 \begin_layout Itemize
 a response header for indicating the establishment of a session, and including
  a session URI and any optional state to be repeated by the client.
+\end_layout
+
+\begin_layout Subsection
+Conventions used in this document
+\end_layout
+
+\begin_layout Standard
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+ "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are
+ to be interpreted as described in 
+\begin_inset Flex EntityXRef
+status open
+
+\begin_layout Plain Layout
+RFC2119
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section
@@ -548,7 +568,7 @@ session keys are output by HTTP authentication;
 \end_layout
 
 \begin_layout Itemize
-or session keys are asserted by the client;
+or session keys are asserted by the client or the server;
 \end_layout
 
 \begin_layout Standard
@@ -557,17 +577,19 @@ For the key assertion method TLS with confidentiality protection is clearly
  We've considered the possibility of using Diffie-Hellman key agreement
  or RSA key transport, but as that would duplicate functionality that is
  in TLS we consider that out of scope for the time being.
- (We could also use the TLS extractor to generate keys, but that would be
- an unnecessary complication and would provide very little additional value.)
 \end_layout
 
 \begin_layout Standard
-[XXX Should we have distinct session keys for request and response MACs?]
+In either case a single session key is produced, and that is the only key
+ utilized.
+ Having a single key helps reduce session state size and protocol complexity,
+ but we must (and do) distinguish key usage by prefixing a purpose indicator
+ to the MAC input.
 \end_layout
 
 \begin_layout Standard
-In either case a single master key is generated or asserted and a Key Derivation
- Function (KDF) 
+When keys are output by HTTP authentication there may be a key length mismatch.
+ In this case a Key Derivation Function (KDF) 
 \begin_inset Flex EntityXRef
 status collapsed
 
@@ -577,26 +599,19 @@ RFC5869
 
 \end_inset
 
- is used to generate the session keys for use with HTTP and HTTPS.
- Keys are derived by applying the negotiated KDF to the master key (output
- by the HTTP authentication method, or asserted) and either 
-\begin_inset Quotes eld
-\end_inset
+ is applied to generate the session key.
+\end_layout
 
-secure
-\begin_inset Quotes erd
-\end_inset
+\begin_layout RevisionRemark
+We could also use the TLS extractor to generate keys, but that would be
+ an unnecessary complication and would provide very little additional value.
+ Channel binding is achieved per-RFCs 5056 and 5929.
+\end_layout
 
- or 
-\begin_inset Quotes eld
-\end_inset
-
-insecure
-\begin_inset Quotes erd
-\end_inset
-
- as the salt.
- All session keys for MAC algorithms specified here SHALL be 128 bits long.
+\begin_layout RevisionRemark
+Should we have distinct session keys for request and response MACs? Probably,
+ but it increases state size.
+ Better to add a direction indicator to the MAC plaintext.
 \end_layout
 
 \begin_layout Subsection
@@ -604,10 +619,10 @@ Mixing HTTP and HTTPS
 \end_layout
 
 \begin_layout Standard
-We expect that many sites will continute to mix HTTP and HTTPS for various
+We expect that many sites will continue to mix HTTP and HTTPS for various
  reasons.
- To make this possible sessions will have two session keys: one for use
- over HTTPS, and the other for use over HTTP.
+ To make this possible the MAC input will include a marker indicating HTTP
+ or HTTPS.
 \end_layout
 
 \begin_layout Subsection
@@ -747,10 +762,19 @@ auth
 \end_inset
 
  case the Session-Init MUST also carry a nonce and a MAC.
+ This session-param MUST be present.
 \end_layout
 
 \begin_layout Description
-Key The key that the client asserts, if the client asserts a key.
+Key The key that the client asserts, if the client asserts a key (Key-Method=c-a
+ssert).
+\end_layout
+
+\begin_layout Description
+Key-Length The length of the master session key, as a count of key bits,
+ in base-10.
+ The value MUST NOT be less than 96 or larger than 256.
+ If absent the key length SHALL be 128 bits.
 \end_layout
 
 \begin_layout Description
@@ -813,6 +837,15 @@ HMAC-SHA256-128
 
 \begin_layout Description
 KDF-Algs A list of KDF algorithms.
+ This is needed only when Key-Method is 
+\begin_inset Quotes eld
+\end_inset
+
+auth
+\begin_inset Quotes erd
+\end_inset
+
+.
  The following are specified here: 
 \begin_inset Quotes eld
 \end_inset
@@ -841,7 +874,15 @@ HKDF-SHA256
 
  (HKDF with SHA256).
  Clients and servers MUST support HKDF-SHA256.
- If absent the default value is HKDF-SHA256.
+ If absent and Key-Method is 
+\begin_inset Quotes eld
+\end_inset
+
+auth
+\begin_inset Quotes erd
+\end_inset
+
+ then the default value is HKDF-SHA256.
 \end_layout
 
 \begin_layout Description
@@ -867,10 +908,13 @@ RFC5929
 \end_inset
 
  when using HTTPS.
+ (Note the need to use quoted-string when the list has more than one item.)
+ If absent the default is 'tls-server-end-point'.
 \end_layout
 
 \begin_layout Description
-nonce A 128-bit nonce, base64-encoded.
+Nonce A 128-bit nonce, base64-encoded.
+ This session-param MUST be present.
 \end_layout
 
 \begin_layout Description
@@ -898,40 +942,7 @@ reference "sec:Unauthenticated-to-Authenticated"
 \end_layout
 
 \begin_layout Description
-MAC-<MAC-alg>-<CB-type> A base64-encoded MAC (in the given algorithm) of
- the Session-Init header value (excluding the MAC session-params), the nonce,
- the channel binding for the given channel binding type, and the previous
- session URI and state, if any.
- The items to be MACed are base64-encoded, then concatenated with commas
- in the ordered mentioned in the previous sentence, then the keyed MAC is
- applied.
-\end_layout
-
-\begin_layout Description
-Req-MAC-Secure-Content A comma-separated list of indicators of what request
- content is to be MACed when using HTTPS.
-\end_layout
-
-\begin_layout Description
-Resp-MAC-Secure-Content A comma-separated list of indicators of what response
- content is to be MACed when using HTTPS.
- If empty then the responses for this session over HTTPS will not contain
- a MAC (none is needed since if the channel binding is correct in the request
- then there is no MITM and TLS provides all the necessary protection).
-\end_layout
-
-\begin_layout Description
-Req-MAC-Insecure-Content A comma-separated list of indicators of what request
- content is to be MACed.
-\end_layout
-
-\begin_layout Description
-Resp-MAC-Insecure-Content A comma-separated list of indicators of what response
- content is to be MACed.
-\end_layout
-
-\begin_layout Description
-Insecure-Allowed If present the value MUST be 
+Unprotected-Allowed If present the value MUST be 
 \begin_inset Quotes eld
 \end_inset
 
@@ -941,28 +952,6 @@ true
 
 , and indicates that HTTP and HTTPS are both allowed for this session.
  Otherwise only HTTPS is allowed for this session.
-\end_layout
-
-\begin_layout Standard
-The MAC-Content indicators are:
-\end_layout
-
-\begin_layout Description
-Start The message start line.
-\end_layout
-
-\begin_layout Description
-CB Channel binding.
-\end_layout
-
-\begin_layout Description
-Body The body of the message.
- The content transfer encoding (e.g.
- chunked) is ignored for the purpose of determining the content.
-\end_layout
-
-\begin_layout Description
-H-<header-name> The given header name.
 \end_layout
 
 \begin_layout Standard
@@ -982,17 +971,27 @@ status open
 
 \begin_layout Plain Layout
 
-   session-URI = <URI>
+   session-params = 1#session-param
 \end_layout
 
 \begin_layout Plain Layout
 
-   session-state = <base64 encoding of server-side state>
+   Session-Init-Value = <the value of the Session-Init header>
 \end_layout
 
 \begin_layout Plain Layout
 
-   Session-Assign = (1#session-param ",")
+   MAC-input = Session-Init-Value "," session-params
+\end_layout
+
+\begin_layout Plain Layout
+
+   MAC = <base64-encoding of MAC taken over the MAC-input>
+\end_layout
+
+\begin_layout Plain Layout
+
+   Session-Assign = session-params ["," MAC]
 \end_layout
 
 \end_inset
@@ -1018,6 +1017,10 @@ Session-Assign response header
 \end_layout
 
 \begin_layout Standard
+The MAC is OPTIONAL when using HTTPS, REQUIRED otherwise.
+\end_layout
+
+\begin_layout Standard
 The session-params for Session-Assign are:
 \end_layout
 
@@ -1031,10 +1034,16 @@ MAC-Alg The name of the MAC algorithm selected by the server from the client's
 \end_layout
 
 \begin_layout Description
-MAC A MAC of the client's Session-Init header and the server's Session-Assign
- header (excluding the MAC session-param).
- This is OPTIONAL when using HTTPS, REQUIRED when using HTTP.
- [XXX expand].
+KDF-Alg The selected KDF algorithm (when the client's selected Key-Method
+ is 
+\begin_inset Quotes eld
+\end_inset
+
+auth
+\begin_inset Quotes erd
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Description
@@ -1043,6 +1052,38 @@ URI The URI of the session (REQUIRED).
 
 \begin_layout Description
 State Server-side state to be stored on the client (OPTIONAL).
+ Note that servers MAY choose to store server-side state in cookies instead.
+\end_layout
+
+\begin_layout Description
+Previous-Session Indicates whether the previous session was recognized and
+ accepted (
+\begin_inset Quotes eld
+\end_inset
+
+accepted
+\begin_inset Quotes erd
+\end_inset
+
+), rejected (
+\begin_inset Quotes eld
+\end_inset
+
+rejected
+\begin_inset Quotes erd
+\end_inset
+
+), or unknown (
+\begin_inset Quotes eld
+\end_inset
+
+unknown
+\begin_inset Quotes erd
+\end_inset
+
+).
+ This session-param MUST be present when the client's Session-Init had a
+ Previous-Session-URI session-param.
 \end_layout
 
 \begin_layout Description
@@ -1052,6 +1093,8 @@ Host-Scope A DNS domainname (in A-label form) that the session can be used
  If the domainname starts with a '.' then the session may be used with all
  server hosts whose domainnames are sub-domains of the given Host-Scope
  domainname.
+ The server's fully-qualified hostname is always part of the session's host
+ scope.
 \end_layout
 
 \begin_layout Section
@@ -1097,14 +1140,14 @@ Master-Key The session's master key, base64-encoded.
 MAC-Alg The MAC algorithm for this session.
 \end_layout
 
-\begin_layout Standard
-[XXX We probably want each server to see a different master key, in which
- case we probably want to use a KDF with the server's hostname as part of
- the salt.]
+\begin_layout RevisionRemark
+We probably want each server to see a different master key, in which case
+ we probably want to use a KDF with the server's hostname as part of the
+ salt.
 \end_layout
 
-\begin_layout Standard
-[XXX We probably want to define some OPTIONAL keys, such as 
+\begin_layout RevisionRemark
+We probably want to define some OPTIONAL keys for this object, such as 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1136,7 +1179,23 @@ HTTP-Auth-Scheme-<param>
 \begin_inset Quotes erd
 \end_inset
 
-, and so on.]
+, and so on, as well as an application-specific namespace of keys (e.g., 
+\begin_inset Quotes eld
+\end_inset
+
+App-<appname>
+\begin_inset Quotes erd
+\end_inset
+
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+<URN>
+\begin_inset Quotes erd
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Section
@@ -1206,17 +1265,57 @@ status open
 
 \begin_layout Plain Layout
 
+   CB = <base64-encoding of the channel bindings>
+\end_layout
+
+\begin_layout Plain Layout
+
    nonce = <base64-encoded 128-bit nonce>
 \end_layout
 
 \begin_layout Plain Layout
 
-   MAC = <b64 MAC taken over b64-nonce || b64-CB [|| content]>
+   new-state = ...
 \end_layout
 
 \begin_layout Plain Layout
 
-   Session = nonce "," MAC
+   direction = "c2s" | "s2c"
+\end_layout
+
+\begin_layout Plain Layout
+
+   prot-state = "protected" | "unprotected"
+\end_layout
+
+\begin_layout Plain Layout
+
+   response-status = "" | "Invalid-MAC" |
+\end_layout
+
+\begin_layout Plain Layout
+
+                     | "Session-expired" "Session-unknown"
+\end_layout
+
+\begin_layout Plain Layout
+
+   MAC-input = direction "," prot-state "," nonce
+\end_layout
+
+\begin_layout Plain Layout
+
+               "," CB "," status "," [new-state]
+\end_layout
+
+\begin_layout Plain Layout
+
+   MAC = <base64encoded MAC taken over MAC-input>
+\end_layout
+
+\begin_layout Plain Layout
+
+   Session = nonce "," response-status "," [new-state] "," MAC
 \end_layout
 
 \end_inset
@@ -1247,12 +1346,97 @@ Where the response must carry a Session header, the form of the value is
 \end_layout
 
 \begin_layout Standard
-The MAC is taken over the nonce, the channel bindings, and the content as
- specified in the Session-Init header used to create this session.
+The MAC is taken over a direction indicator, an indicator of whether TLS
+ is used, the nonce, the channel bindings, and so on, as shown in Figure
+ 3.
+ Only the server may assert new session state, and only the server indicates
+ a response-status other than 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+ (empty string).
+\end_layout
+
+\begin_layout Subsection
+Session Validation and Error Handling
 \end_layout
 
 \begin_layout Standard
-[XXX Add text indicating that headers to be MACed are to be encoded per-DKIM.]
+The receiver computes the same MAC using the sender's nonce (and new-state,
+ if present, when the receiver is the client) and compares the resulting
+ MAC to the MAC from the Session header.
+\end_layout
+
+\begin_layout Standard
+If MAC validation of a request fails then the server MUST respond with a
+ 403 status code with a non-empty response-status int he Session-header.
+ Error responses MUST include a Session header.
+ If 403 response's Session header indicates 
+\begin_inset Quotes eld
+\end_inset
+
+Invalid-MAC
+\begin_inset Quotes erd
+\end_inset
+
+ then if the client had used HTTPS then the client SHOULD warn the user,
+ otherwise the client SHOULD retry.
+ If the 403 response's Session header indicates 
+\begin_inset Quotes eld
+\end_inset
+
+Session-expired
+\begin_inset Quotes erd
+\end_inset
+
+ then the client SHOULD renew the session (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Session-Expiration-and"
+
+\end_inset
+
+).
+ Otherwise the client must assume that the old session has been destroyed
+ (e.g., because of a logout or server state data loss) and may establish a
+ new session.
+\end_layout
+
+\begin_layout Standard
+If MAC validation of a response fails the the client MUST act as though
+ a 400 (bad request) had been sent instead.
+ If the request was idempotent the client SHOULD retry, otherwise recovery
+ is not specified.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Session-Expiration-and"
+
+\end_inset
+
+Session Expiration and Renewal
+\end_layout
+
+\begin_layout Standard
+If the server decides that a session is no longer valid then the server
+ should respond with a 401 status code.
+ The client should then re-authenticate or establish a new unauthenticated
+ session, using the Previous-Session-URI and Previous-Session-State session-para
+ms of the new Session-Init to indicate that the old session is being 
+\begin_inset Quotes eld
+\end_inset
+
+renewed
+\begin_inset Quotes erd
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -1328,7 +1512,7 @@ Analysis
 \end_layout
 
 \begin_layout Standard
-Quite clearly this protocol meets requirements 1, 2, 3, and 5 from 
+Quite clearly this protocol meets requirements 1, 2, 3, 5, and 11 from 
 \begin_inset Flex EntityXRef
 status collapsed
 
@@ -1350,8 +1534,8 @@ requirement
 \begin_inset space ~
 \end_inset
 
-4 The active cookie recovery attacks on TLS are adaptive chosen plaintext
- attacks.
+4 The active cookie recovery attacks on TLS we consider are adaptive chosen
+ plaintext attacks.
  These attacks depend on the cookies sent by the client being the same in
  every request.
  This protocol uses MAC of at least channel bindings data (which doesn't
@@ -1377,8 +1561,8 @@ requirement
 \end_layout
 
 \begin_layout Description
-requirement_7 This is clearly met by using a cryptographically secure KDF
- to derive distinct keys for use with HTTP and HTTPS.
+requirement_7 This is clearly met by prefixing an indicator of whether TLS
+ is used or not to the MAC input.
 \end_layout
 
 \begin_layout Description
@@ -1395,8 +1579,8 @@ requirement_9 This requirement is clearly met by having DELETE of a session
 \end_layout
 
 \begin_layout Description
-requirement_10 This is clearly met by using headers that proxies will pass
- unmodified.
+requirement_10 This is clearly met by using headers that proxies should
+ pass unmodified.
 \end_layout
 
 \begin_layout Section
