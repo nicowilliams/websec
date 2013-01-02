@@ -638,6 +638,24 @@ When an HTTP client uses HTTP authentication, and the authentication mechanism
  last HTTP authentication message.
 \end_layout
 
+\begin_layout Subsubsection
+HTTP/Negotiate Session Keying
+\end_layout
+
+\begin_layout RevisionRemark
+Write text explaining how to use the GSS PRF to exchange keys when using
+ HTTP/Negotiate
+\end_layout
+
+\begin_layout Subsubsection
+Digest
+\end_layout
+
+\begin_layout RevisionRemark
+Digest could output a session key.
+ Do we want to bother? (Basic certainly can't, or we'd not want it to anyways.)
+\end_layout
+
 \begin_layout Subsection
 Unauthenticated Session Keying
 \end_layout
@@ -768,6 +786,16 @@ auth
 \begin_layout Description
 Key The key that the client asserts, if the client asserts a key (Key-Method=c-a
 ssert).
+ This may also be included when Key-Method is 
+\begin_inset Quotes eld
+\end_inset
+
+auth
+\begin_inset Quotes erd
+\end_inset
+
+ in case the server's implementation of HTTP authentication does not output
+ a key, but only when using HTTPS.
 \end_layout
 
 \begin_layout Description
@@ -1022,6 +1050,36 @@ The MAC is OPTIONAL when using HTTPS, REQUIRED otherwise.
 
 \begin_layout Standard
 The session-params for Session-Assign are:
+\end_layout
+
+\begin_layout Description
+Key-Method If the client requested 
+\begin_inset Quotes eld
+\end_inset
+
+auth
+\begin_inset Quotes erd
+\end_inset
+
+ as the key method but the server's implementation of HTTP authentication
+ could not output a key then this session-param MUST be present with a value
+ of 
+\begin_inset Quotes eld
+\end_inset
+
+c-assert
+\begin_inset Quotes erd
+\end_inset
+
+ (if the client included a Key in its Session-Init) or 
+\begin_inset Quotes eld
+\end_inset
+
+s-assert
+\begin_inset Quotes erd
+\end_inset
+
+ (otherwise).
 \end_layout
 
 \begin_layout Description
@@ -1654,6 +1712,26 @@ reference "sec:Analysis"
 
 \begin_layout Section
 Normative References
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "rfc2119"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
