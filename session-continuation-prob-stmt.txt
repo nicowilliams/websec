@@ -128,24 +128,26 @@ Internet-Draft            HTTP Session Problem              January 2013
    "session continuation".
 
    "Cookies" are server-assigned bearer tokens - nothing more, nothing
-   less.  A bearer token is an octet blob which can be presented as-is,
-   possibly repeatedly, to authenticate a user to some party; mere
-   possession of the bearer token is sufficient to act on the user's
-   behalf to at least one service.  As such they are susceptible to
-   theft via passive attacks (eavesdropping) if not protected in some
-   other way (e.g., by using TLS), or via active attacks such as BEAST
-   and CRIME [http://www.xors.me/?attachment_id=3727], as well as to
-   leakage in various ways [XXX expand].
+   less, though some cookies are used just to store things like
+   "shopping cart" state.  A bearer token is an octet blob which can be
+   presented as-is, possibly repeatedly, to authenticate a user to some
+   party; mere possession of the bearer token is sufficient to act on
+   the user's behalf to at least one service.  As such they are
+   susceptible to theft via passive attacks (eavesdropping) if not
+   protected in some other way (e.g., by using TLS), or via active
+   attacks such as BEAST and CRIME
+   [http://www.xors.me/?attachment_id=3727], as well as to leakage in
+   various ways [XXX expand].
 
-   We would like a session continuation mechanism to replace (or
-   augment) cookies that has better security semantics.  In particular
-   we would like a system that is not susceptible to theft via active
-   attacks like BEAST and CRIME.  We believe that such a scheme should
-   use cryptographic algorithms and cryptographic session keys, and
-   should be amenable to being keyed by HTTP- and web-authentication
-   mechanisms.  A new session continuation mechanism should be suitable
-   for use in web and non-web HTTP applications, and should work even
-   for unauthenticated sessions.
+   We would like a session continuation mechanism to replace or augment
+   cookies that has better security semantics than bearer tokens.  In
+   particular we would like a system that is not susceptible to theft
+   via active attacks like BEAST and CRIME.  We believe that such a
+   scheme should use cryptographic algorithms and cryptographic session
+   keys, and should be amenable to being keyed by HTTP- and web-
+   authentication mechanisms.  A new session continuation mechanism
+   should be suitable for use in web and non-web HTTP applications, and
+   should work even for unauthenticated sessions.
 
 1.1.  Motivation
 
@@ -153,14 +155,12 @@ Internet-Draft            HTTP Session Problem              January 2013
    protocol [I-D.draft-williams-websec-session-continue-proto] document
    is as follows.  We want:
 
-   o  A variable authentication token instead of web cookies, for
-      resistance to BEAST, CRIME, and other adaptive chosen plaintext
-      active attacks on TLS.
+   o  A variable authentication token instead of (or in addition to) web
+      cookies, for resistance to BEAST, CRIME, and other adaptive chosen
+      plaintext active attacks on TLS.
 
    o  The ability to explicitly logout and destroy all session state
       even if the session has been compromised, assuming there is no Man
-      In The Browser (MITB).
-
 
 
 
@@ -169,7 +169,9 @@ Williams                  Expires July 5, 2013                  [Page 3]
 Internet-Draft            HTTP Session Problem              January 2013
 
 
-   o  The ability to manage sessions using an explicit session name.
+      In The Browser (MITB).
+
+   o  The ability to manage sessions.
 
    o  The ability to negotiate replay protection.
 
@@ -218,8 +220,6 @@ Internet-Draft            HTTP Session Problem              January 2013
 
 
 
-
-
 Williams                  Expires July 5, 2013                  [Page 4]
 
 Internet-Draft            HTTP Session Problem              January 2013
@@ -227,7 +227,7 @@ Internet-Draft            HTTP Session Problem              January 2013
 
 2.  Requirements
 
-   Any session continuation scheme to replace (or augment) cookies must
+   Any session continuation scheme to replace or augment cookies must
    provide the following functionality:
 
    1.   Support for authenticated and unauthenticated sessions alike.
@@ -239,7 +239,9 @@ Internet-Draft            HTTP Session Problem              January 2013
         possible to keep some state on the server and some on the
         client.
 
-   4.   Resistance to active attacks on https.
+   4.   Resistance to active attacks on https.  [NOTE: This should
+        probably NOT be a requirement.  Instead we should be happy to
+        note where a proposed protocol provides this.]
 
    5.   Session continuation must be expressed via HTTP headers.
 
@@ -253,7 +255,10 @@ Internet-Draft            HTTP Session Problem              January 2013
         used in HTTP requests with TLS.
 
    8.   Session continuation must provide protection against man-in-the-
-        middle (MITM) attacks at least when using TLS.
+        middle (MITM) attacks when using TLS.  (This is important when
+        using anonymous Diffie-Hellman cipher suites for TLS, as well as
+        when using server certificates from low-value Public Key
+        Infrastructures (PKI).
 
    9.   Must support explicit session termination ("logout"), initiated
         by either party, client or server.  Once a session is logged out
@@ -268,11 +273,6 @@ Internet-Draft            HTTP Session Problem              January 2013
 
    11.  Sessions should be tied to "origins"; multi-origin sessions
         (sharing sessions across servers) are allowed, but there are
-        user interface considerations.
-
-   [[anchor1: Can you move a session from one server to another?  No,
-   probably not.  Servers can share sessions, so we need to at least be
-   able to scope sessions to sets of servers or DNS sub-domains.  This
 
 
 
@@ -281,6 +281,11 @@ Williams                  Expires July 5, 2013                  [Page 5]
 Internet-Draft            HTTP Session Problem              January 2013
 
 
+        user interface considerations.
+
+   [[anchor1: Can you move a session from one server to another?  No,
+   probably not.  Servers can share sessions, so we need to at least be
+   able to scope sessions to sets of servers or DNS sub-domains.  This
    appears to require that sessions have names.  Once we have proper
    session continuation we may well end up needing a mechanism by which
    to authenticate to a service as a user of a given session on a
@@ -302,10 +307,12 @@ Internet-Draft            HTTP Session Problem              January 2013
 2.1.  Statelessness
 
    Session continuation protocols for HTTP MUST allow for stateless
-   implementation on the server side, at least when TLS is used.  This
-   generally means that any state must be encrypted and encoded into a
-   session state cookie that is re-sent by the client to the server on
-   every request.  The server, of course, must be the one to assign such
+   implementation on the server side, at least when TLS is used.
+   Statelessness is not a requirement of deployments; implementations
+   SHOULD support both, stateful and stateless servers.  This generally
+   means that any state must be encrypted and encoded into a session
+   state cookie that is re-sent by the client to the server on every
+   request.  The server, of course, must be the one to assign such
    state, and it must use an encryption key known only by the server.
 
    Server-side statelessness is NOT REQUIRED in actual deployments, but
@@ -322,13 +329,6 @@ Internet-Draft            HTTP Session Problem              January 2013
    stateful sessions.
 
    Note also that statelessness makes session logout a no-op on the
-   server-side, which means that a compromised session can continue to
-   be used even after a client attempts to logout.  A session
-   continuation protocol MUST allow for storing some state on the
-   server, and some on the client, allowing deployments where the only
-   state stored is the existence of a session.
-
-   Probabilistic data structures (e.g., Bloom filters) MAY be used to
 
 
 
@@ -337,17 +337,17 @@ Williams                  Expires July 5, 2013                  [Page 6]
 Internet-Draft            HTTP Session Problem              January 2013
 
 
+   server-side, which means that a compromised session can continue to
+   be used even after a client attempts to logout.  A session
+   continuation protocol MUST allow for storing some state on the
+   server, and some on the client, allowing deployments where the only
+   state stored is the existence of a session.
+
+   Probabilistic data structures (e.g., Bloom filters) MAY be used to
    record logouts.  This may require the ability to expire and refresh
    sessions to render the logout system scalable.  In other words, HTTP
    responses MUST be allowed to replace session server state stored on
    the client side.
-
-
-
-
-
-
-
 
 
 
@@ -467,8 +467,8 @@ Internet-Draft            HTTP Session Problem              January 2013
    3.  reducing exposure to session credentials theft when not using
        TLS;
 
-   4.  introducing a replacement for cookies that will give browsers a
-       chance to pursue better security policies.
+   4.  introducing a replacement for / augmentation of cookies that will
+       give browsers a chance to pursue better security policies.
 
    As discussed in Section 2.1, there is a security consideration
    regarding session continuation without TLS and with server-side

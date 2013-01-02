@@ -297,10 +297,10 @@ Introduction</h2>
 Today most web applications use &ldquo;cookies&rdquo; to associate HTTP requests with &ldquo;sessions&rdquo;. A &ldquo;session&rdquo; is a set of related HTTP requests (and responses), where the relation is to some request(s) that created the session. Some sessions are created by the act of authenticating a user, in which case the primary goal of &ldquo;sessions&rdquo; is to avoid having to re-authenticate the user on every request. Other times a session is created when a request is received that is not associated with any session, in which case the primary purpose of &ldquo;sessions&rdquo; may be to provide a pseudonymous identifier for an otherwise anonymous user. We call the mechanisms by which requests are strung into sessions &ldquo;session continuation&rdquo;.</div>
 
 <div class="standard"><a id='magicparlabel-56' />
-&ldquo;Cookies&rdquo; are server-assigned bearer tokens &ndash; nothing more, nothing less. A bearer token is an octet blob which can be presented as-is, possibly repeatedly, to authenticate a user to some party; mere possession of the bearer token is sufficient to act on the user's behalf to at least one service. As such they are susceptible to theft via passive attacks (eavesdropping) if not protected in some other way (e.g., by using TLS), or via active attacks such as BEAST and CRIME [http://www.xors.me/?attachment_id=3727], as well as to leakage in various ways [XXX expand].</div>
+&ldquo;Cookies&rdquo; are server-assigned bearer tokens &ndash; nothing more, nothing less, though some cookies are used just to store things like &ldquo;shopping cart&rdquo; state. A bearer token is an octet blob which can be presented as-is, possibly repeatedly, to authenticate a user to some party; mere possession of the bearer token is sufficient to act on the user's behalf to at least one service. As such they are susceptible to theft via passive attacks (eavesdropping) if not protected in some other way (e.g., by using TLS), or via active attacks such as BEAST and CRIME [http://www.xors.me/?attachment_id=3727], as well as to leakage in various ways [XXX expand].</div>
 
 <div class="standard"><a id='magicparlabel-57' />
-We would like a session continuation mechanism to replace (or augment) cookies that has better security semantics. In particular we would like a system that is not susceptible to theft via active attacks like BEAST and CRIME. We believe that such a scheme should use cryptographic algorithms and cryptographic session keys, and should be amenable to being keyed by HTTP- and web-authentication mechanisms. A new session continuation mechanism should be suitable for use in web and non-web HTTP applications, and should work even for unauthenticated sessions.</div>
+We would like a session continuation mechanism to replace or augment cookies that has better security semantics than bearer tokens. In particular we would like a system that is not susceptible to theft via active attacks like BEAST and CRIME. We believe that such a scheme should use cryptographic algorithms and cryptographic session keys, and should be amenable to being keyed by HTTP- and web-authentication mechanisms. A new session continuation mechanism should be suitable for use in web and non-web HTTP applications, and should work even for unauthenticated sessions.</div>
 <h3 class="subsection"><span class="subsection_label">1.1</span> <a id='magicparlabel-58' />
 Motivation</h3>
 <div class="standard"><a id='magicparlabel-59' />
@@ -309,11 +309,11 @@ I-D.draft-williams-websec-session-continue-proto</div>
 </div> document is as follows. We want:</div>
 
 <ul class="itemize"><li class="itemize_item"><a id='magicparlabel-64' />
-A variable authentication token instead of web cookies, for resistance to BEAST, CRIME, and other adaptive chosen plaintext active attacks on TLS.</li>
+A variable authentication token instead of (or in addition to) web cookies, for resistance to BEAST, CRIME, and other adaptive chosen plaintext active attacks on TLS.</li>
 <li class="itemize_item"><a id='magicparlabel-65' />
 The ability to explicitly logout and destroy all session state even if the session has been compromised, assuming there is no Man In The Browser (MITB).</li>
 <li class="itemize_item"><a id='magicparlabel-66' />
-The ability to manage sessions using an explicit session name.</li>
+The ability to manage sessions.</li>
 <li class="itemize_item"><a id='magicparlabel-67' />
 The ability to negotiate replay protection.</li>
 <li class="itemize_item"><a id='magicparlabel-68' />
@@ -336,7 +336,7 @@ RFC2119</div>
 <h2 class="section"><span class="section_label">2</span> <a id='magicparlabel-85' />
 Requirements</h2>
 <div class="standard"><a id='magicparlabel-86' />
-Any session continuation scheme to replace (or augment) cookies must provide the following functionality:</div>
+Any session continuation scheme to replace or augment cookies must provide the following functionality:</div>
 
 <ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-87' />
 Support for authenticated and unauthenticated sessions alike.</li>
@@ -345,7 +345,7 @@ Support for http: and https: both.</li>
 <li class="enumerate_item"><a id='magicparlabel-89' />
 Session continuation must be possible to implement without keeping state on the server side (see below), and it must be possible to keep some state on the server and some on the client.</li>
 <li class="enumerate_item"><a id='magicparlabel-90' />
-Resistance to active attacks on https.</li>
+Resistance to active attacks on https. [NOTE: This should probably NOT be a requirement. Instead we should be happy to note where a proposed protocol provides this.]</li>
 <li class="enumerate_item"><a id='magicparlabel-91' />
 Session continuation must be expressed via HTTP headers.</li>
 <li class="enumerate_item"><a id='magicparlabel-92' />
@@ -353,7 +353,7 @@ Session continuation header values must be cryptographically difficult for attac
 <li class="enumerate_item"><a id='magicparlabel-93' />
 Session continuation header values used with TLS must be cryptographically distinct from those used without TLS such that no such values taken from HTTP requests sent without TLS can be used in HTTP requests with TLS.</li>
 <li class="enumerate_item"><a id='magicparlabel-94' />
-Session continuation must provide protection against man-in-the-middle (MITM) attacks at least when using TLS.</li>
+Session continuation must provide protection against man-in-the-middle (MITM) attacks when using TLS. (This is important when using anonymous Diffie-Hellman cipher suites for TLS, as well as when using server certificates from low-value Public Key Infrastructures (PKI).</li>
 <li class="enumerate_item"><a id='magicparlabel-95' />
 Must support explicit session termination (&ldquo;logout&rdquo;), initiated by either party, client or server. Once a session is logged out there should be no way to use it again, even if any session keys are compromised. Note that this is not a deployment requirement, just a protocol requirement; a fully stateless deployment may not be able to implement faithful logout.</li>
 <li class="enumerate_item"><a id='magicparlabel-96' />
@@ -378,7 +378,7 @@ Session continuation header values should be salted with a nonce to defeate BEAS
 <a id="sub_Statelessness" />
 Statelessness</h3>
 <div class="standard"><a id='magicparlabel-104' />
-Session continuation protocols for HTTP MUST allow for stateless implementation on the server side, at least when TLS is used. This generally means that any state must be encrypted and encoded into a session state cookie that is re-sent by the client to the server on every request. The server, of course, must be the one to assign such state, and it must use an encryption key known only by the server.</div>
+Session continuation protocols for HTTP MUST allow for stateless implementation on the server side, at least when TLS is used. Statelessness is not a requirement of deployments; implementations SHOULD support both, stateful and stateless servers. This generally means that any state must be encrypted and encoded into a session state cookie that is re-sent by the client to the server on every request. The server, of course, must be the one to assign such state, and it must use an encryption key known only by the server.</div>
 
 <div class="standard"><a id='magicparlabel-105' />
 Server-side statelessness is NOT REQUIRED in actual deployments, but the ability to implement session continuation in a stateless fashion on the server side is REQUIRED.</div>
@@ -412,7 +412,7 @@ reducing exposure to session credentials theft via attacks on TLS such as BEAST 
 <li class="enumerate_item"><a id='magicparlabel-116' />
 reducing exposure to session credentials theft when not using TLS;</li>
 <li class="enumerate_item"><a id='magicparlabel-117' />
-introducing a replacement for cookies that will give browsers a chance to pursue better security policies.</li>
+introducing a replacement for / augmentation of cookies that will give browsers a chance to pursue better security policies.</li>
 </ol>
 <div class="standard"><a id='magicparlabel-118' />
 As discussed in <a href="#sub_Statelessness">2.1</a>, there is a security consideration regarding session continuation without TLS and with server-side statelessness: there can be no replay protection in this case. However, this is not a loss of security relative to web cookies. Applications must use TLS if they require integrity protection.</div>
