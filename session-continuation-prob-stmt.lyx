@@ -256,7 +256,7 @@ End
 \begin_body
 
 \begin_layout Title
-Hypertext Transport Protocol (HTTP) Session Continuation: Problem Statement
+Hypertext Transfer Protocol (HTTP) Session Continuation: Problem Statement
 \end_layout
 
 \begin_layout Standard
@@ -264,7 +264,7 @@ Hypertext Transport Protocol (HTTP) Session Continuation: Problem Statement
 status collapsed
 
 \begin_layout Plain Layout
-draft-williams-websec-session-continue-prob-00
+draft-williams-websec-session-continue-prob-01
 \end_layout
 
 \end_inset
@@ -414,7 +414,7 @@ continuation
 \begin_inset Quotes erd
 \end_inset
 
- problem for the HyperText Transport Protocol (HTTP).
+ problem for the HyperText Transfer Protocol (HTTP).
 \end_layout
 
 \begin_layout Standard
@@ -1069,7 +1069,7 @@ status collapsed
 
 \begin_layout Plain Layout
 <reference anchor='I-D.draft-williams-websec-session-continue-proto'> <front>
- <title>Hypertext Transport Protocol (HTTP) Session Continuation Protocol</title
+ <title>Hypertext Transfer Protocol (HTTP) Session Continuation Protocol</title
 > <author initials='N.' surname='Williams' fullname='Nicolas Williams'> <organiza
 tion /> </author> <date month='January' day='1' year='2013' /> <abstract><t>Abst
 ract One of the most often talked about problems in web security is “cookies”.
@@ -1077,7 +1077,7 @@ ract One of the most often talked about problems in web security is “cookies�
  have been authenticated somehow.
  Cookies are a form of bearer token that leave much to be desired.
  This document proposes a session “continuation” protocol for HyperText
- Transport Protocol (HTTP).</t></abstract> </front> <seriesInfo name='Internet-Dr
+ Transfer Protocol (HTTP).</t></abstract> </front> <seriesInfo name='Internet-Dr
 aft' value='draft-williams-websec-session-continue-proto-00' /> <format
  type='TXT' target='http://www.ietf.org/internet-drafts/draft-draft-williams-webse
 c-session-continue-proto-00.txt' /> </reference> 
